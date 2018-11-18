@@ -107,7 +107,7 @@ public class AnadirDetalleCompra extends AppCompatActivity {
                 Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
                 speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie el producto que desea comprar!");
+                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la cantidad de producto que desea comprar!");
                 startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
 
 
@@ -129,6 +129,7 @@ public class AnadirDetalleCompra extends AppCompatActivity {
             ArrayList<String> reconocido = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             String escuchado = reconocido.get(0);
             editTextCantidad.setText(escuchado);
+            textViewSubtotal.setText(String.valueOf(Float.parseFloat(editTextCantidad.getText().toString())*Float.parseFloat(textViewPrecio.getText().toString())));
             speak("El valor total por el producto sería de:"+textViewSubtotal.getText().toString());
 
         }

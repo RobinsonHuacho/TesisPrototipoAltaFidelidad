@@ -4,7 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -25,6 +29,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class DetallesBeneficiario extends AppCompatActivity {
@@ -40,6 +45,11 @@ public class DetallesBeneficiario extends AppCompatActivity {
     ElementosProductosCompradosAdaptador adapter;
 
     DatabaseHandlerProductosComprados db = new DatabaseHandlerProductosComprados(this);
+
+
+    private static final int RECONOCEDOR_VOZ = 7;
+    private TextToSpeech myTTS;
+    private ConstraintLayout pantalla;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +105,128 @@ public class DetallesBeneficiario extends AppCompatActivity {
             }
         };
         queue1.add(stringRequest1);
+
+
+
+        pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
+
+        pantalla.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
+                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Finaliza o Continuar!");
+                //mySpeechRecognizer.startListening(speechIntent);
+                startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+            }
+        });
+
+        iniciarTextToSpeech();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK && requestCode == RECONOCEDOR_VOZ){
+            ArrayList<String> reconocido = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            String escuchado = reconocido.get(0);
+            prepararRespuesta(escuchado);
+
+
+
+        }
+    }
+
+    private void prepararRespuesta(String escuchado) {
+
+        escuchado = escuchado.toLowerCase();
+
+        if(escuchado.indexOf("finalizar")!=-1){
+          realizarCompra();
+        }else {
+            if (escuchado.indexOf("continuar") != -1) {
+                Intent intent = new Intent(this, ListaCategoriaProducto.class);
+                startActivity(intent);
+
+
+            }
+        }
+    }
+
+    private void realizarCompra() {
+        if(conteoRegistros()<2) {
+            Toast.makeText(getApplicationContext(), String.valueOf(conteoRegistros())+IngresoAplicacion.getActivityInstance().getIdUsuario(), Toast.LENGTH_LONG).show();
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+            String url3 = "http://192.168.0.8:8080/ProyectoIntegrador/nuevaCompra.php";
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url3, new
+                    Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                            if (response.matches("1")) {
+                                Toast.makeText(getApplicationContext(), "Compra Realizada Exitosamente", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(getApplicationContext(), ConfirmacionCompra.class);
+                                startActivity(intent);
+
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Algo salió mal. No se pudo realizar la compra. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    textView_TotalCompra = (TextView) findViewById(R.id.textView_CostoTotal);
+                    textView_SaldoCompra = (TextView) findViewById(R.id.textView_SaldoCompra);
+
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("id_usuario", IngresoAplicacion.getActivityInstance().getIdUsuario());
+                    params.put("total_compra", textView_TotalCompra.getText().toString());
+                    params.put("saldo_compra", textView_SaldoCompra.getText().toString());
+
+                    return params;
+                }
+            };
+            queue.add(stringRequest);
+
+        }else {
+            Toast.makeText(getApplicationContext(), "Algo salió mal. No se pudo realizar la compra. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void iniciarTextToSpeech() {
+        myTTS=new TextToSpeech(this,  new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(myTTS.getEngines().size()==0){
+                    Toast.makeText(DetallesBeneficiario.this, "No se ha inicializado TextToSpeech en su dispositivo",Toast.LENGTH_LONG).show();
+                    finish();
+                }else{
+                    myTTS.setLanguage(Locale.getDefault());
+                    speak("En esta pantalla");
+                    //deberá ingresar su usuario y contraseña. " +
+                    //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, después del tono." +
+                    //    "Caso contario, presionar sobre cualquier parte de la pantalla ");
+                    //speak(TextViewTitulo.getText().toString());
+                    //speak(TextViewContenido.getText().toString());
+                }
+            }
+        });
+    }
+
+    private void speak(String message) {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+            myTTS.speak(message, TextToSpeech.QUEUE_FLUSH, null,null);
+        }else{
+            myTTS.speak(message, TextToSpeech.QUEUE_FLUSH, null);
+        }
     }
 
 
