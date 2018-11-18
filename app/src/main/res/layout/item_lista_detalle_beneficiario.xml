@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?attr/listPreferredItemHeight"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:background="?attr/selectableItemBackground"
+      android:paddingTop="8dp">
+
+    <com.github.snowdream.android.widget.SmartImageView
+        android:id="@+id/ImageView_Foto"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/TextView_lbNombreProducto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="56dp"
+        android:text="Nombre Producto"
+        android:textAppearance="?attr/textAppearanceListItem"
+         />
+
+    <TextView
+        android:id="@+id/TextView_lbCantidad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TextView_lbNombreProducto"
+        android:layout_below="@+id/TextView_lbNombreProducto"
+        android:text="Cantidad : "
+        android:textAppearance="?attr/textAppearanceListItem"
+        />
+
+    <TextView
+        android:id="@+id/TextView_Cantidad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cantidad"
+        android:layout_alignBaseline="@+id/TextView_lbCantidad"
+        android:layout_alignBottom="@+id/TextView_lbCantidad"
+        android:layout_toRightOf="@+id/TextView_lbCantidad"
+        android:layout_toEndOf="@+id/TextView_lbCantidad"
+        android:textAppearance="?attr/textAppearanceListItem"
+        />
+
+    <TextView
+        android:id="@+id/TextView_lbTotalDetalleProducto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TextView_lbNombreProducto"
+        android:layout_below="@+id/TextView_lbCantidad"
+        android:text="Total Producto : "
+        android:textAppearance="?attr/textAppearanceListItem"
+        />
+
+    <TextView
+        android:id="@+id/TextView_TotalDetalleProducto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/TextView_lbTotalDetalleProducto"
+        android:layout_alignBottom="@+id/TextView_lbTotalDetalleProducto"
+        android:layout_toEndOf="@+id/TextView_lbTotalDetalleProducto"
+        android:layout_toRightOf="@+id/TextView_lbTotalDetalleProducto"
+        android:text="Total Producto"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+
+    <TextView
+        android:id="@+id/TextView_TotalDetalleProducto_$"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/TextView_TotalDetalleProducto"
+        android:layout_alignBottom="@+id/TextView_TotalDetalleProducto"
+        android:layout_toEndOf="@+id/TextView_TotalDetalleProducto"
+        android:layout_toRightOf="@+id/TextView_TotalDetalleProducto"
+        android:text="$"
+    android:textAppearance="?attr/textAppearanceListItem" />
+
+</RelativeLayout>

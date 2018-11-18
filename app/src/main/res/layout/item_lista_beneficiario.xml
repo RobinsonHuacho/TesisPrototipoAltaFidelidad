@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?attr/listPreferredItemHeight"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:background="?attr/selectableItemBackground"
+      android:paddingTop="8dp">
+
+    <com.github.snowdream.android.widget.SmartImageView
+        android:id="@+id/ImageView_Foto"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/TextView_Nombres"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="56dp"
+        android:text="Nombres"
+        android:textAppearance="?attr/textAppearanceListItem"
+         />
+
+    <TextView
+        android:id="@+id/TextView_Descipcion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TextView_Nombres"
+        android:layout_below="@+id/TextView_Nombres"
+        android:text="Total Compra : $ "
+        android:textAppearance="?attr/textAppearanceListItem"
+        />
+
+    <TextView
+        android:id="@+id/EditText_Cantidad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/TextView_Nombres"
+        android:layout_below="@+id/TextView_Descipcion"
+        android:text="Saldo : $ "
+        android:textAppearance="?attr/textAppearanceListItem"
+        />
+
+
+    <TextView
+        android:id="@+id/TextView_TotalCompra"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Compra"
+        android:layout_alignBaseline="@+id/TextView_Descipcion"
+        android:layout_alignBottom="@+id/TextView_Descipcion"
+        android:layout_toRightOf="@+id/TextView_Descipcion"
+        android:layout_toEndOf="@+id/TextView_Descipcion"
+        android:textAppearance="?attr/textAppearanceListItem"
+        />
+
+    <TextView
+        android:id="@+id/TextView_SaldoCompra"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/EditText_Cantidad"
+        android:layout_alignBottom="@+id/EditText_Cantidad"
+        android:layout_toEndOf="@+id/EditText_Cantidad"
+        android:layout_toRightOf="@+id/EditText_Cantidad"
+        android:text="Saldo"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+</RelativeLayout>

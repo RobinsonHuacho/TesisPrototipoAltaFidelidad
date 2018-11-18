@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/Pantalla"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.usuario.pruebas.InformacionGeneral"
+    android:background="@color/mpsdk_white">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="32dp"
+        android:text="INFORMACIÓN GENERAL"
+        android:textColor="@color/cardview_dark_background"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/TextViewInformacion"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="32dp"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="outsideInset"
+        android:fadeScrollbars="false"
+        android:text="Es un proyecto que consiste de una aplicación móvil con requerimientos mínimos de tecnología, que sea accesible y fácil de usar, a fin de que pueda estar al alcance de las personas con ceguera y discapacidad visual severa que utilicen como tecnología de soporte un software lector de pantalla, a las personas con discapacidad física en miembros superiores que usen activación por voz y personas adultas mayores que requieran de una interfaz comprensible y ayudas de navegación.  Esta aplicación cumplirá con el estándar WCAG 2.0, con el nivel de conformidad AA, aplicada a dispositivos móviles. Esto significa que cubre un amplio rango de recomendaciones para crear contenido Web y Móvil más accesible. El seguimiento de estas pautas permite crear un contenido más accesible para un mayor número de personas con discapacidad, incluyendo ceguera y problemas de visión, sordera y deficiencias auditivas, deficiencias del aprendizaje, limitaciones cognitivas, limitaciones de la movilidad, deficiencias del habla, fotosensitividad y combinaciones de las anteriores. A través de esta aplicación se busca propiciar la participación comunitaria a la vez que se genere empatía de los donantes hacia las personas con discapacidad para que estos puedan comprender las circunstancias y necesidades que viven las personas que necesitan ayuda.  Muchas personas están dispuestas a solidarizarse con las personas en situación vulnerable, pero requieren garantizar el destino de sus donaciones. La gestión realizada a través de esta aplicación móvil accesible permitirá que, por una parte, las personas beneficiarias puedan subir sus requerimientos y los donantes puedan decidir directamente el destino de su donación. "
+        android:textColor="@color/mpsdk_dark_font_color"
+        android:textSize="18sp"
+        android:padding="10dp"
+        android:focusable="true"
+        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginRight="24dp"
+        android:onClick="irASeleccionRol"
+        android:text="SIGUIENTE"
+
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.0" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.usuario.pruebas">
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".InterfazInicial"
+            android:label="Dona y Ayuda">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            </activity>
+        <activity android:name=".InformacionGeneral"/>
+        <activity android:name=".IngresoAplicacion" />
+        <activity
+            android:name=".ListaProductos"
+            android:label="Productos"
+            android:parentActivityName=".ListaCategoriaProducto">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ListaCategoriaProducto" />
+        </activity>
+        <activity
+            android:name=".ListaBeneficiarioDonacion"
+            android:label="Lista de Beneficiarios" />
+        <activity
+            android:name=".AnadirDetalleCompra"
+            android:label="Añadir\nProducto" />
+        <activity android:name=".ConfirmacionDonacion" />
+        <activity
+            android:name=".SeleccionRol"
+            android:label="Selección de Rol" />
+        <!-- <activity android:name=".InterfazInicial" /> -->
+        <activity android:name=".InformacionGeneral" />
+        <activity
+            android:name=".RegistroBeneficiario"
+            android:label="Registro Beneficiario" />
+        <activity
+            android:name=".RegistroDonador"
+            android:label="Registro Donador" />
+        <activity
+            android:name=".DetallesBeneficiario"
+            android:label="Detalles - Beneficiario" />
+        <activity
+            android:name=".DetallesDonante"
+            android:label="Detalles - Beneficiario" />
+        <activity
+            android:name=".ListaCategoriaProducto"
+            android:label="Categorías" />
+        <activity android:name=".ConfirmacionCompra" />
+        <activity
+            android:name=".Donacion"
+            android:label="Datos Tarjeta de Crédito" />
+        <activity
+            android:name=".RegistroBeneficiarioUsuarioContrasenia"
+            android:label="Registro Beneficiario" />
+        <activity android:name=".ConfirmacionAnadirProducto" />
+
+
+    </application>
+
+
+
+</manifest>
