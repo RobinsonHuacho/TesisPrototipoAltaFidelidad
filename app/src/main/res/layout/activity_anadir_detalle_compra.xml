@@ -136,7 +136,7 @@
         android:layout_marginRight="24dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
-        android:text="INGRESE LA CANTIDAD DEL PRODUCTO QUE DESEA COMPRAR:"
+        android:text="INGRESE LA CANTIDAD DE PRODUCTO QUE DESEA COMPRAR:"
         android:textColor="@color/mpsdk_dark_font_color"
         android:textStyle="bold"
         android:textSize="24sp"

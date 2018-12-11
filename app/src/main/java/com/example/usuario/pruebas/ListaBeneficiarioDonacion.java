@@ -101,7 +101,7 @@ public class ListaBeneficiarioDonacion extends AppCompatActivity {
             textView4.setVisibility(View.VISIBLE);
 
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url ="http://192.168.0.8:8080/ProyectoIntegrador/ActualizarDetalleBeneficiario.php";
+            String url ="http://192.168.0.14:8080/ProyectoIntegrador/ActualizarDetalleBeneficiario.php";
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
                         @Override
@@ -131,7 +131,7 @@ public class ListaBeneficiarioDonacion extends AppCompatActivity {
 
 
             RequestQueue queue1 = Volley.newRequestQueue(getApplicationContext());
-            String url3 ="http://192.168.0.8:8080/ProyectoIntegrador/comprasBeneficiario.php";
+            String url3 ="http://192.168.0.14:8080/ProyectoIntegrador/comprasBeneficiario.php";
             StringRequest jsObjRequest1 = new StringRequest
                     (Request.Method.GET, url3, new
                             Response.Listener<String>() {

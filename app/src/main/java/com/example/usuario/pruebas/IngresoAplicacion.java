@@ -3,6 +3,7 @@ package com.example.usuario.pruebas;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
@@ -26,8 +27,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -42,10 +43,12 @@ public class IngresoAplicacion extends AppCompatActivity {
 
     private static IngresoAplicacion INSTANCE;
 
-    private static final int RECONOCEDOR_VOZ = 7;
     private TextToSpeech myTTS;
     private ConstraintLayout pantalla;
-    private SpeechRecognizer mySpeechRecognizer;
+    private SpeechRecognizer mySpeechRecognizerUsuario,
+            mySpeechRecognizerResultadoParcial,
+            mySpeechRecognizerContrasenia,
+            mySpeechRecognizerResultadoFinal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,38 +90,287 @@ public class IngresoAplicacion extends AppCompatActivity {
                 speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
                 speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
-                startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+                mySpeechRecognizerUsuario.startListening(speechIntent);
 
 
                }
         });
 
         iniciarTextToSpeech();
+        iniciarSpeechToTextUsuario();
+        iniciarSpeechToTextResultadoParcial();
+        iniciarSpeechToTextContrasenia();
+        iniciarSpeechToTextResultadoFinal();
+
 
 
       }
 
+    private void iniciarSpeechToTextUsuario() {
+        if(SpeechRecognizer.isRecognitionAvailable(this)){
+            mySpeechRecognizerUsuario = SpeechRecognizer.createSpeechRecognizer(this);
+            mySpeechRecognizerUsuario.setRecognitionListener(new RecognitionListener() {
+                @Override
+                public void onReadyForSpeech(Bundle params) {
+
+                }
+
+                @Override
+                public void onBeginningOfSpeech() {
+
+                }
+
+                @Override
+                public void onRmsChanged(float rmsdB) {
+
+                }
+
+                @Override
+                public void onBufferReceived(byte[] buffer) {
+
+                }
+
+                @Override
+                public void onEndOfSpeech() {
+
+                }
+
+                @Override
+                public void onError(int error) {
+
+                }
+
+                @Override
+                public void onResults(Bundle results) {
+                    List<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                    String escuchado = result.get(0);
+                    editTextUsuario.setText(escuchado);
+                    speak("Usted ha ingresado:"+editTextUsuario.getText().toString()+". Si es correcto, pronuncie la palabra listo, caso " +
+                            "contrario, la palabra, repetir para volver a ingresar su usuario");
+
+                    pantalla.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
+                            mySpeechRecognizerResultadoParcial.startListening(speechIntent);
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-            if(resultCode == RESULT_OK && requestCode == RECONOCEDOR_VOZ){
-            ArrayList<String> reconocido = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            String escuchado = reconocido.get(0);
-            editTextUsuario.setText(escuchado);
-            speak("Usted ha ingresado:"+editTextUsuario.getText().toString()+". Si es correcto, pronuncie la palabra listo, caso " +
-                    "contrario, la palabra, repetir para volver a ingresar su usuario");
+                        }
+                    });
 
 
+                }
 
 
+                @Override
+                public void onPartialResults(Bundle partialResults) {
+
+                }
+
+                @Override
+                public void onEvent(int eventType, Bundle params) {
+
+                }
+            });
+        }
+    }
+
+
+    private void iniciarSpeechToTextResultadoParcial() {
+        if(SpeechRecognizer.isRecognitionAvailable(this)){
+            mySpeechRecognizerResultadoParcial = SpeechRecognizer.createSpeechRecognizer(this);
+            mySpeechRecognizerResultadoParcial.setRecognitionListener(new RecognitionListener() {
+                @Override
+                public void onReadyForSpeech(Bundle params) {
+
+                }
+
+                @Override
+                public void onBeginningOfSpeech() {
+
+                }
+
+                @Override
+                public void onRmsChanged(float rmsdB) {
+
+                }
+
+                @Override
+                public void onBufferReceived(byte[] buffer) {
+
+                }
+
+                @Override
+                public void onEndOfSpeech() {
+
+                }
+
+                @Override
+                public void onError(int error) {
+
+                }
+
+                @Override
+                public void onResults(Bundle results) {
+                    List<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                    String escuchado = result.get(0);
+                    prepararRespuesta(escuchado);
+
+
+                }
+
+
+
+                @Override
+                public void onPartialResults(Bundle partialResults) {
+
+                }
+
+                @Override
+                public void onEvent(int eventType, Bundle params) {
+
+                }
+            });
         }
     }
 
 
 
+    private void iniciarSpeechToTextContrasenia() {
+        if(SpeechRecognizer.isRecognitionAvailable(this)){
+            mySpeechRecognizerContrasenia = SpeechRecognizer.createSpeechRecognizer(this);
+            mySpeechRecognizerContrasenia.setRecognitionListener(new RecognitionListener() {
+                @Override
+                public void onReadyForSpeech(Bundle params) {
+
+                }
+
+                @Override
+                public void onBeginningOfSpeech() {
+
+                }
+
+                @Override
+                public void onRmsChanged(float rmsdB) {
+
+                }
+
+                @Override
+                public void onBufferReceived(byte[] buffer) {
+
+                }
+
+                @Override
+                public void onEndOfSpeech() {
+
+                }
+
+                @Override
+                public void onError(int error) {
+
+                }
+
+                @Override
+                public void onResults(Bundle results) {
+                    List<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                    String escuchado = result.get(0);
+                    editTextContraseña.setText(escuchado);
+                    speak("Usted ha ingresado:"+editTextContraseña.getText().toString()+". Si es correcto, pronuncie la palabra listo, caso " +
+                            "contrario, la palabra, repetir para volver a ingresar su contraseña");
+
+                    pantalla.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
+                            mySpeechRecognizerResultadoFinal.startListening(speechIntent);
+
+
+                        }
+                    });
+
+
+                }
+
+
+                @Override
+                public void onPartialResults(Bundle partialResults) {
+
+                }
+
+                @Override
+                public void onEvent(int eventType, Bundle params) {
+
+                }
+            });
+        }
+    }
+
+
+    private void iniciarSpeechToTextResultadoFinal() {
+        if(SpeechRecognizer.isRecognitionAvailable(this)){
+            mySpeechRecognizerResultadoFinal = SpeechRecognizer.createSpeechRecognizer(this);
+            mySpeechRecognizerResultadoFinal.setRecognitionListener(new RecognitionListener() {
+                @Override
+                public void onReadyForSpeech(Bundle params) {
+
+                }
+
+                @Override
+                public void onBeginningOfSpeech() {
+
+                }
+
+                @Override
+                public void onRmsChanged(float rmsdB) {
+
+                }
+
+                @Override
+                public void onBufferReceived(byte[] buffer) {
+
+                }
+
+                @Override
+                public void onEndOfSpeech() {
+
+                }
+
+                @Override
+                public void onError(int error) {
+
+                }
+
+                @Override
+                public void onResults(Bundle results) {
+                    List<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                    String escuchado = result.get(0);
+                    prepararRespuesta1(escuchado);
+
+
+                }
+
+
+
+                @Override
+                public void onPartialResults(Bundle partialResults) {
+
+                }
+
+                @Override
+                public void onEvent(int eventType, Bundle params) {
+
+                }
+            });
+        }
+    }
 
 
     private void prepararRespuesta(String escuchado) {
@@ -129,16 +381,144 @@ public class IngresoAplicacion extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), RegistroBeneficiario.class);
                 startActivity(intent);
         }else {
-            if (escuchado.indexOf("listo") != -1) {
+            if (escuchado.indexOf("lis") != -1) {
                 speak("Ahora deletree su contraseña");
+
+                editTextContraseña.requestFocus();
+
+                pantalla.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
+                        mySpeechRecognizerContrasenia.startListening(speechIntent);
+
+
+                    }
+                });
+
 
             } else {
                 if (escuchado.indexOf("repetir") != -1) {
-                    speak("Deletree su usuario");
+                    speak("Deletree su usuario nuevamente");
+
+                    pantalla.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
+                            mySpeechRecognizerUsuario.startListening(speechIntent);
+
+
+                        }
+                    });
 
                 }
             }
         }
+    }
+
+
+    private void prepararRespuesta1(String escuchado) {
+
+        escuchado = escuchado.toLowerCase();
+
+            if (escuchado.indexOf("lis") != -1) {
+                final String id_rol_desde_seleccion_rol=SeleccionRol.getActivityInstance().getIdRol();
+
+                if(TextUtils.isEmpty(editTextUsuario.getText().toString())){
+                    editTextUsuario.setError("Este campo no puede estar vacío. Por favor ingrese su usuario");
+                    return;
+                }
+                if(TextUtils.isEmpty(editTextContraseña.getText().toString())){
+                    editTextContraseña.setError("Este campo no puede estar vacío. Por favor ingrese su contraseña");
+                    return;
+                }else{
+                    RequestQueue queue = Volley.newRequestQueue(this);
+                    String url3 ="http://192.168.0.14:8080/ProyectoIntegrador/loginApp.php";
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url3,new
+                            Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+
+                                    if(response.trim().length()==2)
+                                    {
+                                        Toast.makeText(getApplicationContext(),"Usuario/Contraseña no válidos",Toast.LENGTH_LONG).show();
+                                    }
+                                    try{
+                                        JSONObject obj = new JSONObject(response);
+                                        JSONArray ids = obj.getJSONArray("ids");
+                                        for(int i=0;i<ids.length();i++){
+                                            JSONObject c= ids.getJSONObject(i);
+                                            id_usuario = c.getString("ID_USUARIO");
+                                            id_rol = c.getString("ID_ROL");
+
+                                            if(id_rol.matches("1")){
+                                                Intent intent = new Intent(getApplicationContext(), ListaCategoriaProducto.class);
+                                                startActivity(intent);
+
+                                                Intent intent1 = new Intent("PASO_ID_USUARIO").putExtra("ID_USUARIO", id_usuario);
+
+                                                //Toast.makeText(getApplicationContext(),id_rol+" Usuario Beneficiario",Toast.LENGTH_LONG).show();
+                                            }else {
+                                                if(id_rol.matches("2")){
+                                                    Intent intent = new Intent(getApplicationContext(), ListaBeneficiarioDonacion.class);
+                                                    startActivity(intent);
+                                                    //Toast.makeText(getApplicationContext(),id_rol+" Usuario Donador",Toast.LENGTH_LONG).show();
+                                                }
+
+                                            }
+
+                                        }
+                                    }catch (Throwable t){
+
+                                    }
+                                }
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            //nombreTextView.setText("That didn't work!");
+                        }
+                    }){
+                        @Override
+                        protected Map<String,String> getParams(){
+                            Map<String,String> params = new HashMap<String, String>();
+                            params.put("id_rol", id_rol_desde_seleccion_rol);
+                            params.put("usuario", editTextUsuario.getText().toString().replace(" ","").toLowerCase());
+                            params.put("password",editTextContraseña.getText().toString().replace(" ","").toLowerCase());
+                            return params;
+                        }
+                    };
+                    queue.add(stringRequest);
+
+
+            }} else {
+                if (escuchado.indexOf("repetir") != -1) {
+                    speak("Deletree su contraseña nuevamente");
+
+                    pantalla.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
+                            mySpeechRecognizerContrasenia.startListening(speechIntent);
+
+
+                        }
+                    });
+
+                }
+            }
+
     }
 
 
@@ -151,10 +531,9 @@ public class IngresoAplicacion extends AppCompatActivity {
                     finish();
                 }else{
                     myTTS.setLanguage(Locale.getDefault());
-                    speak("En esta pantalla");
-                    //deberá ingresar su usuario y contraseña. " +
-                      //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, después del tono." +
-                        //    "Caso contario, presionar sobre cualquier parte de la pantalla ");
+                    speak("En esta pantalla deberá ingresar su usuario y contraseña. " +
+                            "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, después del tono." +
+                            "Caso contario, presionar sobre cualquier parte de la pantalla y deletrear sus credenciales.");
                     //speak(TextViewTitulo.getText().toString());
                     //speak(TextViewContenido.getText().toString());
                 }
@@ -184,7 +563,7 @@ public class IngresoAplicacion extends AppCompatActivity {
             return;
         }else{
             RequestQueue queue = Volley.newRequestQueue(this);
-            String url3 ="http://192.168.0.8:8080/ProyectoIntegrador/loginApp.php";
+            String url3 ="http://192.168.0.14:8080/ProyectoIntegrador/loginApp.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url3,new
                     Response.Listener<String>() {
                         @Override
@@ -233,14 +612,15 @@ public class IngresoAplicacion extends AppCompatActivity {
                 protected Map<String,String> getParams(){
                     Map<String,String> params = new HashMap<String, String>();
                     params.put("id_rol", id_rol_desde_seleccion_rol);
-                    params.put("usuario", editTextUsuario.getText().toString().replace(" ",""));
-                    params.put("password",editTextContraseña.getText().toString().replace(" ",""));
+                    params.put("usuario", editTextUsuario.getText().toString().replace(" ","").toLowerCase());
+                    params.put("password",editTextContraseña.getText().toString().replace(" ","").toLowerCase());
                     return params;
                 }
             };
             queue.add(stringRequest);
 
         }
+
 
 
 

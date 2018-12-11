@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -57,6 +58,7 @@ public class ListaProductos extends AppCompatActivity {
     private TextToSpeech myTTS;
     private ConstraintLayout pantalla;
     private GridView GridView_Productos;
+    private TextView InformacionPantalla;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,8 @@ public class ListaProductos extends AppCompatActivity {
             ExecTasks t = new ExecTasks(ListaProductos.this);
             t.execute();
         }
+
+        InformacionPantalla=(TextView) findViewById(R.id.textView3);
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
         GridView_Productos = (GridView) findViewById(R.id.GridView_Productos);
@@ -126,13 +130,16 @@ public class ListaProductos extends AppCompatActivity {
 
     private void prepararRespuesta(String escuchado) {
 
+        escuchado = Normalizer.normalize(escuchado, Normalizer.Form.NFD);
+        escuchado = escuchado.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
         escuchado = escuchado.toUpperCase();
+
 
         TextView tv = (TextView) findViewById(R.id.TextView_Nombre);
         TextView tv1 = (TextView) findViewById(R.id.TextView_Descripcion);
         TextView tv2 = (TextView) findViewById(R.id.TextView_Precio);
 
-        selectedId = db.getIdProductoPorNombre(escuchado).toString();
+        selectedId = db.getIdProductoPorNombre(escuchado).getIdProducto().toString();
         selectedItem = tv.getText().toString();
         selectedDescription = tv1.getText().toString();
         selectedPrecio = tv2.getText().toString();
@@ -159,12 +166,8 @@ public class ListaProductos extends AppCompatActivity {
                     finish();
                 }else{
                     myTTS.setLanguage(Locale.getDefault());
-                    speak("En esta pantalla");
-                    //deberá ingresar su usuario y contraseña. " +
-                    //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, después del tono." +
-                    //    "Caso contario, presionar sobre cualquier parte de la pantalla ");
-                    //speak(TextViewTitulo.getText().toString());
-                    //speak(TextViewContenido.getText().toString());
+                    speak("En esta pantalla se presentan los diferentes "+InformacionPantalla.getText().toString()+"." +
+                            ". Toque la pantalla y pronuncie el que desee después del tono");
                 }
             }
         });
@@ -210,7 +213,7 @@ public class ListaProductos extends AppCompatActivity {
             }
 
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url2 ="http://192.168.0.8:8080/ProyectoIntegrador/producto.php";
+            String url2 ="http://192.168.0.14:8080/ProyectoIntegrador/producto.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

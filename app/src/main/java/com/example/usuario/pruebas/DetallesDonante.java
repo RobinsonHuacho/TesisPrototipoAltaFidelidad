@@ -66,7 +66,7 @@ public class DetallesDonante extends AppCompatActivity {
 
 
         RequestQueue queue1 = Volley.newRequestQueue(getApplicationContext());
-        String url1 ="http://192.168.0.8:8080/ProyectoIntegrador/detalleBeneficiario_totales_donador.php";
+        String url1 ="http://192.168.0.14:8080/ProyectoIntegrador/detalleBeneficiario_totales_donador.php";
         StringRequest stringRequest1 = new StringRequest(Request.Method.POST, url1, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -109,7 +109,7 @@ public class DetallesDonante extends AppCompatActivity {
         queue1.add(stringRequest1);
 
         RequestQueue queue2 = Volley.newRequestQueue(getApplicationContext());
-        String url2 ="http://192.168.0.8:8080/ProyectoIntegrador/detalleBeneficiario_usuario.php";
+        String url2 ="http://192.168.0.14:8080/ProyectoIntegrador/detalleBeneficiario_usuario.php";
         StringRequest stringRequest2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -139,7 +139,7 @@ public class DetallesDonante extends AppCompatActivity {
 
                         SmartImageView imageView= (SmartImageView) findViewById(R.id.ImageView_Foto);
                         Rect rect = new Rect(imageView.getLeft(),imageView.getTop(), imageView.getRight(),imageView.getBottom());
-                        imageView.setImageUrl("http://192.168.0.8:8080/ProyectoIntegrador/Images/Beneficiarios/"+imagen_usuario,rect);
+                        imageView.setImageUrl("http://192.168.0.14:8080/ProyectoIntegrador/Images/Beneficiarios/"+imagen_usuario,rect);
                     }
 
                 }
@@ -195,7 +195,7 @@ public class DetallesDonante extends AppCompatActivity {
                 ex.printStackTrace();
             }
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url ="http://192.168.0.8:8080/ProyectoIntegrador/detalleBeneficiario_donador.php";
+            String url ="http://192.168.0.14:8080/ProyectoIntegrador/detalleBeneficiario_donador.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

@@ -3,6 +3,10 @@
     package="com.example.usuario.pruebas">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+<supports-screens
+    android:largeScreens="true"
+    android:smallScreens="true"
+    android:normalScreens="true"/>
 
     <application
         android:allowBackup="true"

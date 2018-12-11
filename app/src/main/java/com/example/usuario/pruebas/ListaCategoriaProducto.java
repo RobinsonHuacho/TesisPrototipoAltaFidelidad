@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -27,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -37,6 +39,7 @@ public class ListaCategoriaProducto extends AppCompatActivity {
     private GridView gridViewCategoriaProducto;
     private ArrayList<String> GridViewItems = new ArrayList<String>();
     private ArrayList<String> GridViewImagenes = new ArrayList<String>();
+    private String[] arregloCategorias;
     DatabaseHandlerCategorias db = new DatabaseHandlerCategorias(this);
     ElementosCategoriaProductoAdaptador adapter;
     private String item;
@@ -45,6 +48,9 @@ public class ListaCategoriaProducto extends AppCompatActivity {
     private TextToSpeech myTTS;
     private ConstraintLayout pantalla;
     private GridView GridView_Categoria_Productos;
+    private TextView InformacionPantalla;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +58,13 @@ public class ListaCategoriaProducto extends AppCompatActivity {
         setContentView(R.layout.activity_lista_categoria_producto);
 
 
+
         for (int i=0;i<2;i++){
             ExecTasks t = new ExecTasks(ListaCategoriaProducto.this);
             t.execute();
         }
+
+        InformacionPantalla=(TextView) findViewById(R.id.textView3);
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
         GridView_Categoria_Productos = (GridView) findViewById(R.id.GridView_Categoria_Productos);
@@ -74,24 +83,13 @@ public class ListaCategoriaProducto extends AppCompatActivity {
             }
         });
 
-        /*GridView_Categoria_Productos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-                speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la categoría de producto!");
-                startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
-
-            }
-        });*/
-
-
 
         iniciarTextToSpeech();
 
+
     }
+
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -107,13 +105,16 @@ public class ListaCategoriaProducto extends AppCompatActivity {
 
     private void prepararRespuesta(String escuchado) {
 
+
+        escuchado = Normalizer.normalize(escuchado, Normalizer.Form.NFD);
+        escuchado = escuchado.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
         escuchado = escuchado.toUpperCase();
 
             final ElementoCategoriaProducto categoriaProducto = db.getCategoriaNombre(escuchado);
 
             Intent intent = new Intent(getApplicationContext(), ListaProductos.class);
             intent.putExtra(EXTRA_INDEX,categoriaProducto.getIdCategoriaProducto());
-            //Toast.makeText(getApplicationContext(),categoriaProducto.getIdCategoriaProducto(),Toast.LENGTH_SHORT).show();
+        //       Toast.makeText(getApplicationContext(),categoriaProducto.getIdCategoriaProducto(),Toast.LENGTH_SHORT).show();
             startActivity(intent);
 
     }
@@ -127,12 +128,9 @@ public class ListaCategoriaProducto extends AppCompatActivity {
                     finish();
                 }else{
                     myTTS.setLanguage(Locale.getDefault());
-                    speak("En esta pantalla");
-                    //deberá ingresar su usuario y contraseña. " +
-                    //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, después del tono." +
-                    //    "Caso contario, presionar sobre cualquier parte de la pantalla ");
-                    //speak(TextViewTitulo.getText().toString());
-                    //speak(TextViewContenido.getText().toString());
+                    speak("En esta pantalla se presentan las diferentes "+InformacionPantalla.getText().toString()+"." +
+                    ". Toque la pantalla y pronuncie la que desee después del tono");
+
                 }
             }
         });
@@ -177,7 +175,7 @@ public class ListaCategoriaProducto extends AppCompatActivity {
             }
 
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url2 = "http://192.168.0.8:8080/ProyectoIntegrador/categoriaProducto.php";
+            String url2 = "http://192.168.0.14:8080/ProyectoIntegrador/categoriaProducto.php";
             StringRequest jsObjRequest = new StringRequest
                     (Request.Method.GET, url2, new
                             Response.Listener<String>() {
@@ -213,7 +211,7 @@ public class ListaCategoriaProducto extends AppCompatActivity {
             GridViewItems = db.getAllCategorias(1);
             GridViewImagenes = db.getAllCategorias(2);
 
-            String[] arregloCategorias = GridViewItems.toArray(new String[0]);
+            arregloCategorias = GridViewItems.toArray(new String[0]);
             String[] arregloImagenes = GridViewImagenes.toArray(new String[0]);
 
             //Toast.makeText(getApplicationContext(),db.getAllCategorias(1).toString(),Toast.LENGTH_SHORT).show();
@@ -247,10 +245,9 @@ public class ListaCategoriaProducto extends AppCompatActivity {
 
 
 
+
+
     }
-
-
-
 
 
 }

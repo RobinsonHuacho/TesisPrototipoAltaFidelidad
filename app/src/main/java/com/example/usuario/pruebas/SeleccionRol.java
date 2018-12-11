@@ -53,7 +53,7 @@ public class SeleccionRol extends AppCompatActivity {
 
                 condicion=btnDiscapacidadVisual.getText().toString();
                 Intent intent2 = new Intent("PASO_CONDICION").putExtra("CONDICION", condicion);
-                Toast.makeText(getApplicationContext(),condicion,Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),condicion,Toast.LENGTH_LONG).show();
             }
         });
 
@@ -69,7 +69,7 @@ public class SeleccionRol extends AppCompatActivity {
 
                 condicion=btnDiscapacidadFisica.getText().toString();
                 Intent intent2 = new Intent("PASO_CONDICION").putExtra("CONDICION", condicion);
-                Toast.makeText(getApplicationContext(),condicion, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),condicion, Toast.LENGTH_LONG).show();
 
             }
         });
@@ -86,7 +86,7 @@ public class SeleccionRol extends AppCompatActivity {
 
                 condicion=btnAdultoMayor.getText().toString();
                 Intent intent2 = new Intent("PASO_CONDICION").putExtra("CONDICION", condicion);
-                Toast.makeText(getApplicationContext(),condicion,Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),condicion,Toast.LENGTH_LONG).show();
             }
         });
 
@@ -169,7 +169,7 @@ public class SeleccionRol extends AppCompatActivity {
                     finish();
                 }else{
                     myTTS.setLanguage(Locale.getDefault());
-                    //speak("En esta pantalla puede escoger acceder como usuario o donador. Usuario si tiene alguna de las siguientes condiciones: "+btnDiscapacidadVisual.getText().toString()+","+btnDiscapacidadFisica.getText().toString()+", o"+btnAdultoMayor.getText().toString()+". Caso contrario si desea ayudar a personas con estas condiciones puede acceder como donador.");
+                    speak("En esta pantalla puede escoger acceder como usuario o donador. Usuario si tiene alguna de las siguientes condiciones: "+btnDiscapacidadVisual.getText().toString()+","+btnDiscapacidadFisica.getText().toString()+", o"+btnAdultoMayor.getText().toString()+". Caso contrario si desea ayudar a personas con estas condiciones puede acceder como donador.");
 
                 }
             }

@@ -3,19 +3,20 @@ package com.example.usuario.pruebas;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ZoomControls;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class InformacionGeneral extends AppCompatActivity implements TextToSpeech.OnInitListener{
@@ -28,6 +29,12 @@ public class InformacionGeneral extends AppCompatActivity implements TextToSpeec
 
     private TextView TextViewTitulo;
     private TextView TextViewContenido;
+    private ZoomControls zc;
+
+
+    private ScaleGestureDetector mScaleGestureDetector;
+    private float mScaleFactor = 1.0f;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +43,6 @@ public class InformacionGeneral extends AppCompatActivity implements TextToSpeec
 
         TextView tv = (TextView) findViewById(R.id.TextViewInformacion);
         tv.setMovementMethod(new ScrollingMovementMethod());
-        tv.setBackgroundResource(R.drawable.borde_textview);
         getSupportActionBar().hide();
 
         TextViewTitulo = (TextView) findViewById(R.id.textView);
@@ -65,14 +71,38 @@ public class InformacionGeneral extends AppCompatActivity implements TextToSpeec
                 speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Conocer o Siguiente!");
                 startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
-                //mySpeechRecognizer.startListening(speechIntent);
-
-            }
+                }
         });
 
 
         iniciarTextToSpeech();
-        iniciarSpeechToText();
+
+        mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
+
+
+/*        zc = (ZoomControls) findViewById(R.id.zoomControls1);
+
+       zc.setOnZoomInClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+
+                pantalla.setScaleX((int) (x+1));
+                pantalla.setScaleY((int) (y+1));
+            }
+        });
+
+        zc.setOnZoomOutClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+
+                pantalla.setScaleX((int) (x-1));
+                pantalla.setScaleY((int) (y-1));
+            }
+        });*/
 
 
     }
@@ -88,61 +118,6 @@ public class InformacionGeneral extends AppCompatActivity implements TextToSpeec
         }
     }
 
-    private void iniciarSpeechToText() {
-        if(SpeechRecognizer.isRecognitionAvailable(this)){
-            mySpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-            mySpeechRecognizer.setRecognitionListener(new RecognitionListener() {
-                @Override
-                public void onReadyForSpeech(Bundle params) {
-
-                }
-
-                @Override
-                public void onBeginningOfSpeech() {
-
-                }
-
-                @Override
-                public void onRmsChanged(float rmsdB) {
-
-                }
-
-                @Override
-                public void onBufferReceived(byte[] buffer) {
-
-                }
-
-                @Override
-                public void onEndOfSpeech() {
-
-                }
-
-                @Override
-                public void onError(int error) {
-
-                }
-
-                @Override
-                public void onResults(Bundle results) {
-                    List<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                    String escuchado = result.get(0);
-                    prepararRespuesta(escuchado);
-                }
-
-
-
-                @Override
-                public void onPartialResults(Bundle partialResults) {
-
-                }
-
-                @Override
-                public void onEvent(int eventType, Bundle params) {
-
-                }
-            });
-        }
-    }
 
     private void prepararRespuesta(String escuchado) {
 
@@ -153,7 +128,10 @@ public class InformacionGeneral extends AppCompatActivity implements TextToSpeec
             startActivity(intent);
         }else{
             if(escuchado.indexOf("conocer")!=-1){
-                speak(TextViewTitulo.getText().toString()+"."+TextViewContenido.getText().toString());
+                TextViewContenido.requestFocus();
+                TextViewContenido.setBackgroundResource(R.drawable.borde_textview);
+                speak(TextViewContenido.getText().toString());
+
             }
         }
     }
@@ -167,10 +145,10 @@ public class InformacionGeneral extends AppCompatActivity implements TextToSpeec
                     finish();
                 }else{
                     myTTS.setLanguage(Locale.getDefault());
-                    //speak("Bienvenido!. En esta pantalla se presenta la información general de la aplicación. " +
-                      //      "Si desea conocer mas, pulse sobre cualquier parte de la pantalla, y pronuncie la palabra, " +
-                        //    "conocer, después del tono. Caso contario, pronuncie la palabra siguiente");
-                    speak(TextViewTitulo.getText().toString());
+                    speak("Bienvenido!. En esta pantalla se presenta la información general de la aplicación. " +
+                          "Si desea conocer mas, pulse sobre cualquier parte de la pantalla, y pronuncie la palabra, " +
+                        "conocer, después del tono. Caso contario, pronuncie la palabra siguiente");
+                    //speak(TextViewTitulo.getText().toString());
                     //speak(TextViewContenido.getText().toString());
                 }
             }
@@ -197,5 +175,33 @@ public class InformacionGeneral extends AppCompatActivity implements TextToSpeec
     @Override
     public void onInit(int status) {
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mScaleGestureDetector.onTouchEvent(event);
+        return true;
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+
+        @Override
+        public boolean onScale(ScaleGestureDetector scaleGestureDetector){
+
+            mScaleFactor *= scaleGestureDetector.getScaleFactor();
+
+            mScaleFactor = Math.max(0.1f,
+
+                    Math.min(mScaleFactor, 10.0f));
+
+            pantalla.setScaleX(mScaleFactor);
+            pantalla.setScaleY(mScaleFactor);
+
+            TextViewContenido.setScaleX(mScaleFactor);
+            TextViewContenido.setScaleY(mScaleFactor);
+
+            return true;
+
+        }
     }
 }

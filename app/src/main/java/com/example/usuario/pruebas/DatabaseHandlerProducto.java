@@ -120,7 +120,7 @@ public class DatabaseHandlerProducto extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
             Cursor cursor = db.query(TABLE_PRODUCTOS, new
-                    String[]{KEY_ID, KEY_ID_CATEGORIA, KEY_NOMBRE, KEY_DESCRIPCION, KEY_PRECIO_UNITARIO, KEY_IMAGEN}, KEY_ID + "=?", new
+                    String[]{KEY_ID, KEY_ID_CATEGORIA, KEY_NOMBRE, KEY_DESCRIPCION, KEY_PRECIO_UNITARIO, KEY_IMAGEN}, KEY_NOMBRE + "=?", new
                     String[]{String.valueOf(nombre)}, null, null, null);
 
             if (cursor != null) {

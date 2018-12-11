@@ -63,8 +63,7 @@ public class ConfirmacionCompra extends AppCompatActivity {
         escuchado = escuchado.toLowerCase();
 
         if(escuchado.indexOf("continuar")!=-1){
-            Intent intent1 = new Intent(this, DetallesBeneficiario.class);
-            startActivity(intent1);
+            System.exit(0);
         }
     }
 
@@ -79,7 +78,7 @@ public class ConfirmacionCompra extends AppCompatActivity {
                 }else{
                     myTTS.setLanguage(Locale.getDefault());
                     speak(TextoResultado.getText().toString()+". Pronuncie la palabra, continuar para finalizar su compra" +
-                            ". Posterior a esto saldrá de la apliación automáticamente.");
+                            ". Posterior a esto saldrá de la aplicación automáticamente.");
                     //deberá ingresar su usuario y contraseña. " +
                     //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, después del tono." +
                     //    "Caso contario, presionar sobre cualquier parte de la pantalla ");

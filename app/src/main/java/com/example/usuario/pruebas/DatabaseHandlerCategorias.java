@@ -120,23 +120,7 @@ public class DatabaseHandlerCategorias extends SQLiteOpenHelper {
         return categoriasList;
     }
 
-    public int updateCategoria(ElementoCategoriaProducto categoria) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_ID, categoria.getIdCategoriaProducto());
-        values.put(KEY_NOMBRE, categoria.getNombreCategoriaProducto());
-        values.put(KEY_IMAGEN, categoria.getImagenCategoriaProducto());
 
-        return db.update(TABLE_CATEGORIA_PRODUCTOS, values, KEY_ID + "=?",
-                new String[]{String.valueOf(categoria.getIdCategoriaProducto())});
-    }
-
-    public void deleteSuCategoriaProducto(ElementoCategoriaProducto categoria) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_CATEGORIA_PRODUCTOS, KEY_ID + " =?",
-                new String[]{String.valueOf(categoria.getIdCategoriaProducto())});
-        db.close();
-    }
 
     public void deleteCategorias(){
         SQLiteDatabase db=this.getWritableDatabase();

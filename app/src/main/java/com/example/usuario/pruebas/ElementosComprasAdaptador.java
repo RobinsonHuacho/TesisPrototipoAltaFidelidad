@@ -46,7 +46,7 @@ public class ElementosComprasAdaptador extends ArrayAdapter<String> {
         txtDescription.setText(itemDescription[posicion]);
         txtPrecio.setText(itemPrecios[posicion]);
         Rect rect = new Rect(imageView.getLeft(),imageView.getTop(), imageView.getRight(),imageView.getBottom());
-        imageView.setImageUrl("http://192.168.0.8:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[posicion], rect);
+        imageView.setImageUrl("http://192.168.0.14:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[posicion], rect);
 
         return rowView;
     }

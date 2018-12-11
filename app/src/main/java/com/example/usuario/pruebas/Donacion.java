@@ -105,7 +105,7 @@ public class Donacion extends AppCompatActivity {
         //Toast.makeText(getApplicationContext(),messageIdCompra,Toast.LENGTH_LONG).show();
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://192.168.0.8:8080/ProyectoIntegrador/nuevaDonacion.php";
+        String url ="http://192.168.0.14:8080/ProyectoIntegrador/nuevaDonacion.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,new
                 Response.Listener<String>() {
                     @Override

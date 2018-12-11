@@ -40,6 +40,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
     private ArrayList<String> listViewItemsCantidad = new ArrayList<String>();
     private ArrayList<String> listViewItemsPrecio = new ArrayList<String>();
     private ArrayList<String> listViewItemsImagen = new ArrayList<String>();
+    private int numeroComprasCliente;
 
     TextView textView_TotalCompra,textView_SaldoCompra;
     ElementosProductosCompradosAdaptador adapter;
@@ -50,6 +51,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
     private static final int RECONOCEDOR_VOZ = 7;
     private TextToSpeech myTTS;
     private ConstraintLayout pantalla;
+    private TextView InformacionPantalla;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +59,18 @@ public class DetallesBeneficiario extends AppCompatActivity {
         setContentView(R.layout.activity_detalles_beneficiario);
 
 
+        db.deleteProductos();
+
         for (int i=0;i<2;i++) {
             ExecTasks t = new ExecTasks(DetallesBeneficiario.this);
             t.execute();
+            conteoRegistros();
         }
 
+        InformacionPantalla=(TextView) findViewById(R.id.textView25);
+
         RequestQueue queue1 = Volley.newRequestQueue(getApplicationContext());
-        String url1 ="http://192.168.0.8:8080/ProyectoIntegrador/detalleBeneficiario_totales.php";
+        String url1 ="http://192.168.0.14:8080/ProyectoIntegrador/detalleBeneficiario_totales.php";
         StringRequest stringRequest1 = new StringRequest(Request.Method.POST, url1, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -124,6 +131,8 @@ public class DetallesBeneficiario extends AppCompatActivity {
         });
 
         iniciarTextToSpeech();
+
+
     }
 
     @Override
@@ -138,6 +147,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
 
 
         }
+
     }
 
     private void prepararRespuesta(String escuchado) {
@@ -145,7 +155,49 @@ public class DetallesBeneficiario extends AppCompatActivity {
         escuchado = escuchado.toLowerCase();
 
         if(escuchado.indexOf("finalizar")!=-1){
-          realizarCompra();
+            if(conteoRegistros()<2) {
+                Toast.makeText(getApplicationContext(), String.valueOf(conteoRegistros())+IngresoAplicacion.getActivityInstance().getIdUsuario(), Toast.LENGTH_LONG).show();
+                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                String url3 = "http://192.168.0.14:8080/ProyectoIntegrador/nuevaCompra.php";
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url3, new
+                        Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                                if (response.matches("1")) {
+                                    Toast.makeText(getApplicationContext(), "Compra Realizada Exitosamente", Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(getApplicationContext(), ConfirmacionCompra.class);
+                                    startActivity(intent);
+
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Algo salió mal. No se pudo realizar la compra. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        textView_TotalCompra = (TextView) findViewById(R.id.textView_CostoTotal);
+                        textView_SaldoCompra = (TextView) findViewById(R.id.textView_SaldoCompra);
+
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("id_usuario", IngresoAplicacion.getActivityInstance().getIdUsuario());
+                        params.put("total_compra", textView_TotalCompra.getText().toString());
+                        params.put("saldo_compra", textView_SaldoCompra.getText().toString());
+
+                        return params;
+                    }
+                };
+                queue.add(stringRequest);
+
+            }else {
+                Toast.makeText(getApplicationContext(), "Algo salió mal. No se pudo realizar la compra. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
+            }
+
         }else {
             if (escuchado.indexOf("continuar") != -1) {
                 Intent intent = new Intent(this, ListaCategoriaProducto.class);
@@ -156,50 +208,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
         }
     }
 
-    private void realizarCompra() {
-        if(conteoRegistros()<2) {
-            Toast.makeText(getApplicationContext(), String.valueOf(conteoRegistros())+IngresoAplicacion.getActivityInstance().getIdUsuario(), Toast.LENGTH_LONG).show();
-            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url3 = "http://192.168.0.8:8080/ProyectoIntegrador/nuevaCompra.php";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url3, new
-                    Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
-                            if (response.matches("1")) {
-                                Toast.makeText(getApplicationContext(), "Compra Realizada Exitosamente", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(getApplicationContext(), ConfirmacionCompra.class);
-                                startActivity(intent);
 
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Algo salió mal. No se pudo realizar la compra. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() {
-                    textView_TotalCompra = (TextView) findViewById(R.id.textView_CostoTotal);
-                    textView_SaldoCompra = (TextView) findViewById(R.id.textView_SaldoCompra);
-
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("id_usuario", IngresoAplicacion.getActivityInstance().getIdUsuario());
-                    params.put("total_compra", textView_TotalCompra.getText().toString());
-                    params.put("saldo_compra", textView_SaldoCompra.getText().toString());
-
-                    return params;
-                }
-            };
-            queue.add(stringRequest);
-
-        }else {
-            Toast.makeText(getApplicationContext(), "Algo salió mal. No se pudo realizar la compra. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
-        }
-    }
 
     private void iniciarTextToSpeech() {
         myTTS=new TextToSpeech(this,  new TextToSpeech.OnInitListener() {
@@ -210,7 +219,10 @@ public class DetallesBeneficiario extends AppCompatActivity {
                     finish();
                 }else{
                     myTTS.setLanguage(Locale.getDefault());
-                    speak("En esta pantalla");
+                    speak(InformacionPantalla.getText().toString()+". El costo total de los productos sería de: "
+                            +textView_TotalCompra.getText().toString()+" dólares. Si está de acuerdo, toque la pantalla" +
+                            "y pronuncie la palabra, finalizar para finalizar la compra; caso contario" +
+                            ", la palabra continuar para continuar comprando.");
                     //deberá ingresar su usuario y contraseña. " +
                     //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, después del tono." +
                     //    "Caso contario, presionar sobre cualquier parte de la pantalla ");
@@ -234,7 +246,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
         if(conteoRegistros()<2) {
             Toast.makeText(getApplicationContext(), String.valueOf(conteoRegistros())+IngresoAplicacion.getActivityInstance().getIdUsuario(), Toast.LENGTH_LONG).show();
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url3 = "http://192.168.0.8:8080/ProyectoIntegrador/nuevaCompra.php";
+            String url3 = "http://192.168.0.14:8080/ProyectoIntegrador/nuevaCompra.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url3, new
                     Response.Listener<String>() {
                         @Override
@@ -276,21 +288,22 @@ public class DetallesBeneficiario extends AppCompatActivity {
 
     }
 
+
     public int conteoRegistros(){
-        final int[] numeroComprasCliente = {0};
+
         RequestQueue queue2 = Volley.newRequestQueue(getApplicationContext());
-        String url2 ="http://192.168.0.8:8080/ProyectoIntegrador/nuevaCompra_numeroComprasPorCliente.php";
+        String url2 ="http://192.168.0.14:8080/ProyectoIntegrador/nuevaCompra_numeroComprasPorCliente.php";
         StringRequest stringRequest2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
+        //        Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
                 try {
                     JSONObject jsonObj2 = new JSONObject(response.toString());
                     JSONArray contacts2 = jsonObj2.getJSONArray("numeroCompras");
                     for (int i = 0; i < contacts2.length(); i++) {
                         JSONObject c2 = contacts2.getJSONObject(i);
 
-                        numeroComprasCliente[0] = Integer.parseInt(c2.getString("CONTEO"));
+                        numeroComprasCliente= Integer.parseInt(c2.getString("CONTEO"));
                     }
 
                 }
@@ -312,9 +325,8 @@ public class DetallesBeneficiario extends AppCompatActivity {
         };
         queue2.add(stringRequest2);
 
-        return numeroComprasCliente[0];
+        return numeroComprasCliente;
     }
-
 
     public class ExecTasks extends AsyncTask<Void, Void, ArrayAdapter<String>> {
 
@@ -334,6 +346,8 @@ public class DetallesBeneficiario extends AppCompatActivity {
             pDialog.setCancelable(true);
             pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             pDialog.show();
+
+
         }
 
         @Override
@@ -347,7 +361,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
                 ex.printStackTrace();
             }
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url = "http://192.168.0.8:8080/ProyectoIntegrador/detalleBeneficiario.php";
+            String url = "http://192.168.0.14:8080/ProyectoIntegrador/detalleBeneficiario.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
