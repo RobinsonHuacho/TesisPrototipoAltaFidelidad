@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class IngresoAplicacion extends AppCompatActivity {
     private EditText editTextUsuario;
     private EditText editTextContraseña;
     private TextView textViewRegistro;
+    private ImageButton ImageButtonActivar,ImageButtonDesactivar,ImageButtonZoomIn,ImageButtonZoomOut;
     private Button btnIngreso;
     private static String id_usuario;
     private static String id_rol;
@@ -60,6 +62,45 @@ public class IngresoAplicacion extends AppCompatActivity {
         db.deleteProductos();
 
         INSTANCE = this;
+
+        ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+        ImageButtonDesactivar= (ImageButton) findViewById(R.id.btnDeshabiltarTTSSTT) ;
+
+        ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
+        ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
+
+        ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x + 1));
+                pantalla.setScaleY((float) (y + 1));
+
+
+
+
+            }
+        });
+
+        ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x - 1));
+                pantalla.setScaleY((float) (y - 1));
+
+
+
+            }
+        });
+
+
         editTextUsuario = (EditText) findViewById(R.id.EditText_Usuario);
         editTextUsuario.setBackgroundResource(R.drawable.border_color);
 
@@ -82,29 +123,132 @@ public class IngresoAplicacion extends AppCompatActivity {
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
 
-        pantalla.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+       if(SeleccionRol.getActivityInstance().getIdRol()=="1"){
 
-                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-                speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
-                mySpeechRecognizerUsuario.startListening(speechIntent);
+           pantalla.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+
+                   Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                   speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                   speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
+                   speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
+                   mySpeechRecognizerUsuario.startListening(speechIntent);
 
 
                }
-        });
+           });
 
-        iniciarTextToSpeech();
-        iniciarSpeechToTextUsuario();
-        iniciarSpeechToTextResultadoParcial();
-        iniciarSpeechToTextContrasenia();
-        iniciarSpeechToTextResultadoFinal();
+            ImageButtonActivar.setVisibility(View.VISIBLE);
+            ImageButtonDesactivar.setVisibility(View.GONE);
+
+            iniciarTextToSpeech();
+            iniciarSpeechToTextUsuario();
+            iniciarSpeechToTextResultadoParcial();
+            iniciarSpeechToTextContrasenia();
+            iniciarSpeechToTextResultadoFinal();
+
+           ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+
+                   myTTS.stop();
+
+                   iniciarTextToSpeech();
+                   iniciarSpeechToTextUsuario();
+                   iniciarSpeechToTextResultadoParcial();
+                   iniciarSpeechToTextContrasenia();
+                   iniciarSpeechToTextResultadoFinal();
+
+               }
+           });
+
+        } else{
+            if(Integer.parseInt(SeleccionRol.getActivityInstance().getIdRol())==2){
+                ImageButtonActivar.setVisibility(View.VISIBLE);
+                ImageButtonDesactivar.setVisibility(View.GONE);
+
+
+                ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        iniciarTextToSpeech();
+
+                        pantalla.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                                speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
+                                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
+                                mySpeechRecognizerUsuario.startListening(speechIntent);
+
+
+                            }
+                        });
+
+                        ImageButtonActivar.setVisibility(View.GONE);
+                        ImageButtonDesactivar.setVisibility(View.VISIBLE);
+                    }
+                });
+
+
+                ImageButtonDesactivar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        myTTS.stop();
+                        myTTS.shutdown();
+
+                        pantalla.setOnClickListener(null);
+
+                        ImageButtonActivar.setVisibility(View.VISIBLE);
+                        ImageButtonDesactivar.setVisibility(View.GONE);
+                    }
+                });
+
+
+
+            }
+        }
 
 
 
       }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+      }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
+    }
+
 
     private void iniciarSpeechToTextUsuario() {
         if(SpeechRecognizer.isRecognitionAvailable(this)){
@@ -441,7 +585,7 @@ public class IngresoAplicacion extends AppCompatActivity {
                     return;
                 }else{
                     RequestQueue queue = Volley.newRequestQueue(this);
-                    String url3 ="http://192.168.0.14:8080/ProyectoIntegrador/loginApp.php";
+                    String url3 ="http://192.168.0.4:8080/ProyectoIntegrador/loginApp.php";
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, url3,new
                             Response.Listener<String>() {
                                 @Override
@@ -563,7 +707,7 @@ public class IngresoAplicacion extends AppCompatActivity {
             return;
         }else{
             RequestQueue queue = Volley.newRequestQueue(this);
-            String url3 ="http://192.168.0.14:8080/ProyectoIntegrador/loginApp.php";
+            String url3 ="http://192.168.0.4:8080/ProyectoIntegrador/loginApp.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url3,new
                     Response.Listener<String>() {
                         @Override

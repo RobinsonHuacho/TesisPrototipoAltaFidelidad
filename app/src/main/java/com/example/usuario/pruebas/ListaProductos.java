@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +49,7 @@ public class ListaProductos extends AppCompatActivity {
     private ArrayList<String> gridViewItemsPrecio = new ArrayList<String>();
     private ArrayList<String> gridViewItemsImagen = new ArrayList<String>();
 
-    private String selectedId, selectedItem, selectedDescription, selectedPrecio;
+    private String selectedId, selectedItem, selectedPrecio;
     String[] arregloID;
     ElementosProductosAdaptador adapter;
     DatabaseHandlerProducto db = new DatabaseHandlerProducto(this);
@@ -59,6 +60,7 @@ public class ListaProductos extends AppCompatActivity {
     private ConstraintLayout pantalla;
     private GridView GridView_Productos;
     private TextView InformacionPantalla;
+    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,24 +97,85 @@ public class ListaProductos extends AppCompatActivity {
             }
         });
 
+        iniciarTextToSpeech();
 
-        /*GridView_Productos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
+        ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
 
+        ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-                speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie el producto que desea comprar!");
-                startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x + 1));
+                pantalla.setScaleY((float) (y + 1));
+
+
+
 
             }
-        });*/
+        });
+
+        ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x - 1));
+                pantalla.setScaleY((float) (y - 1));
 
 
 
+            }
+        });
 
-        iniciarTextToSpeech();
+        ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+        ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                myTTS.stop();
+
+                iniciarTextToSpeech();
+
+            }
+        });
+
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
 
     }
 
@@ -136,24 +199,38 @@ public class ListaProductos extends AppCompatActivity {
 
 
         TextView tv = (TextView) findViewById(R.id.TextView_Nombre);
-        TextView tv1 = (TextView) findViewById(R.id.TextView_Descripcion);
         TextView tv2 = (TextView) findViewById(R.id.TextView_Precio);
 
-        selectedId = db.getIdProductoPorNombre(escuchado).getIdProducto().toString();
-        selectedItem = tv.getText().toString();
-        selectedDescription = tv1.getText().toString();
-        selectedPrecio = tv2.getText().toString();
+        try {
+            selectedId = db.getIdProductoPorNombre(escuchado).getIdProducto().toString();
+            selectedItem = tv.getText().toString();
+            selectedPrecio = tv2.getText().toString();
 
-        Intent intent = new Intent(getApplicationContext(), AnadirDetalleCompra.class);
+            Intent intent = new Intent(getApplicationContext(), AnadirDetalleCompra.class);
 
-        intent.putExtra(EXTRA_INDEX, selectedId);
-        intent.putExtra(EXTRA_MESSAGE, selectedItem);
-        intent.putExtra(Intent.EXTRA_TITLE, selectedDescription);
-        intent.putExtra(Intent.EXTRA_TEXT, selectedPrecio);
+            intent.putExtra(EXTRA_INDEX, selectedId);
+            intent.putExtra(EXTRA_MESSAGE, selectedItem);
+            intent.putExtra(Intent.EXTRA_TEXT, selectedPrecio);
 
-        Toast.makeText(getApplicationContext(),selectedId+" "+selectedItem+" "+selectedDescription+" "+selectedPrecio, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), selectedId + " " + selectedItem + " " + selectedPrecio, Toast.LENGTH_LONG).show();
 
-        startActivity(intent);
+            startActivity(intent);
+        }catch (Exception e){
+            myTTS=new TextToSpeech(this,  new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if(myTTS.getEngines().size()==0){
+                        Toast.makeText(ListaProductos.this, "No se ha inicializado TextToSpeech en su dispositivo",Toast.LENGTH_LONG).show();
+                        finish();
+                    }else{
+                        myTTS.setLanguage(Locale.getDefault());
+                        speak("Producto no se encuentra en la lista. Por favor intente nuevamente!.");
+
+                    }
+                }
+            });
+        }
+
 
     }
 
@@ -205,7 +282,7 @@ public class ListaProductos extends AppCompatActivity {
         protected ArrayAdapter<String> doInBackground(Void... params) {
 
             try{
-                Thread.sleep(2000);
+                Thread.sleep(3000);
 
 
             }catch(Exception ex){
@@ -213,7 +290,7 @@ public class ListaProductos extends AppCompatActivity {
             }
 
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url2 ="http://192.168.0.14:8080/ProyectoIntegrador/producto.php";
+            String url2 ="http://192.168.0.4:8080/ProyectoIntegrador/producto.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -289,19 +366,16 @@ public class ListaProductos extends AppCompatActivity {
 
                     LinearLayout ll = (LinearLayout) view;
                     TextView tv = (TextView) ll.findViewById(R.id.TextView_Nombre);
-                    TextView tv1 = (TextView) ll.findViewById(R.id.TextView_Descripcion);
                     TextView tv2 = (TextView) ll.findViewById(R.id.TextView_Precio);
 
                     selectedId = arregloID[position].toString();
                     selectedItem = tv.getText().toString();
-                    selectedDescription = tv1.getText().toString();
                     selectedPrecio = tv2.getText().toString();
 
                     Intent intent = new Intent(getApplicationContext(), AnadirDetalleCompra.class);
 
                     intent.putExtra(EXTRA_INDEX, selectedId);
                     intent.putExtra(EXTRA_MESSAGE, selectedItem);
-                    intent.putExtra(Intent.EXTRA_TITLE, selectedDescription);
                     intent.putExtra(Intent.EXTRA_TEXT, selectedPrecio);
 
                     //Toast.makeText(getApplicationContext(),selectedId+" "+selectedItem+" "+selectedDescription+" "+selectedPrecio, Toast.LENGTH_LONG).show();

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "com.example.usuario.pruebas"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -36,13 +36,14 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile ('com.mercadopago:sdk:2.3.6@aar') { transitive = true }
+    compile('com.mercadopago:sdk:2.3.6@aar') { transitive = true }
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    compile 'com.paypal.sdk:paypal-android-sdk:2.16.0'
+
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.github.snowdream.android:smartimageview:0.0.2'
     testCompile 'junit:junit:4.12'
-
-
 }

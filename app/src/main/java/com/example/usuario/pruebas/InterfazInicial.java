@@ -18,7 +18,7 @@ public class InterfazInicial extends AppCompatActivity {
         new Handler().postDelayed(new Runnable(){
             public void run(){
                 // Cuando pasen los 3 segundos, pasamos a la actividad principal de la aplicación
-                Intent intent = new Intent(InterfazInicial.this, InformacionGeneral.class);
+                Intent intent = new Intent(InterfazInicial.this, SeleccionRol.class);
                 startActivity(intent);
                 finish();
             };

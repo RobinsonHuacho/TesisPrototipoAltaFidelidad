@@ -9,12 +9,11 @@ import android.speech.tts.TextToSpeech;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ZoomControls;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -29,83 +28,199 @@ public class InformacionGeneral extends AppCompatActivity implements TextToSpeec
 
     private TextView TextViewTitulo;
     private TextView TextViewContenido;
-    private ZoomControls zc;
-
-
-    private ScaleGestureDetector mScaleGestureDetector;
-    private float mScaleFactor = 1.0f;
-
+    private ImageButton ImageButtonActivar,ImageButtonDesactivar,ImageButtonZoomIn,ImageButtonZoomOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_informacion_general);
 
-        TextView tv = (TextView) findViewById(R.id.TextViewInformacion);
-        tv.setMovementMethod(new ScrollingMovementMethod());
         getSupportActionBar().hide();
-
-        TextViewTitulo = (TextView) findViewById(R.id.textView);
-        TextViewContenido = (TextView) findViewById(R.id.TextViewInformacion);
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
 
-        pantalla.setOnClickListener(new View.OnClickListener() {
+        TextViewTitulo = (TextView) findViewById(R.id.textView);
+        TextViewContenido = (TextView) findViewById(R.id.TextViewInformacion);
+        TextViewContenido.setMovementMethod(new ScrollingMovementMethod());
+
+        ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+        ImageButtonDesactivar= (ImageButton) findViewById(R.id.btnDeshabiltarTTSSTT) ;
+
+        ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
+        ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
+
+        ImageButtonZoomIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
 
-                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-                speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Conocer o Siguiente!");
-                //mySpeechRecognizer.startListening(speechIntent);
-                startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+                    pantalla.setScaleX((float) (x + 1));
+                    pantalla.setScaleY((float) (y + 1));
+
+
+
+
             }
         });
 
-        TextViewContenido.setOnClickListener(new View.OnClickListener() {
+        ImageButtonZoomOut.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Conocer o Siguiente!");
-                startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                    pantalla.setScaleX((float) (x - 1));
+                    pantalla.setScaleY((float) (y - 1));
+
+
+
+            }
+        });
+
+
+        if(Integer.parseInt(SeleccionRol.getActivityInstance().getIdRol())==2){
+            iniciarTextToSpeechDonador();
+
+            ImageButtonActivar.setVisibility(View.VISIBLE);
+            ImageButtonDesactivar.setVisibility(View.GONE);
+
+            ImageButtonActivar.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    myTTS.stop();
+
+                    iniciarTextToSpeechBeneficiario();
+
+                    pantalla.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Conocer o Siguiente!");
+                            //mySpeechRecognizer.startListening(speechIntent);
+                            startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+                        }
+                    });
+
+                    TextViewContenido.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Conocer o Siguiente!");
+                            startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+                        }
+                    });
+
+                    ImageButtonActivar.setVisibility(View.GONE);
+                    ImageButtonDesactivar.setVisibility(View.VISIBLE);
                 }
-        });
+            });
 
 
-        iniciarTextToSpeech();
+            ImageButtonDesactivar.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-        mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
+                    myTTS.stop();
+
+                    pantalla.setOnClickListener(null);
+                    TextViewContenido.setOnClickListener(null);
+
+                    ImageButtonActivar.setVisibility(View.VISIBLE);
+                    ImageButtonDesactivar.setVisibility(View.GONE);
+                }
+            });
 
 
-/*        zc = (ZoomControls) findViewById(R.id.zoomControls1);
 
-       zc.setOnZoomInClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
 
-                pantalla.setScaleX((int) (x+1));
-                pantalla.setScaleY((int) (y+1));
-            }
-        });
+        }else{
+            ImageButtonActivar.setVisibility(View.VISIBLE);
+            ImageButtonDesactivar.setVisibility(View.GONE);
 
-        zc.setOnZoomOutClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
+            iniciarTextToSpeechBeneficiario();
 
-                pantalla.setScaleX((int) (x-1));
-                pantalla.setScaleY((int) (y-1));
-            }
-        });*/
+            ImageButtonActivar.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    myTTS.stop();
+
+                    iniciarTextToSpeechBeneficiario();
+
+                    }
+            });
+
+            pantalla.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                    speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
+                    speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Conocer o Siguiente!");
+                    //mySpeechRecognizer.startListening(speechIntent);
+                    startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+                }
+            });
+
+            TextViewContenido.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
+                    speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Conocer o Siguiente!");
+                    startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+                }
+            });
+
+        }
+
 
 
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
+    }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -118,25 +233,29 @@ public class InformacionGeneral extends AppCompatActivity implements TextToSpeec
         }
     }
 
-
     private void prepararRespuesta(String escuchado) {
 
         escuchado = escuchado.toLowerCase();
 
         if(escuchado.indexOf("siguiente")!=-1){
-            Intent intent = new Intent(this,SeleccionRol.class);
+            Intent intent = new Intent(this,IngresoAplicacion.class);
             startActivity(intent);
         }else{
             if(escuchado.indexOf("conocer")!=-1){
                 TextViewContenido.requestFocus();
                 TextViewContenido.setBackgroundResource(R.drawable.borde_textview);
                 speak(TextViewContenido.getText().toString());
-
+            }else{
+                if(Integer.parseInt(SeleccionRol.getActivityInstance().getIdRol())==2) {
+                    iniciarTextToSpeechDonador();
+                }else{
+                    iniciarTextToSpeechBeneficiario();
+                }
             }
         }
     }
 
-    private void iniciarTextToSpeech() {
+    private void iniciarTextToSpeechBeneficiario() {
         myTTS=new TextToSpeech(this,  new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -145,12 +264,28 @@ public class InformacionGeneral extends AppCompatActivity implements TextToSpeec
                     finish();
                 }else{
                     myTTS.setLanguage(Locale.getDefault());
-                    speak("Bienvenido!. En esta pantalla se presenta la información general de la aplicación. " +
+                    speak("En esta pantalla se presenta la información general de la aplicación. " +
                           "Si desea conocer mas, pulse sobre cualquier parte de la pantalla, y pronuncie la palabra, " +
                         "conocer, después del tono. Caso contario, pronuncie la palabra siguiente");
                     //speak(TextViewTitulo.getText().toString());
                     //speak(TextViewContenido.getText().toString());
                 }
+            }
+        });
+    }
+
+    private void iniciarTextToSpeechDonador() {
+        myTTS=new TextToSpeech(this,  new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(myTTS.getEngines().size()==0){
+                    Toast.makeText(InformacionGeneral.this, "No se ha inicializado TextToSpeech en su dispositivo",Toast.LENGTH_LONG).show();
+                    finish();
+                }else{
+                    myTTS.setLanguage(Locale.getDefault());
+                    speak("Si desea manejar la aplicación mediante comandos por voz, pulse sobre el" +
+                            " botón en la parte superior derecha, caso contrario manéjela normalmente.");
+                   }
             }
         });
     }
@@ -164,10 +299,11 @@ public class InformacionGeneral extends AppCompatActivity implements TextToSpeec
     }
 
 
-    public void irASeleccionRol (View view)
+
+    public void irAIngresoAplicacion (View view)
     {
 
-        Intent intent = new Intent(this,SeleccionRol.class);
+        Intent intent = new Intent(getApplicationContext(),IngresoAplicacion.class);
         startActivity(intent);
     }
 
@@ -177,31 +313,6 @@ public class InformacionGeneral extends AppCompatActivity implements TextToSpeec
 
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        mScaleGestureDetector.onTouchEvent(event);
-        return true;
-    }
 
-    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 
-        @Override
-        public boolean onScale(ScaleGestureDetector scaleGestureDetector){
-
-            mScaleFactor *= scaleGestureDetector.getScaleFactor();
-
-            mScaleFactor = Math.max(0.1f,
-
-                    Math.min(mScaleFactor, 10.0f));
-
-            pantalla.setScaleX(mScaleFactor);
-            pantalla.setScaleY(mScaleFactor);
-
-            TextViewContenido.setScaleX(mScaleFactor);
-            TextViewContenido.setScaleY(mScaleFactor);
-
-            return true;
-
-        }
-    }
 }

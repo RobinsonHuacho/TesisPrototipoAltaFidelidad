@@ -12,6 +12,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +53,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
     private TextToSpeech myTTS;
     private ConstraintLayout pantalla;
     private TextView InformacionPantalla;
+    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +72,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
         InformacionPantalla=(TextView) findViewById(R.id.textView25);
 
         RequestQueue queue1 = Volley.newRequestQueue(getApplicationContext());
-        String url1 ="http://192.168.0.14:8080/ProyectoIntegrador/detalleBeneficiario_totales.php";
+        String url1 ="http://192.168.0.4:8080/ProyectoIntegrador/detalleBeneficiario_totales.php";
         StringRequest stringRequest1 = new StringRequest(Request.Method.POST, url1, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -84,13 +86,18 @@ public class DetallesBeneficiario extends AppCompatActivity {
                         String total_compra = c1.getString("TOTAL_COMPRA");
                         String saldo_compra = c1.getString("SALDO");
                         //Toast.makeText(getApplicationContext(),total_compra+" "+saldo_compra,Toast.LENGTH_LONG).show();
+                        Float total_compra_float,saldo_compra_float;
+
+                        total_compra_float=Float.parseFloat(total_compra);
+                        saldo_compra_float=Float.parseFloat(saldo_compra);
+
 
                         textView_TotalCompra= (TextView) findViewById(R.id.textView_CostoTotal);
-                        textView_TotalCompra.setText(total_compra);
+                        textView_TotalCompra.setText(String.format("%.02f", total_compra_float));
                         //Toast.makeText(getApplcationContext(),textView_TotalCompra.getText(),Toast.LENGTH_LONG).show();
 
                         textView_SaldoCompra= (TextView) findViewById(R.id.textView_SaldoCompra);
-                        textView_SaldoCompra.setText(saldo_compra);
+                        textView_SaldoCompra.setText(String.format("%.02f", saldo_compra_float));
                         //Toast.makeText(getApplicationContext(),textView_SaldoCompra.getText(),Toast.LENGTH_LONG).show();
                     }
 
@@ -124,7 +131,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
                 Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                 speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
                 speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Finaliza o Continuar!");
+                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Finalizar o Continuar!");
                 //mySpeechRecognizer.startListening(speechIntent);
                 startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
             }
@@ -132,6 +139,79 @@ public class DetallesBeneficiario extends AppCompatActivity {
 
         iniciarTextToSpeech();
 
+        ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
+        ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
+
+        ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x + 1));
+                pantalla.setScaleY((float) (y + 1));
+
+
+
+
+            }
+        });
+
+        ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x - 1));
+                pantalla.setScaleY((float) (y - 1));
+
+            }
+        });
+
+        ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+        ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                myTTS.stop();
+
+                iniciarTextToSpeech();
+
+            }
+        });
+
+
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(myTTS!=null){
+            myTTS.stop();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(myTTS!=null){
+            myTTS.stop();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(myTTS!=null){
+            myTTS.stop();
+        }
 
     }
 
@@ -156,9 +236,9 @@ public class DetallesBeneficiario extends AppCompatActivity {
 
         if(escuchado.indexOf("finalizar")!=-1){
             if(conteoRegistros()<2) {
-                Toast.makeText(getApplicationContext(), String.valueOf(conteoRegistros())+IngresoAplicacion.getActivityInstance().getIdUsuario(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), String.valueOf(conteoRegistros())+IngresoAplicacion.getActivityInstance().getIdUsuario(), Toast.LENGTH_LONG).show();
                 RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                String url3 = "http://192.168.0.14:8080/ProyectoIntegrador/nuevaCompra.php";
+                String url3 = "http://192.168.0.4:8080/ProyectoIntegrador/nuevaCompra.php";
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url3, new
                         Response.Listener<String>() {
                             @Override
@@ -204,8 +284,14 @@ public class DetallesBeneficiario extends AppCompatActivity {
                 startActivity(intent);
 
 
+            } else{
+                if (escuchado.indexOf("añadir") != -1) {
+                    Intent intent = new Intent(this, ListaCategoriaProducto.class);
+                    startActivity(intent);
             }
+
         }
+    }
     }
 
 
@@ -221,13 +307,9 @@ public class DetallesBeneficiario extends AppCompatActivity {
                     myTTS.setLanguage(Locale.getDefault());
                     speak(InformacionPantalla.getText().toString()+". El costo total de los productos sería de: "
                             +textView_TotalCompra.getText().toString()+" dólares. Si está de acuerdo, toque la pantalla" +
-                            "y pronuncie la palabra, finalizar para finalizar la compra; caso contario" +
-                            ", la palabra continuar para continuar comprando.");
-                    //deberá ingresar su usuario y contraseña. " +
-                    //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, después del tono." +
-                    //    "Caso contario, presionar sobre cualquier parte de la pantalla ");
-                    //speak(TextViewTitulo.getText().toString());
-                    //speak(TextViewContenido.getText().toString());
+                            " y pronuncie la palabra, finalizar para finalizar la solicitud; caso contario" +
+                            ", la palabra continuar para añadir más productos.");
+
                 }
             }
         });
@@ -246,7 +328,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
         if(conteoRegistros()<2) {
             Toast.makeText(getApplicationContext(), String.valueOf(conteoRegistros())+IngresoAplicacion.getActivityInstance().getIdUsuario(), Toast.LENGTH_LONG).show();
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url3 = "http://192.168.0.14:8080/ProyectoIntegrador/nuevaCompra.php";
+            String url3 = "http://192.168.0.4:8080/ProyectoIntegrador/nuevaCompra.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url3, new
                     Response.Listener<String>() {
                         @Override
@@ -259,6 +341,8 @@ public class DetallesBeneficiario extends AppCompatActivity {
 
                             } else {
                                 Toast.makeText(getApplicationContext(), "Algo salió mal. No se pudo realizar la compra. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(getApplicationContext(), ErrorConfirmacionCompra.class);
+                                startActivity(intent);
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -284,6 +368,8 @@ public class DetallesBeneficiario extends AppCompatActivity {
 
         }else {
             Toast.makeText(getApplicationContext(), "Algo salió mal. No se pudo realizar la compra. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), ErrorConfirmacionCompra.class);
+            startActivity(intent);
         }
 
     }
@@ -292,7 +378,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
     public int conteoRegistros(){
 
         RequestQueue queue2 = Volley.newRequestQueue(getApplicationContext());
-        String url2 ="http://192.168.0.14:8080/ProyectoIntegrador/nuevaCompra_numeroComprasPorCliente.php";
+        String url2 ="http://192.168.0.4:8080/ProyectoIntegrador/nuevaCompra_numeroComprasPorCliente.php";
         StringRequest stringRequest2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -361,7 +447,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
                 ex.printStackTrace();
             }
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url = "http://192.168.0.14:8080/ProyectoIntegrador/detalleBeneficiario.php";
+            String url = "http://192.168.0.4:8080/ProyectoIntegrador/detalleBeneficiario.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -416,7 +502,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
             String[] arregloImagenes = listViewItemsImagen.toArray(new String[0]);
 
             //Toast.makeText(getApplicationContext(),db.getAllCategorias(1).toString(),Toast.LENGTH_SHORT).show();
-           adapter = new ElementosProductosCompradosAdaptador(DetallesBeneficiario.this, arregloNombres, arregloCantidades, arregloTotales, "CategoriaProductos", arregloImagenes);
+           adapter = new ElementosProductosCompradosAdaptador(DetallesBeneficiario.this, arregloNombres, arregloCantidades, arregloTotales, "Productos", arregloImagenes);
            listViewdetallesBeneficiario = (ListView) findViewById(R.id.ListView_ProductosCompradosBeneficiario);
             return adapter;
         }

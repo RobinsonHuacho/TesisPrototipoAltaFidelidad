@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,12 +40,13 @@ public class AnadirDetalleCompra extends AppCompatActivity {
 
     private TextView textViewPrecio;
     private TextView textViewNombreProducto;
-    private TextView textViewDescripcionProducto;
     private EditText editTextCantidad;
     private TextView textViewSubtotal;
     private Button incrementarCantidad;
     private Button disminuirCantidad;
+    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar;
     private int contadorCantidad=1;
+    private int numeroProductoCliente;
     private String contadorCompra;
 
 
@@ -66,9 +72,6 @@ public class AnadirDetalleCompra extends AppCompatActivity {
 
         textViewNombreProducto = (TextView) findViewById(R.id.TextView_NombreProducto);
         textViewNombreProducto.setText(messageNombre);
-
-        textViewDescripcionProducto = (TextView) findViewById(R.id.TextView_Descripcion);
-        textViewDescripcionProducto.setText(messageDescripcion);
 
         textViewPrecio = (TextView) findViewById(R.id.TextView_PrecioProducto);
         textViewPrecio.setText(messagePrecio);
@@ -121,14 +124,86 @@ public class AnadirDetalleCompra extends AppCompatActivity {
             }
         });
 
-
-
-
-
-
         iniciarTextToSpeech();
         iniciarSpeechToText();
         iniciarSpeechToTextResultadoFinal();
+
+        ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
+        ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
+
+        ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x + 1));
+                pantalla.setScaleY((float) (y + 1));
+
+
+
+
+            }
+        });
+
+        ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x - 1));
+                pantalla.setScaleY((float) (y - 1));
+
+
+
+            }
+        });
+
+        ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+        ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                myTTS.stop();
+
+                iniciarTextToSpeech();
+
+            }
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
     }
 
 
@@ -280,46 +355,51 @@ public class AnadirDetalleCompra extends AppCompatActivity {
 
                 final String messageIdUsuario=IngresoAplicacion.getActivityInstance().getIdUsuario();
                 //Toast.makeText(getApplicationContext(), "ID_USUARIO: "+messageIdUsuario, Toast.LENGTH_LONG).show();
+                if(conteoProductoAniadido()<2) {
+                    RequestQueue queue = Volley.newRequestQueue(this);
+                    String url = "http://192.168.0.4:8080/ProyectoIntegrador/nuevoDetalle.php";
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new
+                            Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
 
-                RequestQueue queue = Volley.newRequestQueue(this);
-                String url ="http://192.168.0.14:8080/ProyectoIntegrador/nuevoDetalle.php";
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,new
-                        Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
+                                    if (response.matches("1")) {
+                                        Toast.makeText(getApplicationContext(), "Producto Ingresado Exitosamente", Toast.LENGTH_LONG).show();
 
-                                if(response.matches("1")){
-                                    Toast.makeText(getApplicationContext(),"Producto Ingresado Exitosamente",Toast.LENGTH_LONG).show();
+                                        Intent intent1 = new Intent(AnadirDetalleCompra.this, ConfirmacionAnadirProducto.class);
+                                        startActivity(intent1);
 
-                                    Intent intent1 = new Intent(AnadirDetalleCompra.this, ConfirmacionAnadirProducto.class);
-                                    startActivity(intent1);
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Algo salio mal. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
 
-                                }else{
-                                    Toast.makeText(getApplicationContext(),"Algo salio mal. Inténtalo de nuevo",Toast.LENGTH_LONG).show();
+                                        //   Intent intent1 = new Intent(AnadirDetalleCompra.this, ErrorAnadirProducto.class);
+                                        //   startActivity(intent1);
+
+
+                                    }
                                 }
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
 
-                    }
-                }){
-                    @Override
-                    protected Map<String,String> getParams(){
+                        }
+                    }) {
+                        @Override
+                        protected Map<String, String> getParams() {
 
-                        Map<String,String> params = new HashMap<String, String>();
-                        params.put("id_producto", messageId);
-                        params.put("id_usuario", messageIdUsuario);
-                        params.put("cantidad", editTextCantidad.getText().toString());
-                        params.put("precio", textViewPrecio.getText().toString());
-                        params.put("subtotal", textViewSubtotal.getText().toString());
+                            Map<String, String> params = new HashMap<String, String>();
+                            params.put("id_producto", messageId);
+                            params.put("id_usuario", messageIdUsuario);
+                            params.put("cantidad", editTextCantidad.getText().toString());
+                            params.put("precio", textViewPrecio.getText().toString());
+                            params.put("subtotal", textViewSubtotal.getText().toString());
 
 
-                        return params;
-                    }
-                };
-                queue.add(stringRequest);
-
+                            return params;
+                        }
+                    };
+                    queue.add(stringRequest);
+                }
 
             } else {
                 if (escuchado.indexOf("repetir") != -1) {
@@ -382,47 +462,47 @@ public class AnadirDetalleCompra extends AppCompatActivity {
 
         final String messageIdUsuario=IngresoAplicacion.getActivityInstance().getIdUsuario();
         //Toast.makeText(getApplicationContext(), "ID_USUARIO: "+messageIdUsuario, Toast.LENGTH_LONG).show();
+        if(conteoProductoAniadido()<2) {
+            RequestQueue queue = Volley.newRequestQueue(this);
+            String url = "http://192.168.0.4:8080/ProyectoIntegrador/nuevoDetalle.php";
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new
+                    Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://192.168.0.14:8080/ProyectoIntegrador/nuevoDetalle.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,new
-                Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
+                            if (response.matches("1")) {
+                                Toast.makeText(getApplicationContext(), "Producto Ingresado Exitosamente", Toast.LENGTH_LONG).show();
 
-                        if(response.matches("1")){
-                            Toast.makeText(getApplicationContext(),"Producto Ingresado Exitosamente",Toast.LENGTH_LONG).show();
+                                Intent intent1 = new Intent(AnadirDetalleCompra.this, ConfirmacionAnadirProducto.class);
+                                startActivity(intent1);
 
-                            Intent intent1 = new Intent(AnadirDetalleCompra.this, ConfirmacionAnadirProducto.class);
-                            startActivity(intent1);
-
-                        }else{
-                            Toast.makeText(getApplicationContext(),"Algo salio mal. Inténtalo de nuevo",Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Algo salio mal. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
+                            }
                         }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
-            }
-        }){
-            @Override
-            protected Map<String,String> getParams(){
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() {
 
-                Map<String,String> params = new HashMap<String, String>();
-                params.put("id_producto", messageId);
-                params.put("id_usuario", messageIdUsuario);
-                params.put("cantidad", editTextCantidad.getText().toString());
-                params.put("precio", textViewPrecio.getText().toString());
-                params.put("subtotal", textViewSubtotal.getText().toString());
-
-
-                return params;
-            }
-        };
-        queue.add(stringRequest);
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("id_producto", messageId);
+                    params.put("id_usuario", messageIdUsuario);
+                    params.put("cantidad", editTextCantidad.getText().toString());
+                    params.put("precio", textViewPrecio.getText().toString());
+                    params.put("subtotal", textViewSubtotal.getText().toString());
 
 
+                    return params;
+                }
+            };
+            queue.add(stringRequest);
+
+        }
 
 
     }
@@ -431,6 +511,50 @@ public class AnadirDetalleCompra extends AppCompatActivity {
         Intent intent = new Intent(this, ListaProductos.class);
         startActivity(intent);
     }
+
+    public int conteoProductoAniadido(){
+
+        final Intent intent = getIntent();
+        final String messageId = intent.getStringExtra(EXTRA_INDEX);
+
+        RequestQueue queue2 = Volley.newRequestQueue(getApplicationContext());
+        String url2 ="http://192.168.0.4:8080/ProyectoIntegrador/nuevoDetalle_numeroProductoPorCliente.php";
+        StringRequest stringRequest2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //        Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
+                try {
+                    JSONObject jsonObj2 = new JSONObject(response.toString());
+                    JSONArray contacts2 = jsonObj2.getJSONArray("numeroProductos");
+                    for (int i = 0; i < contacts2.length(); i++) {
+                        JSONObject c2 = contacts2.getJSONObject(i);
+
+                        numeroProductoCliente= Integer.parseInt(c2.getString("CONTEO"));
+                    }
+
+                }
+                catch (final JSONException e) {
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mTextView.setText("That didn't work!");
+            }
+        }){
+            @Override
+            protected Map<String,String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("id_usuario", IngresoAplicacion.getActivityInstance().getIdUsuario());
+                params.put("id_producto", messageId);
+                return params;
+            }
+        };
+        queue2.add(stringRequest2);
+
+        return numeroProductoCliente;
+    }
+
 
 
 }

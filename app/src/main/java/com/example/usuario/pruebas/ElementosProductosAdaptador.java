@@ -38,15 +38,13 @@ public class ElementosProductosAdaptador extends ArrayAdapter<String> {
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.item_producto,null,true);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.TextView_Nombre);
-        TextView txtDescription = (TextView) rowView.findViewById(R.id.TextView_Descripcion);
         TextView txtPrecio = (TextView) rowView.findViewById(R.id.TextView_Precio);
 
         SmartImageView imageView= (SmartImageView) rowView.findViewById(R.id.ImageView_Foto);
         txtTitle.setText(itemname[posicion]);
-        txtDescription.setText(itemDescription[posicion]);
         txtPrecio.setText(itemPrecios[posicion]);
         Rect rect = new Rect(imageView.getLeft(),imageView.getTop(), imageView.getRight(),imageView.getBottom());
-        imageView.setImageUrl("http://192.168.0.14:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[posicion], rect);
+        imageView.setImageUrl("http://192.168.0.4:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[posicion], rect);
 
         return rowView;
     }

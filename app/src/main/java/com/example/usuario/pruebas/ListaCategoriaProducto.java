@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,8 +50,7 @@ public class ListaCategoriaProducto extends AppCompatActivity {
     private ConstraintLayout pantalla;
     private GridView GridView_Categoria_Productos;
     private TextView InformacionPantalla;
-
-
+    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +86,85 @@ public class ListaCategoriaProducto extends AppCompatActivity {
 
         iniciarTextToSpeech();
 
+        ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
+        ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
+
+        ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x + 1));
+                pantalla.setScaleY((float) (y + 1));
+
+
+
+
+            }
+        });
+
+        ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x - 1));
+                pantalla.setScaleY((float) (y - 1));
+
+
+
+            }
+        });
+
+
+        ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+        ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                myTTS.stop();
+
+                iniciarTextToSpeech();
+
+            }
+        });
+
+
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
 
     }
 
@@ -110,12 +189,28 @@ public class ListaCategoriaProducto extends AppCompatActivity {
         escuchado = escuchado.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
         escuchado = escuchado.toUpperCase();
 
+        try {
             final ElementoCategoriaProducto categoriaProducto = db.getCategoriaNombre(escuchado);
 
             Intent intent = new Intent(getApplicationContext(), ListaProductos.class);
-            intent.putExtra(EXTRA_INDEX,categoriaProducto.getIdCategoriaProducto());
-        //       Toast.makeText(getApplicationContext(),categoriaProducto.getIdCategoriaProducto(),Toast.LENGTH_SHORT).show();
+            intent.putExtra(EXTRA_INDEX, categoriaProducto.getIdCategoriaProducto());
+            //       Toast.makeText(getApplicationContext(),categoriaProducto.getIdCategoriaProducto(),Toast.LENGTH_SHORT).show();
             startActivity(intent);
+        }catch (Exception e){
+            myTTS=new TextToSpeech(this,  new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if(myTTS.getEngines().size()==0){
+                        Toast.makeText(ListaCategoriaProducto.this, "No se ha inicializado TextToSpeech en su dispositivo",Toast.LENGTH_LONG).show();
+                        finish();
+                    }else{
+                        myTTS.setLanguage(Locale.getDefault());
+                        speak("Categoría no se encuentra en la lista. Por favor intente nuevamente!.");
+
+                    }
+                }
+            });
+        }
 
     }
 
@@ -175,7 +270,7 @@ public class ListaCategoriaProducto extends AppCompatActivity {
             }
 
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url2 = "http://192.168.0.14:8080/ProyectoIntegrador/categoriaProducto.php";
+            String url2 = "http://192.168.0.4:8080/ProyectoIntegrador/categoriaProducto.php";
             StringRequest jsObjRequest = new StringRequest
                     (Request.Method.GET, url2, new
                             Response.Listener<String>() {

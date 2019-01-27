@@ -4,11 +4,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,7 +31,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.StringTokenizer;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
@@ -46,6 +55,13 @@ public class ListaBeneficiarioDonacion extends AppCompatActivity {
     String[] arregloDescripcion;
     String[] arregloImagenes;
 
+    private static final int RECONOCEDOR_VOZ = 7;
+    private TextToSpeech myTTS;
+    private ConstraintLayout pantalla;
+    private SpeechRecognizer mySpeechRecognizer;
+    private String item;
+    private TextView InformacionPantalla;
+    private ImageButton ImageButtonActivar,ImageButtonDesactivar,ImageButtonZoomIn,ImageButtonZoomOut;
 
     private String selectedIdCompra, selectedIdUsuario;
 
@@ -60,13 +76,254 @@ public class ListaBeneficiarioDonacion extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_beneficiario_donacion);
 
-
-
         for (int i=0;i<2;i++){
             ExecTasks t = new ExecTasks(ListaBeneficiarioDonacion.this);
             t.execute();
         }
+       InformacionPantalla=(TextView) findViewById(R.id.textView3);
+
+       pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
+       ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+       ImageButtonDesactivar= (ImageButton) findViewById(R.id.btnDeshabiltarTTSSTT) ;
+
+
+       ImageButtonActivar.setVisibility(View.VISIBLE);
+       ImageButtonDesactivar.setVisibility(View.GONE);
+
+       ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+
+               iniciarTextToSpeech();
+
+
+               pantalla.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View v) {
+
+                       Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                       speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                       speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
+                       speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie el nombre del beneficiario al que desea ayudar!");
+                       //mySpeechRecognizer.startListening(speechIntent);
+                       startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+                   }
+               });
+
+               ImageButtonActivar.setVisibility(View.GONE);
+               ImageButtonDesactivar.setVisibility(View.VISIBLE);
+           }
+       });
+
+
+       ImageButtonDesactivar.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+
+               myTTS.stop();
+               myTTS.shutdown();
+
+               pantalla.setOnClickListener(null);
+
+               ImageButtonActivar.setVisibility(View.VISIBLE);
+               ImageButtonDesactivar.setVisibility(View.GONE);
+           }
+       });
+
+       ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
+       ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
+
+       ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               float x = pantalla.getScaleX();
+               float y = pantalla.getScaleY();
+               // set increased value of scale x and y to perform zoom in functionality
+
+               pantalla.setScaleX((float) (x + 1));
+               pantalla.setScaleY((float) (y + 1));
+
+
+
+
+           }
+       });
+
+       ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               float x = pantalla.getScaleX();
+               float y = pantalla.getScaleY();
+               // set increased value of scale x and y to perform zoom in functionality
+
+               pantalla.setScaleX((float) (x - 1));
+               pantalla.setScaleY((float) (y - 1));
+
+
+
+           }
+       });
+
+   }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK && requestCode == RECONOCEDOR_VOZ){
+            ArrayList<String> reconocido = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            String escuchado = reconocido.get(0);
+
+            item=escuchado;
+            prepararRespuesta(escuchado);
+        }
+    }
+
+    private void prepararRespuesta(String escuchado) {
+
+
+        escuchado = Normalizer.normalize(escuchado, Normalizer.Form.NFD);
+        escuchado = escuchado.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        escuchado = escuchado.toUpperCase();
+
+        StringTokenizer st = new StringTokenizer(escuchado);
+
+try {
+    if (st.countTokens() == 1) {
+
+        selectedIdCompra = db.getCompraPorPrimerNombreBeneficiario(escuchado).get_idCompra().toString();
+        selectedIdUsuario = db.getCompraPorPrimerNombreBeneficiario(escuchado).get_idUsuario().toString();
+
+    }
+    if (st.countTokens() == 2) {
+        String[] nombres = new String[2];
+        int i = 0;
+
+        while (st.hasMoreTokens()) {
+            String str = st.nextToken();
+            nombres[i] = str;
+            i++;
+        }
+
+        selectedIdCompra = db.getCompraPorDosIdentificativos(nombres[0], nombres[1]).get_idCompra().toString();
+        selectedIdUsuario = db.getCompraPorDosIdentificativos(nombres[0], nombres[1]).get_idUsuario().toString();
+
+    }
+
+    if (st.countTokens() == 3) {
+
+        String[] nombres = new String[2];
+        int i = 0;
+
+        while (st.hasMoreTokens()) {
+            String str = st.nextToken();
+            nombres[i] = str;
+            i++;
+        }
+
+        selectedIdCompra = db.getCompraPorTresIdentificativos(nombres[0], nombres[1], nombres[2]).get_idCompra().toString();
+        selectedIdUsuario = db.getCompraPorTresIdentificativos(nombres[0], nombres[1], nombres[2]).get_idUsuario().toString();
+
+    }
+
+    if (st.countTokens() == 4) {
+
+        String[] nombres = new String[3];
+        int i = 0;
+
+        while (st.hasMoreTokens()) {
+            String str = st.nextToken();
+            nombres[i] = str;
+            i++;
+        }
+
+        selectedIdCompra = db.getCompraPorCuatroIdentificativos(nombres[0], nombres[1], nombres[2], nombres[3]).get_idCompra().toString();
+        selectedIdUsuario = db.getCompraPorCuatroIdentificativos(nombres[0], nombres[1], nombres[2], nombres[3]).get_idUsuario().toString();
+
+    }
+
+    Intent intent = new Intent(getApplicationContext(), DetallesDonante.class);
+
+    intent.putExtra(Intent.EXTRA_INDEX, selectedIdCompra);
+    intent.putExtra(EXTRA_MESSAGE, selectedIdUsuario);
+
+    Toast.makeText(getApplicationContext(), selectedIdCompra + " " + selectedIdUsuario, Toast.LENGTH_LONG).show();
+
+    startActivity(intent);
+}catch (Exception e){
+    myTTS=new TextToSpeech(this,  new TextToSpeech.OnInitListener() {
+        @Override
+        public void onInit(int status) {
+            if(myTTS.getEngines().size()==0){
+                Toast.makeText(ListaBeneficiarioDonacion.this, "No se ha inicializado TextToSpeech en su dispositivo",Toast.LENGTH_LONG).show();
+                finish();
+            }else{
+                myTTS.setLanguage(Locale.getDefault());
+                speak("Beneficiario no se encuentra en la lista. Por favor intente nuevamente!.");
+
+            }
+        }
+    });
+}
+
+
+    }
+
+    private void iniciarTextToSpeech() {
+        myTTS=new TextToSpeech(this,  new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(myTTS.getEngines().size()==0){
+                    Toast.makeText(ListaBeneficiarioDonacion.this, "No se ha inicializado TextToSpeech en su dispositivo",Toast.LENGTH_LONG).show();
+                    finish();
+                }else{
+                    myTTS.setLanguage(Locale.getDefault());
+                    speak("En esta pantalla se presentan los distintos "+InformacionPantalla.getText().toString()+"." +
+                            ". Toque la pantalla y pronuncie el nombre del que desee ayudar después del tono");
+
+                }
+            }
+        });
+    }
+
+    private void speak(String message) {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+            myTTS.speak(message, TextToSpeech.QUEUE_FLUSH, null,null);
+        }else{
+            myTTS.speak(message, TextToSpeech.QUEUE_FLUSH, null);
+        }
+    }
+
 
 
     public class ExecTasks extends AsyncTask<Void, Void, ArrayAdapter<String>> {
@@ -97,11 +354,11 @@ public class ListaBeneficiarioDonacion extends AppCompatActivity {
 
             ImageView imageView3 = (ImageView) findViewById(R.id.imageView3);
             imageView3.setVisibility(View.VISIBLE);
-            TextView textView4 = (TextView) findViewById(R.id.textView4);
+            TextView textView4 = (TextView) findViewById(R.id.TextViewInformacion);
             textView4.setVisibility(View.VISIBLE);
 
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url ="http://192.168.0.14:8080/ProyectoIntegrador/ActualizarDetalleBeneficiario.php";
+            String url ="http://192.168.0.4:8080/ProyectoIntegrador/ActualizarDetalleBeneficiario.php";
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
                         @Override
@@ -131,7 +388,7 @@ public class ListaBeneficiarioDonacion extends AppCompatActivity {
 
 
             RequestQueue queue1 = Volley.newRequestQueue(getApplicationContext());
-            String url3 ="http://192.168.0.14:8080/ProyectoIntegrador/comprasBeneficiario.php";
+            String url3 ="http://192.168.0.4:8080/ProyectoIntegrador/comprasBeneficiario.php";
             StringRequest jsObjRequest1 = new StringRequest
                     (Request.Method.GET, url3, new
                             Response.Listener<String>() {
@@ -225,7 +482,7 @@ public class ListaBeneficiarioDonacion extends AppCompatActivity {
 
                 ImageView imageView3 = (ImageView) findViewById(R.id.imageView3);
                 imageView3.setVisibility(View.GONE);
-                TextView textView4 = (TextView) findViewById(R.id.textView4);
+                TextView textView4 = (TextView) findViewById(R.id.TextViewInformacion);
                 textView4.setVisibility(View.GONE);
 
                 gridView.setAdapter(adapter);
@@ -244,7 +501,7 @@ public class ListaBeneficiarioDonacion extends AppCompatActivity {
                         intent.putExtra(Intent.EXTRA_INDEX, selectedIdCompra);
                         intent.putExtra(EXTRA_MESSAGE, selectedIdUsuario);
 
-                        Toast.makeText(getApplicationContext(),selectedIdCompra+" "+selectedIdUsuario, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(),selectedIdCompra+" "+selectedIdUsuario, Toast.LENGTH_LONG).show();
 
                         startActivity(intent);
 

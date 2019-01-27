@@ -14,21 +14,12 @@
     <TextView
         android:id="@+id/TextView_Nombre"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="40dp"
         android:gravity="center"
         android:text="Nombre Producto"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textSize="14sp"
         android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/TextView_Descripcion"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:gravity="center"
-        android:text="Descripción"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="match_parent"

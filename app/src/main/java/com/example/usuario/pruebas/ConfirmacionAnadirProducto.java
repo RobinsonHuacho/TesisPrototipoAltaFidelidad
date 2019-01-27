@@ -8,6 +8,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,8 @@ public class ConfirmacionAnadirProducto extends AppCompatActivity {
     private TextToSpeech myTTS;
     private ConstraintLayout pantalla;
     private TextView TextoResultado;
+    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +32,7 @@ public class ConfirmacionAnadirProducto extends AppCompatActivity {
         getSupportActionBar().hide();
 
 
-        TextoResultado = (TextView) findViewById(R.id.textView4);
+        TextoResultado = (TextView) findViewById(R.id.textViewCorrecto);
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
 
@@ -48,13 +51,84 @@ public class ConfirmacionAnadirProducto extends AppCompatActivity {
             }
         });
 
-
-
-
-
-
         iniciarTextToSpeech();
 
+        ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
+        ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
+
+        ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x + 1));
+                pantalla.setScaleY((float) (y + 1));
+
+
+
+
+            }
+        });
+
+        ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x - 1));
+                pantalla.setScaleY((float) (y - 1));
+
+
+
+            }
+        });
+
+        ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+        ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                myTTS.stop();
+
+                iniciarTextToSpeech();
+
+            }
+        });
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
 
     }
 
@@ -90,11 +164,7 @@ public class ConfirmacionAnadirProducto extends AppCompatActivity {
                     myTTS.setLanguage(Locale.getDefault());
                     speak(TextoResultado.getText().toString()+". Pronuncie la palabra, continuar para conocer el detalle de su compra" +
                             "hasta ahora.");
-                    //deberá ingresar su usuario y contraseña. " +
-                    //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, después del tono." +
-                    //    "Caso contario, presionar sobre cualquier parte de la pantalla ");
-                    //speak(TextViewTitulo.getText().toString());
-                    //speak(TextViewContenido.getText().toString());
+
                 }
             }
         });

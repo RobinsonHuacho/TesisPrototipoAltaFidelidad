@@ -129,28 +129,97 @@ public class DatabaseHandlerCompras extends SQLiteOpenHelper{
         }
 
     }*/
-
-    /*public Producto getProductoNombre(String nombre) {
+    public ElementoCompra getCompraPorPrimerNombreBeneficiario(String nombre) {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
-            Cursor cursor = db.query(TABLE_PRODUCTOS, new
-                    String[]{KEY_ID_DETALLE, KEY_ID_COMPRA, KEY_ID_PRODUCTO, KEY_PRECIO, KEY_CANTIDAD, KEY_TOTAL}, KEY_NOMBRE + "=?", new
+            Cursor cursor = db.query(TABLE_COMPRAS, new
+                    String[]{KEY_ID_COMPRA, KEY_ID_USUARIO, KEY_FECHA_COMPRA, KEY_TOTAL_COMPRA, KEY_SALDO_COMPRA, KEY_ESTADO_COMPRA,
+                    KEY_ID_ROL,KEY_FOTO_USUARIO,KEY_PRIMER_NOMBRE_USUARIO,KEY_SEGUNDO_NOMBRE_USUARIO, KEY_PRIMER_APELLIDO_USUARIO,
+                    KEY_SEGUNDO_APELLIDO_USUARIO,KEY_DIRECCION_USUARIO, KEY_TELEFONO_USUARIO, KEY_EMAIL_USUARIO,
+                    KEY_USUARIO_APLICATIVO, KEY_PASSWORD_APLICATIVO, KEY_NOMBRES}, KEY_PRIMER_NOMBRE_USUARIO + "=?", new
                     String[]{String.valueOf(nombre)}, null, null, null);
 
             if (cursor != null) {
                 cursor.moveToFirst();
             }
-            Producto producto = new Producto(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6));
+            ElementoCompra producto = new ElementoCompra(cursor.getString(0), cursor.getString(1), cursor.getString(2),
+                    cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7),
+                    cursor.getString(8), cursor.getString(9), cursor.getString(10), cursor.getString(11), cursor.getString(12),
+                    cursor.getString(13), cursor.getString(14), cursor.getString(15), cursor.getString(16), cursor.getString(17));
 
             return producto;
         } catch (Exception error) {
 
-            Producto productoR = new Producto();
+            ElementoCompra productoR = new ElementoCompra();
             return productoR;
         }
-    }*/
+    }
 
+    public ElementoCompra getCompraPorDosIdentificativos(String nombre1,String nombre2) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
+        try {
+            Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_COMPRAS+" WHERE "+KEY_NOMBRES+" LIKE '%"+nombre1+"%"+nombre2+"%'",null);
+
+            if (cursor != null) {
+                cursor.moveToFirst();
+            }
+            ElementoCompra producto = new ElementoCompra(cursor.getString(0), cursor.getString(1), cursor.getString(2),
+                    cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7),
+                    cursor.getString(8), cursor.getString(9), cursor.getString(10), cursor.getString(11), cursor.getString(12),
+                    cursor.getString(13), cursor.getString(14), cursor.getString(15), cursor.getString(16), cursor.getString(17));
+
+            return producto;
+        } catch (Exception error) {
+
+            ElementoCompra productoR = new ElementoCompra();
+            return productoR;
+        }
+    }
+
+    public ElementoCompra getCompraPorTresIdentificativos(String nombre1,String nombre2,String nombre3) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_COMPRAS+" WHERE "+KEY_NOMBRES+" LIKE '%"+nombre1+"%"+nombre2+"%"+nombre3+"%'",null);
+
+            if (cursor != null) {
+                cursor.moveToFirst();
+            }
+            ElementoCompra producto = new ElementoCompra(cursor.getString(0), cursor.getString(1), cursor.getString(2),
+                    cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7),
+                    cursor.getString(8), cursor.getString(9), cursor.getString(10), cursor.getString(11), cursor.getString(12),
+                    cursor.getString(13), cursor.getString(14), cursor.getString(15), cursor.getString(16), cursor.getString(17));
+
+            return producto;
+        } catch (Exception error) {
+
+            ElementoCompra productoR = new ElementoCompra();
+            return productoR;
+        }
+    }
+
+    public ElementoCompra getCompraPorCuatroIdentificativos(String nombre1,String nombre2,String nombre3,String nombre4) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            Cursor cursor = db.rawQuery("SELECT * FROM "+TABLE_COMPRAS+" WHERE "+KEY_NOMBRES+" LIKE '%"+nombre1+"%"+nombre2+"%"+nombre3+"%"+nombre4+"%'",null);
+
+            if (cursor != null) {
+                cursor.moveToFirst();
+            }
+            ElementoCompra producto = new ElementoCompra(cursor.getString(0), cursor.getString(1), cursor.getString(2),
+                    cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7),
+                    cursor.getString(8), cursor.getString(9), cursor.getString(10), cursor.getString(11), cursor.getString(12),
+                    cursor.getString(13), cursor.getString(14), cursor.getString(15), cursor.getString(16), cursor.getString(17));
+
+            return producto;
+        } catch (Exception error) {
+
+            ElementoCompra productoR = new ElementoCompra();
+            return productoR;
+        }
+    }
 
     public ArrayList getAllProductos(int elemento) {
         ArrayList<String> productosList = new ArrayList<>();

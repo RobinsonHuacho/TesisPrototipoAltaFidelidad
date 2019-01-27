@@ -71,7 +71,7 @@ public class RegistroBeneficiarioUsuarioContrasenia extends AppCompatActivity {
         }
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url3 ="http://192.168.0.14:8080/ProyectoIntegrador/nuevoUsuario.php";
+        String url3 ="http://192.168.0.4:8080/ProyectoIntegrador/nuevoUsuario.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url3,new
                 Response.Listener<String>() {
                     @Override

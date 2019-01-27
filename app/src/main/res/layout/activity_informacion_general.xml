@@ -7,6 +7,8 @@
     tools:context="com.example.usuario.pruebas.InformacionGeneral"
     android:background="@color/mpsdk_white">
 
+
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/Pantalla"
         android:layout_width="0dp"
@@ -15,7 +17,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.428">
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintHorizontal_bias="1.0">
 
         <TextView
             android:id="@+id/textView"
@@ -25,20 +28,20 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
             android:text="INFORMACIÓN GENERAL"
             android:textColor="@color/cardview_dark_background"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="70dp"
+            app:layout_constraintHorizontal_bias="0.507" />
 
         <TextView
             android:id="@+id/TextViewInformacion"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="24dp"
             android:layout_marginEnd="32dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -50,41 +53,80 @@
             android:padding="10dp"
             android:scrollbarStyle="outsideInset"
             android:scrollbars="vertical"
-            android:text="Esta es una aplicación móvil con requerimientos mínimos de tecnología, accesible y fácil de usar, a fin de que pueda estar al alcance de las personas con ceguera y discapacidad visual severa, discapacidad física en miembros superiores y personas adultas mayores. A través de esta aplicación se busca propiciar la participación comunitaria a la vez que se genere empatía de los donantes hacia las personas con discapacidad para que estos puedan comprender las circunstancias y necesidades que viven las personas que necesitan ayuda. La gestión realizada a través de esta aplicación móvil accesible permitirá que, por una parte, las personas beneficiarias puedan subir sus requerimientos y los donantes puedan decidir directamente el destino de su donación."
+            android:text="Esta es una aplicación móvil de fácil uso dirigida a personas con ceguera y discapacidad visual severa, discapacidad física en miembros superiores y personas adultas mayores. A través de esta aplicación se busca propiciar la participación comunitaria a la vez que se concientice las circunstancias y necesidades que viven las personas con discapacidad. La aplicación permite que, por una parte, personas con discapacidad puedan adquirir productos de primera necesidad mientras que los donantes puedan decidir directamente y asegurar el destino de su donación."
             android:textColor="@color/mpsdk_dark_font_color"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/button3"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/button3" />
 
         <Button
             android:id="@+id/button3"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="32dp"
             android:layout_marginEnd="24dp"
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
-
             android:layout_marginStart="24dp"
-            android:onClick="irASeleccionRol"
+            android:onClick="irAIngresoAplicacion"
             android:text="SIGUIENTE"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="20sp"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginBottom="70dp"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnHabiltarTTSSTT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/ic_enable_accesibilidad"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+        <ImageButton
+            android:id="@+id/btnDeshabiltarTTSSTT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/ic_disable_accesibilidad"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
 
-    <!--<ZoomControls
-         android:id="@+id/zoomControls1"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentBottom="true"
-         android:layout_centerHorizontal="true"
-         android:layout_marginBottom="40dp" />-->
+    <ImageButton
+        android:id="@+id/zoomIn"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@android:drawable/btn_plus"
+        app:layout_constraintLeft_toRightOf="@+id/zoomOut"
+        />
 
- </android.support.constraint.ConstraintLayout>
+    <ImageButton
+        android:id="@+id/zoomOut"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:srcCompat="@android:drawable/btn_minus"
+        app:layout_constraintRight_toLeftOf="@+id/zoomIn"
+        app:layout_constraintHorizontal_bias="0.6" />
+
+
+
+</android.support.constraint.ConstraintLayout>

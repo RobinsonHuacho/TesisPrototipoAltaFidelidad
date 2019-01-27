@@ -40,13 +40,13 @@ public class ElementosProductosCompradosAdaptador extends ArrayAdapter<String> {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.TextView_lbNombreProducto);
         TextView txtCantidad = (TextView) rowView.findViewById(R.id.TextView_Cantidad);
         TextView txtTotal = (TextView) rowView.findViewById(R.id.TextView_TotalDetalleProducto);
-
         SmartImageView imageView= (SmartImageView) rowView.findViewById(R.id.ImageView_Foto);
+
         txtTitle.setText(itemname[posicion]);
         txtCantidad.setText(itemCantidad[posicion]);
         txtTotal.setText(itemTotal[posicion]);
         Rect rect = new Rect(imageView.getLeft(),imageView.getTop(), imageView.getRight(),imageView.getBottom());
-        imageView.setImageUrl("http://192.168.0.14:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[posicion], rect);
+        imageView.setImageUrl("http://192.168.0.4:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[posicion], rect);
 
         return rowView;
     }

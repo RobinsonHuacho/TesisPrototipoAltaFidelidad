@@ -170,9 +170,9 @@ public class RegistroBeneficiario extends AppCompatActivity {
     }
 
     public boolean cedulaYaRegistrada(final String cedula){
-        final boolean[] resultado = {true};
+        final boolean[] resultado = null;
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url3 ="http://192.168.0.14:8080/ProyectoIntegrador/consultarCedulaYaRegistrada.php";
+        String url3 ="http://192.168.0.4:8080/ProyectoIntegrador/consultarCedulaYaRegistrada.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url3,new
                 Response.Listener<String>() {
                     @Override

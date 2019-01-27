@@ -2,11 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.usuario.pruebas">
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-<supports-screens
-    android:largeScreens="true"
-    android:smallScreens="true"
-    android:normalScreens="true"/>
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
 
     <application
         android:allowBackup="true"
@@ -22,8 +32,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            </activity>
-        <activity android:name=".InformacionGeneral"/>
+        </activity>
+        <activity android:name=".InformacionGeneral" />
         <activity android:name=".IngresoAplicacion" />
         <activity
             android:name=".ListaProductos"
@@ -43,8 +53,6 @@
         <activity
             android:name=".SeleccionRol"
             android:label="Selección de Rol" />
-        <!-- <activity android:name=".InterfazInicial" /> -->
-        <activity android:name=".InformacionGeneral" />
         <activity
             android:name=".RegistroBeneficiario"
             android:label="Registro Beneficiario" />
@@ -63,15 +71,26 @@
         <activity android:name=".ConfirmacionCompra" />
         <activity
             android:name=".Donacion"
-            android:label="Datos Tarjeta de Crédito" />
+            android:label="Monto Donación" />
         <activity
             android:name=".RegistroBeneficiarioUsuarioContrasenia"
             android:label="Registro Beneficiario" />
         <activity android:name=".ConfirmacionAnadirProducto" />
+        <activity android:name=".ErrorAnadirProducto"></activity>
+        <activity android:name=".ErrorConfirmacionCompra"></activity>
 
+        <service android:name="com.paypal.android.sdk.payments.PayPalService"
+            android:exported="false"/>
+
+        <activity android:name="com.paypal.android.sdk.payments.PaymentActivity" />
+        <activity android:name="com.paypal.android.sdk.payments.LoginActivity"/>
+        <activity android:name="com.paypal.android.sdk.payments.PaymentMethodActivity"/>
+        <activity android:name="com.paypal.android.sdk.payments.PaymentConfirmActivity"/>
+        <activity android:name="com.paypal.android.sdk.payments.PayPalFuturePaymentActivity"/>
+        <activity android:name="com.paypal.android.sdk.payments.FuturePaymentConsentActivity"/>
+        <activity android:name="com.paypal.android.sdk.payments.FuturePaymentInfoActivity"/>
+        <activity android:name="io.card.payment.DataEntryActivity"/>
 
     </application>
-
-
 
 </manifest>

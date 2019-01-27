@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Pruebas</string>
     <string name="ingreso_aplicacion">INGRESAR</string>
-    <string name="ingreso_ceguera_visual_severa">CEGUERA - DISCAPACIDAD VISUAL SEVERA</string>
+    <string name="ingreso_ceguera_visual_severa">CEGUERA Ó DISCAPACIDAD VISUAL SEVERA</string>
     <string name="ingreso_fisica_moderada">DISCAPACIDAD FÍSICA MODERADA</string>
     <string name="ingreso_adulto_mayor">ADULTO MAYOR</string>
     <string name="button_sigInfGen">Siguiente Inf General</string>

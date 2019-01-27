@@ -5,13 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ImageButton;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,6 +32,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static android.content.Intent.EXTRA_INDEX;
@@ -47,6 +53,13 @@ public class DetallesDonante extends AppCompatActivity {
     ListView listViewdetallesBeneficiario;
     ElementosProductosCompradosAdaptador adapter;
 
+    private static final int RECONOCEDOR_VOZ = 7;
+    private TextToSpeech myTTS;
+    private ConstraintLayout pantalla;
+    private TextView InformacionPantalla;
+    private ImageButton ImageButtonActivar,ImageButtonDesactivar,ImageButtonZoomIn,ImageButtonZoomOut;
+    TextView textView_NombresBeneficiario,textView_ApellidosBeneficiario,textView_TotalCompra,textView_SaldoCompra;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +77,8 @@ public class DetallesDonante extends AppCompatActivity {
             t.execute();
         }
 
-
         RequestQueue queue1 = Volley.newRequestQueue(getApplicationContext());
-        String url1 ="http://192.168.0.14:8080/ProyectoIntegrador/detalleBeneficiario_totales_donador.php";
+        String url1 ="http://192.168.0.4:8080/ProyectoIntegrador/detalleBeneficiario_totales_donador.php";
         StringRequest stringRequest1 = new StringRequest(Request.Method.POST, url1, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -109,7 +121,7 @@ public class DetallesDonante extends AppCompatActivity {
         queue1.add(stringRequest1);
 
         RequestQueue queue2 = Volley.newRequestQueue(getApplicationContext());
-        String url2 ="http://192.168.0.14:8080/ProyectoIntegrador/detalleBeneficiario_usuario.php";
+        String url2 ="http://192.168.0.4:8080/ProyectoIntegrador/detalleBeneficiario_usuario.php";
         StringRequest stringRequest2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -139,7 +151,7 @@ public class DetallesDonante extends AppCompatActivity {
 
                         SmartImageView imageView= (SmartImageView) findViewById(R.id.ImageView_Foto);
                         Rect rect = new Rect(imageView.getLeft(),imageView.getTop(), imageView.getRight(),imageView.getBottom());
-                        imageView.setImageUrl("http://192.168.0.14:8080/ProyectoIntegrador/Images/Beneficiarios/"+imagen_usuario,rect);
+                        imageView.setImageUrl("http://192.168.0.4:8080/ProyectoIntegrador/Images/Beneficiarios/"+imagen_usuario,rect);
                     }
 
                 }
@@ -161,7 +173,195 @@ public class DetallesDonante extends AppCompatActivity {
         };
         queue2.add(stringRequest2);
 
+        textView_NombresBeneficiario= (TextView) findViewById(R.id.TextView_NombreBeneficiario);
+        textView_ApellidosBeneficiario= (TextView) findViewById(R.id.TextView_ApellidoBeneficiario);
+        textView_TotalCompra= (TextView) findViewById(R.id.textView_CostoTotal);
+        textView_SaldoCompra= (TextView) findViewById(R.id.textView_SaldoCompra);
+
+
+        InformacionPantalla=(TextView) findViewById(R.id.textView25);
+
+        pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
+        ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+        ImageButtonDesactivar= (ImageButton) findViewById(R.id.btnDeshabiltarTTSSTT) ;
+
+        ImageButtonActivar.setVisibility(View.VISIBLE);
+        ImageButtonDesactivar.setVisibility(View.GONE);
+
+        ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                iniciarTextToSpeech();
+
+                pantalla.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Donar o regresar!");
+                        //mySpeechRecognizer.startListening(speechIntent);
+                        startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+                    }
+                });
+
+                ImageButtonActivar.setVisibility(View.GONE);
+                ImageButtonDesactivar.setVisibility(View.VISIBLE);
+            }
+        });
+
+        ImageButtonDesactivar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                myTTS.stop();
+                myTTS.shutdown();
+
+                pantalla.setOnClickListener(null);
+
+                ImageButtonActivar.setVisibility(View.VISIBLE);
+                ImageButtonDesactivar.setVisibility(View.GONE);
+            }
+        });
+
+        ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
+        ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
+
+        ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x + 1));
+                pantalla.setScaleY((float) (y + 1));
+
+
+
+
+            }
+        });
+
+        ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float x = pantalla.getScaleX();
+                float y = pantalla.getScaleY();
+                // set increased value of scale x and y to perform zoom in functionality
+
+                pantalla.setScaleX((float) (x - 1));
+                pantalla.setScaleY((float) (y - 1));
+
+
+
+            }
+        });
+
+
+
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK && requestCode == RECONOCEDOR_VOZ){
+            ArrayList<String> reconocido = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            String escuchado = reconocido.get(0);
+            prepararRespuesta(escuchado);
+
+
+
+        }
+
+    }
+
+    private void prepararRespuesta(String escuchado) {
+
+        if(escuchado.indexOf("donar")!=-1){
+            Intent intent = new Intent(this,Donacion.class);
+            startActivity(intent);
+        }else{
+            if(escuchado.indexOf("regresar")!=-1){
+                Intent intent = new Intent(this,ListaBeneficiarioDonacion.class);
+                startActivity(intent);
+
+            }
+        }
+
+
+    }
+
+
+
+    private void iniciarTextToSpeech() {
+        myTTS=new TextToSpeech(this,  new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(myTTS.getEngines().size()==0){
+                    Toast.makeText(DetallesDonante.this, "No se ha inicializado TextToSpeech en su dispositivo",Toast.LENGTH_LONG).show();
+                    finish();
+                }else{
+                    myTTS.setLanguage(Locale.getDefault());
+                    speak(InformacionPantalla.getText().toString()+ "por el beneficiario: "+
+                            textView_NombresBeneficiario.getText().toString().substring(9, textView_NombresBeneficiario.getText().toString().length())+
+                            " "+textView_ApellidosBeneficiario.getText().toString().substring(11,textView_ApellidosBeneficiario.getText().toString().length())+". El costo total de los productos sería de: "
+                            +textView_TotalCompra.getText().toString()+" dólares. El saldo de la compra es de: "
+                                    +textView_TotalCompra.getText().toString()+" dólares. Si está de acuerdo, toque la pantalla" +
+                            " y pronuncie la palabra, donar para proceder a ingresar los datos de la tarjeta de crédito, caso contrario" +
+                            ", la palabra regresar para bisualizar la lista de beneficiarios.");
+                    //deberá ingresar su usuario y contraseña. " +
+                    //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, después del tono." +
+                    //    "Caso contario, presionar sobre cualquier parte de la pantalla ");
+                    //speak(TextViewTitulo.getText().toString());
+                    //speak(TextViewContenido.getText().toString());
+                }
+            }
+        });
+    }
+
+    private void speak(String message) {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+            myTTS.speak(message, TextToSpeech.QUEUE_FLUSH, null,null);
+        }else{
+            myTTS.speak(message, TextToSpeech.QUEUE_FLUSH, null);
+        }
+    }
+
 
 
     public class ExecTasks extends AsyncTask<Void, Void, ArrayAdapter<String>> {
@@ -195,7 +395,7 @@ public class DetallesDonante extends AppCompatActivity {
                 ex.printStackTrace();
             }
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url ="http://192.168.0.14:8080/ProyectoIntegrador/detalleBeneficiario_donador.php";
+            String url ="http://192.168.0.4:8080/ProyectoIntegrador/detalleBeneficiario_donador.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -279,7 +479,7 @@ public class DetallesDonante extends AppCompatActivity {
         intent1.putExtra(Intent.EXTRA_INDEX, messageIdCompra);
         intent1.putExtra(EXTRA_MESSAGE, messageIdUsuario);
 
-        Toast.makeText(getApplicationContext(),messageIdCompra+" "+messageIdUsuario, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),messageIdCompra+" "+messageIdUsuario, Toast.LENGTH_LONG).show();
 
         startActivity(intent1);
     }

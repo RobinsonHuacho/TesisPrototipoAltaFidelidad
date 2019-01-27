@@ -4,13 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.usuario.pruebas.ListaBeneficiarioDonacion">
+    tools:context="com.example.usuario.pruebas.ListaBeneficiarioDonacion"
+    >
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/Pantalla"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintHorizontal_bias="1.0">
+
+    <ImageButton
+        android:id="@+id/btnHabiltarTTSSTT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@mipmap/ic_enable_accesibilidad"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="0dp"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+    <ImageButton
+        android:id="@+id/btnDeshabiltarTTSSTT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@mipmap/ic_disable_accesibilidad"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="0dp"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="BENEFICIARIOS A LOS QUE USTED PUEDE AYUDAR"
+        android:text="BENEFICIARIOS A LOS QUE\nUSTED PUEDE AYUDAR"
         android:textSize="20sp"
         android:textColor="@color/mpsdk_dark_font_color"
         android:textStyle="bold"
@@ -28,7 +62,7 @@
         android:id="@+id/ListView_Beneficiarios"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="84dp"
         android:layout_marginTop="24dp"
         android:dividerHeight="5dp"
         android:footerDividersEnabled="false"
@@ -43,7 +77,7 @@
         android:layout_marginRight="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        />
+                />
 
     <ImageView
         android:id="@+id/imageView3"
@@ -57,10 +91,10 @@
         app:layout_constraintHorizontal_bias="0.502"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
-        android:visibility="gone"/>
+       />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/TextViewInformacion"
         android:layout_width="0dp"
         android:layout_height="95dp"
         android:text="EN ESTE MOMENTO NO HAY BENEFICIARIOS A LOS QUE PUEDA AYUDAR!!"
@@ -73,7 +107,39 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
         android:visibility="gone"/>
+
+</android.support.constraint.ConstraintLayout>
+
+
+<ImageButton
+android:id="@+id/zoomIn"
+android:layout_width="0dp"
+android:layout_height="60dp"
+android:layout_marginBottom="8dp"
+android:layout_marginEnd="24dp"
+android:layout_marginRight="24dp"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintRight_toRightOf="parent"
+app:srcCompat="@android:drawable/btn_plus"
+app:layout_constraintLeft_toRightOf="@+id/zoomOut"
+    />
+
+<ImageButton
+android:id="@+id/zoomOut"
+android:layout_width="0dp"
+android:layout_height="60dp"
+android:layout_marginBottom="8dp"
+android:layout_marginLeft="24dp"
+android:layout_marginRight="8dp"
+android:layout_marginStart="24dp"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintLeft_toLeftOf="parent"
+app:srcCompat="@android:drawable/btn_minus"
+app:layout_constraintRight_toLeftOf="@+id/zoomIn"
+app:layout_constraintHorizontal_bias="0.6" />
 
 
 

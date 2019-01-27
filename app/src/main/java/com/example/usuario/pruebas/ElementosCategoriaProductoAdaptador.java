@@ -38,7 +38,7 @@ public class ElementosCategoriaProductoAdaptador extends ArrayAdapter<String> {
         SmartImageView imageView= (SmartImageView) rowView.findViewById(R.id.ImageView_Categoria_Producto);
         txtTitle.setText(itemname[position]);
         Rect rect = new Rect(imageView.getLeft(),imageView.getTop(), imageView.getRight(),imageView.getBottom());
-        imageView.setImageUrl("http://192.168.0.14:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[position], rect);
+        imageView.setImageUrl("http://192.168.0.4:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[position], rect);
 
         return rowView;
 
