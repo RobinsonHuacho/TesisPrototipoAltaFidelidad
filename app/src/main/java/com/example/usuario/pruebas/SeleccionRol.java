@@ -10,6 +10,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class SeleccionRol extends AppCompatActivity {
     private String id_rol, condicion;
 
     private Button btnDiscapacidadVisual, btnDiscapacidadFisica, btnAdultoMayor;
+    private ImageButton ImageButtonActivar,ImageButtonDesactivar;
 
     private static final int RECONOCEDOR_VOZ = 7;
     private TextToSpeech myTTS;
@@ -45,7 +47,7 @@ public class SeleccionRol extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                Intent intent = new Intent(getApplicationContext(),InformacionGeneral.class);
+                Intent intent = new Intent(getApplicationContext(),InformacionGeneralBeneficiario.class);
                 startActivity(intent);
 
                 id_rol="1";
@@ -61,7 +63,7 @@ public class SeleccionRol extends AppCompatActivity {
         btnDiscapacidadFisica.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),InformacionGeneral.class);
+                Intent intent = new Intent(getApplicationContext(),InformacionGeneralBeneficiario.class);
                 startActivity(intent);
 
                 id_rol="1";
@@ -78,7 +80,7 @@ public class SeleccionRol extends AppCompatActivity {
         btnAdultoMayor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),InformacionGeneral.class);
+                Intent intent = new Intent(getApplicationContext(),InformacionGeneralBeneficiario.class);
                 startActivity(intent);
 
                 id_rol="1";
@@ -90,20 +92,38 @@ public class SeleccionRol extends AppCompatActivity {
             }
         });
 
-        iniciarTextToSpeech();
+        ImageButtonActivar=(ImageButton) findViewById(R.id.btnHabiltarTTSSTT);
+                ImageButtonDesactivar=(ImageButton)findViewById(R.id.btnDeshabiltarTTSSTT);
 
-        pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
 
-        pantalla.setOnClickListener(new View.OnClickListener() {
+        ImageButtonActivar.setVisibility(View.VISIBLE);
+        ImageButtonDesactivar.setVisibility(View.GONE);
+
+
+        ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-                speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra que se asemeje a su condición!");
-                //mySpeechRecognizer.startListening(speechIntent);
-                startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+                iniciarTextToSpeech();
+
+
+                ImageButtonActivar.setVisibility(View.GONE);
+                ImageButtonDesactivar.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        ImageButtonDesactivar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                myTTS.stop();
+                myTTS.shutdown();
+
+
+
+                ImageButtonActivar.setVisibility(View.VISIBLE);
+                ImageButtonDesactivar.setVisibility(View.GONE);
             }
         });
 
@@ -113,14 +133,19 @@ public class SeleccionRol extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        myTTS.stop();
-
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        myTTS.stop();
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
 
     }
 
@@ -128,10 +153,12 @@ public class SeleccionRol extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        myTTS.stop();
+        if(myTTS!=null){
+            myTTS.stop();
+            myTTS.shutdown();
+        }
 
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -149,56 +176,56 @@ public class SeleccionRol extends AppCompatActivity {
         escuchado = escuchado.toLowerCase();
 
         if(escuchado.indexOf("ceguera")!=-1){
-            Intent intent = new Intent(getApplicationContext(),InformacionGeneral.class);
+            Intent intent = new Intent(getApplicationContext(),InformacionGeneralBeneficiario.class);
             startActivity(intent);
 
             id_rol="1";
             Intent intent1 = new Intent("PASO_ID_ROL").putExtra("ID_ROL", id_rol);
         }else{
             if(escuchado.indexOf("visual")!=-1){
-                Intent intent = new Intent(getApplicationContext(),InformacionGeneral.class);
+                Intent intent = new Intent(getApplicationContext(),InformacionGeneralBeneficiario.class);
                 startActivity(intent);
 
                 id_rol="1";
                 Intent intent1 = new Intent("PASO_ID_ROL").putExtra("ID_ROL", id_rol);
             }else{
                 if(escuchado.indexOf("física")!=-1){
-                    Intent intent = new Intent(getApplicationContext(),InformacionGeneral.class);
+                    Intent intent = new Intent(getApplicationContext(),InformacionGeneralBeneficiario.class);
                     startActivity(intent);
 
                     id_rol="1";
                     Intent intent1 = new Intent("PASO_ID_ROL").putExtra("ID_ROL", id_rol);
                 }else {
                     if (escuchado.indexOf("mayor") != -1) {
-                        Intent intent = new Intent(getApplicationContext(),InformacionGeneral.class);
+                        Intent intent = new Intent(getApplicationContext(),InformacionGeneralBeneficiario.class);
                         startActivity(intent);
 
                         id_rol="1";
                         Intent intent1 = new Intent("PASO_ID_ROL").putExtra("ID_ROL", id_rol);
                     } else {
                         if (escuchado.indexOf("anciano") != -1) {
-                            Intent intent = new Intent(getApplicationContext(),InformacionGeneral.class);
+                            Intent intent = new Intent(getApplicationContext(),InformacionGeneralBeneficiario.class);
                             startActivity(intent);
 
                             id_rol="1";
                             Intent intent1 = new Intent("PASO_ID_ROL").putExtra("ID_ROL", id_rol);
                             }else{
                             if (escuchado.indexOf("tercera") != -1) {
-                                Intent intent = new Intent(getApplicationContext(),InformacionGeneral.class);
+                                Intent intent = new Intent(getApplicationContext(),InformacionGeneralBeneficiario.class);
                                 startActivity(intent);
 
                                 id_rol="1";
                                 Intent intent1 = new Intent("PASO_ID_ROL").putExtra("ID_ROL", id_rol);
                             }else{
                                 if (escuchado.indexOf("donador") != -1) {
-                                    Intent intent = new Intent(this,IngresoAplicacion.class);
+                                    Intent intent = new Intent(this,InformacionGeneralDonador.class);
                                     startActivity(intent);
 
                                     id_rol="2";
                                     Intent intent1 = new Intent("PASO_ID_ROL").putExtra("ID_ROL", id_rol);
                             }else{
                                     if (escuchado.indexOf("ayudar") != -1) {
-                                        Intent intent = new Intent(this,IngresoAplicacion.class);
+                                        Intent intent = new Intent(this,InformacionGeneralDonador.class);
                                         startActivity(intent);
 
                                         id_rol="2";
@@ -206,8 +233,16 @@ public class SeleccionRol extends AppCompatActivity {
                                 }else{
                                         if (escuchado.indexOf("repetir") != -1) {
                                             iniciarTextToSpeech();
-                                    }
+
+
+                                    }else {
+                                        speak("No entiendo esa orden! Por favor pulse la pantalla y pronuncie alguna de la siguientes" +
+                                                " condiciones: "+btnDiscapacidadVisual.getText().toString()+","+btnDiscapacidadFisica.getText().toString()
+                                                +", o "+btnAdultoMayor.getText().toString()+". Caso contrario si desea ayudar a personas con " +
+                                                " estas condiciones pruebe acceder como donador.");
+                                        }
                             }
+
                             }
                             }
                 }
@@ -215,7 +250,8 @@ public class SeleccionRol extends AppCompatActivity {
         }
     }
         }
-    }
+        }
+
 
     private void iniciarTextToSpeech() {
         myTTS=new TextToSpeech(this,  new TextToSpeech.OnInitListener() {
@@ -227,10 +263,10 @@ public class SeleccionRol extends AppCompatActivity {
                 }else{
                     myTTS.setLanguage(Locale.getDefault());
                     speak("Bienvenido a Dona y ayuda!. En esta pantalla puede escoger " +
-                            "utilizar la aplicación como usuario o donador. Usuario si tiene " +
+                            "utilizar la aplicación como beneficiario o donador. Beneficiario si tiene " +
                             "alguna de las siguientes condiciones: "+btnDiscapacidadVisual.getText().toString()+","+btnDiscapacidadFisica.getText().toString()
-                            +", o"+btnAdultoMayor.getText().toString()+". Caso contrario si desea ayudar a personas con " +
-                            " estas condiciones puede acceder como donador. Si desea volver a escuchar las indicaciones, pronuncie la palabra," +
+                            +", o "+btnAdultoMayor.getText().toString()+". Caso contrario si desea ayudar a personas con " +
+                            " estas condiciones puede acceder como donador. Pulse la pantalla y pronuncie alguna de las anteriores condiciones. Caso contario, si desea volver a escuchar las indicaciones, pronuncie la palabra," +
                             " repetir.");
 
                 }
@@ -248,7 +284,7 @@ public class SeleccionRol extends AppCompatActivity {
 
     public void invocarActividadDonador(View view)
     {
-        Intent intent = new Intent(this,InformacionGeneral.class);
+        Intent intent = new Intent(this,InformacionGeneralDonador.class);
         startActivity(intent);
 
         id_rol="2";

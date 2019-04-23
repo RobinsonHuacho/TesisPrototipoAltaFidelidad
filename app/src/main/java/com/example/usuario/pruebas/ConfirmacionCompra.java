@@ -8,6 +8,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +22,8 @@ public class ConfirmacionCompra extends AppCompatActivity {
     private TextToSpeech myTTS;
     private ConstraintLayout pantalla;
     private TextView TextoResultado;
-    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar;
+    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar,ImageButtonDesactivar;
+    private Button btnFinalizar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,69 +33,90 @@ public class ConfirmacionCompra extends AppCompatActivity {
         getSupportActionBar().hide();
 
         TextoResultado = (TextView) findViewById(R.id.TextViewInformacion);
+        btnFinalizar = (Button) findViewById(R.id.button);
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
 
-        pantalla.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-                speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Continuar para finalizar su solicitud!");
-                startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
-
-
-            }
-        });
-        iniciarTextToSpeech();
 
         ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
         ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
 
         ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(TextoResultado.getTextSize()<80) {
+                    TextoResultado.setTextSize(0, TextoResultado.getTextSize() + 12.0f);
+                    btnFinalizar.setTextSize(0, btnFinalizar.getTextSize() + 12.0f);
 
-                pantalla.setScaleX((float) (x + 1));
-                pantalla.setScaleY((float) (y + 1));
-
-
-
+                }
 
             }
+
+
         });
 
         ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
 
-                pantalla.setScaleX((float) (x - 1));
-                pantalla.setScaleY((float) (y - 1));
+                if(btnFinalizar.getTextSize()>66) {
+                    TextoResultado.setTextSize(0, TextoResultado.getTextSize() - 12.0f);
+                    btnFinalizar.setTextSize(0, btnFinalizar.getTextSize() -12.0f);
 
 
+                }
+            }
+        });
+
+
+        ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+        ImageButtonDesactivar= (ImageButton) findViewById(R.id.btnDeshabiltarTTSSTT) ;
+        ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                iniciarTextToSpeech();
+
+
+                pantalla.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Continuar para finalizar su solicitud!");
+                        startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+
+
+                    }
+                });
+
+
+                ImageButtonActivar.setVisibility(View.GONE);
+                ImageButtonDesactivar.setVisibility(View.VISIBLE);
 
             }
         });
 
-        ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
-        ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+        ImageButtonDesactivar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 myTTS.stop();
 
-                iniciarTextToSpeech();
+                pantalla.setOnClickListener(null);
 
+                ImageButtonActivar.setVisibility(View.VISIBLE);
+                ImageButtonDesactivar.setVisibility(View.GONE);
             }
         });
+
 
 
     }
@@ -178,8 +201,7 @@ public class ConfirmacionCompra extends AppCompatActivity {
     }
 
     public void closeApplication(View view) {
-        finish();
-        moveTaskToBack(true);
+        finishAffinity();
     }
 
 

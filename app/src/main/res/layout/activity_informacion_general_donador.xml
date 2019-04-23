@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mpsdk_white"
+    android:fillViewport="true"
+    android:id="@+id/Contenedor"
+    tools:context="com.example.usuario.pruebas.InformacionGeneral"
+    >
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/Pantalla"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintHorizontal_bias="1.0">
+
+    <ImageButton
+        android:id="@+id/btnHabiltarTTSSTT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_enable_accesibilidad"
+        android:contentDescription="Botón para volver a repetir la lectura de pantalla"
+        />
+
+
+    <ImageButton
+        android:id="@+id/btnDeshabiltarTTSSTT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_disable_accesibilidad"
+        android:contentDescription="Botón para deshabilitar lectura de pantalla"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="70dp"
+        android:text="INFORMACIÓN GENERAL DONADOR"
+        android:textColor="@color/cardview_dark_background"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"
+        android:foregroundGravity="center"/>
+
+    <TextView
+        android:id="@+id/TextViewInformacion"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:fadeScrollbars="false"
+        android:focusable="true"
+        android:gravity="center_vertical|fill_horizontal"
+        android:padding="10dp"
+        android:scrollbarStyle="outsideInset"
+        android:scrollbars="vertical"
+        android:text="@string/informacion_general"
+        android:textColor="@color/mpsdk_dark_font_color"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/button3" />
+
+
+
+
+
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="80dp"
+                android:background="@drawable/border_button"
+                android:onClick="irAIngresoAplicacion"
+                android:padding="10dp"
+                android:text="SIGUIENTE"
+                android:textColor="@color/mpsdk_white"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:foregroundGravity="center"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp" />
+
+</android.support.constraint.ConstraintLayout>
+
+
+<ImageButton
+android:id="@+id/zoomIn"
+android:layout_width="0dp"
+android:layout_height="60dp"
+android:layout_marginBottom="8dp"
+android:layout_marginEnd="24dp"
+android:layout_marginRight="24dp"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintRight_toRightOf="parent"
+app:srcCompat="@android:drawable/btn_plus"
+app:layout_constraintLeft_toRightOf="@+id/zoomOut"
+    android:background="@drawable/border_image_button"
+    android:contentDescription="Botón para aumentar el tamaño de letra"
+    />
+
+<ImageButton
+android:id="@+id/zoomOut"
+android:layout_width="0dp"
+android:layout_height="60dp"
+android:layout_marginBottom="8dp"
+android:layout_marginLeft="24dp"
+android:layout_marginRight="8dp"
+android:layout_marginStart="24dp"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintLeft_toLeftOf="parent"
+app:srcCompat="@android:drawable/btn_minus"
+app:layout_constraintRight_toLeftOf="@+id/zoomIn"
+app:layout_constraintHorizontal_bias="0.6"
+    android:background="@drawable/border_image_button"
+    android:contentDescription="Botón para disminuir el tamaño de letra"/>
+
+
+
+</android.support.constraint.ConstraintLayout>

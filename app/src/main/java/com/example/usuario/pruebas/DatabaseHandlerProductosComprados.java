@@ -63,7 +63,7 @@ public class DatabaseHandlerProductosComprados extends SQLiteOpenHelper{
     }
 
 
-    public void addProductosDetalle(ProductosComprados producto) {
+    public void addProductosDetalle(ElementoProductosComprados producto) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_ID_DETALLE, producto.get_idDetalle());
@@ -97,6 +97,8 @@ public class DatabaseHandlerProductosComprados extends SQLiteOpenHelper{
         SQLiteDatabase db=this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_PRODUCTOS +" WHERE 1");
     }
+
+
 
 
 }

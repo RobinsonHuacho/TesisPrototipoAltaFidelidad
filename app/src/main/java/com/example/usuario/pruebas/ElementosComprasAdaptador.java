@@ -21,8 +21,9 @@ public class ElementosComprasAdaptador extends ArrayAdapter<String> {
     private final String []itemImagenes;
     private final String [] itemPrecios;
     private final String tipoImagen;
+    private float tamanoTexto;
 
-    public ElementosComprasAdaptador(Activity context, String[] itemname, String[] itemDescription, String[] itemPrecios, String tipoImagen, String []itemImagenes) {
+    public ElementosComprasAdaptador(Activity context, String[] itemname, String[] itemDescription, String[] itemPrecios, String tipoImagen, String []itemImagenes, float tamanoTexto) {
         super(context, R.layout.item_lista_beneficiario, itemname);
 
         this.context=context;
@@ -31,6 +32,7 @@ public class ElementosComprasAdaptador extends ArrayAdapter<String> {
         this.itemPrecios=itemPrecios;
         this.tipoImagen=tipoImagen;
         this.itemImagenes=itemImagenes;
+        this.tamanoTexto=tamanoTexto;
     }
 
    public View getView(int posicion, View view, ViewGroup parent){
@@ -40,13 +42,25 @@ public class ElementosComprasAdaptador extends ArrayAdapter<String> {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.TextView_Nombres);
         TextView txtDescription = (TextView) rowView.findViewById(R.id.TextView_TotalCompra);
         TextView txtPrecio = (TextView) rowView.findViewById(R.id.TextView_SaldoCompra);
+
+       TextView LabelTotal = (TextView) rowView.findViewById(R.id.Label_TotalCompra);
+       TextView LabelSaldo = (TextView) rowView.findViewById(R.id.Label_SaldoCompra);
+
         SmartImageView imageView= (SmartImageView) rowView.findViewById(R.id.ImageView_Foto);
 
         txtTitle.setText(itemname[posicion]);
         txtDescription.setText(itemDescription[posicion]);
         txtPrecio.setText(itemPrecios[posicion]);
+
+       txtTitle.setTextSize(tamanoTexto);
+       txtDescription.setTextSize(tamanoTexto);
+       txtPrecio.setTextSize(tamanoTexto);
+
+       LabelTotal.setTextSize(tamanoTexto);
+       LabelSaldo.setTextSize(tamanoTexto);
+
         Rect rect = new Rect(imageView.getLeft(),imageView.getTop(), imageView.getRight(),imageView.getBottom());
-        imageView.setImageUrl("http://192.168.0.4:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[posicion], rect);
+        imageView.setImageUrl("http://192.168.0.10:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[posicion], rect);
 
         return rowView;
     }

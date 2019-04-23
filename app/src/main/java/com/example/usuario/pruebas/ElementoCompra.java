@@ -16,9 +16,7 @@ public class ElementoCompra {
     String _idRol;
     String _fotoUsuario;
     String _primerNombreUsuario;
-    String _segundoNombreUsuario;
     String _primerApellidoUsuario;
-    String _segundoApellidoUsuario;
     String _direccionUsuario;
     String _telefonoUsuario;
     String _emailUsuario;
@@ -26,7 +24,7 @@ public class ElementoCompra {
     String _passwordAplicativo;
     String _nombres;
 
-    public ElementoCompra(String _idCompra, String _idUsuario, String _fechaCompra, String _totalCompra, String _saldoCompra, String _estadoCompra, String _idRol, String _fotoUsuario, String _primerNombreUsuario, String _segundoNombreUsuario, String _primerApellidoUsuario, String _segundoApellidoUsuario, String _direccionUsuario, String _telefonoUsuario, String _emailUsuario, String _usuarioAplicativo, String _passwordAplicativo, String _nombres) {
+    public ElementoCompra(String _idCompra, String _idUsuario, String _fechaCompra, String _totalCompra, String _saldoCompra, String _estadoCompra, String _idRol, String _fotoUsuario, String _primerNombreUsuario, String _primerApellidoUsuario, String _direccionUsuario, String _telefonoUsuario, String _emailUsuario, String _usuarioAplicativo, String _passwordAplicativo, String _nombres) {
         this._idCompra = _idCompra;
         this._idUsuario = _idUsuario;
         this._fechaCompra = _fechaCompra;
@@ -36,9 +34,7 @@ public class ElementoCompra {
         this._idRol = _idRol;
         this._fotoUsuario = _fotoUsuario;
         this._primerNombreUsuario = _primerNombreUsuario;
-        this._segundoNombreUsuario = _segundoNombreUsuario;
         this._primerApellidoUsuario = _primerApellidoUsuario;
-        this._segundoApellidoUsuario = _segundoApellidoUsuario;
         this._direccionUsuario = _direccionUsuario;
         this._telefonoUsuario = _telefonoUsuario;
         this._emailUsuario = _emailUsuario;
@@ -122,13 +118,7 @@ public class ElementoCompra {
         this._primerNombreUsuario = _primerNombreUsuario;
     }
 
-    public String get_segundoNombreUsuario() {
-        return _segundoNombreUsuario;
-    }
 
-    public void set_segundoNombreUsuario(String _segundoNombreUsuario) {
-        this._segundoNombreUsuario = _segundoNombreUsuario;
-    }
 
     public String get_primerApellidoUsuario() {
         return _primerApellidoUsuario;
@@ -138,13 +128,7 @@ public class ElementoCompra {
         this._primerApellidoUsuario = _primerApellidoUsuario;
     }
 
-    public String get_segundoApellidoUsuario() {
-        return _segundoApellidoUsuario;
-    }
 
-    public void set_segundoApellidoUsuario(String _segundoApellidoUsuario) {
-        this._segundoApellidoUsuario = _segundoApellidoUsuario;
-    }
 
     public String get_direccionUsuario() {
         return _direccionUsuario;
@@ -207,9 +191,7 @@ public class ElementoCompra {
                 ", _idRol='" + _idRol + '\'' +
                 ", _fotoUsuario='" + _fotoUsuario + '\'' +
                 ", _primerNombreUsuario='" + _primerNombreUsuario + '\'' +
-                ", _segundoNombreUsuario='" + _segundoNombreUsuario + '\'' +
                 ", _primerApellidoUsuario='" + _primerApellidoUsuario + '\'' +
-                ", _segundoApellidoUsuario='" + _segundoApellidoUsuario + '\'' +
                 ", _direccionUsuario='" + _direccionUsuario + '\'' +
                 ", _telefonoUsuario='" + _telefonoUsuario + '\'' +
                 ", _emailUsuario='" + _emailUsuario + '\'' +

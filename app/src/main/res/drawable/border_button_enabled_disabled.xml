@@ -1,0 +1,18 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true">
+        <shape android:padding="10dp"
+            android:shape="rectangle">
+            <solid android:color="@color/colorPrimary" />
+            <corners android:radius="30dip"/>
+        </shape>
+    </item>
+    <item android:state_enabled="false">
+        <shape android:padding="10dp"
+            android:shape="rectangle">
+            <solid android:color="@color/mpsdk_warm_grey" />
+            <corners android:radius="30dip"/>
+
+        </shape>
+    </item>
+
+</selector>

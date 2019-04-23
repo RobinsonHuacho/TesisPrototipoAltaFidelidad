@@ -5,53 +5,153 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.usuario.pruebas.ErrorAnadirProducto"
-    android:id="@+id/Pantalla">
+    >
 
-
-    <ImageView
-        android:id="@+id/imageViewError"
-        android:layout_width="165dp"
-        android:layout_height="206dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/error"
-        app:layout_constraintHorizontal_bias="0.502"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        />
-
-    <TextView
-        android:id="@+id/textViewError"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="32dp"
-        android:gravity="center"
-        android:text="NO SE PUDO AGREGAR EL PRODUCTO! INTÉNTELO NUEVAMENTE"
-        android:textColor="@color/mpsdk_dark_font_color"
-        android:textSize="30sp"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewError"
-        />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="32dp"
-        android:onClick="regresarDetalleBeneficiario"
-        android:text="INTENTAR NUEVAMENTE"
-        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:scrollbars="horizontal"
+        >
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/Pantalla"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewError" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintHorizontal_bias="1.0">
+
+        <ImageButton
+            android:id="@+id/btnHabiltarTTSSTT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/ic_enable_accesibilidad"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="0dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:contentDescription="Botón para volver a repetir la lectura de pantalla"
+            />
+
+        <ImageButton
+            android:id="@+id/btnDeshabiltarTTSSTT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/ic_disable_accesibilidad"
+            android:visibility="gone"
+            android:contentDescription="Botón para deshabilitar lectura de pantalla"/>
+
+
+        <ImageView
+            android:id="@+id/imageViewError"
+            android:layout_width="165dp"
+            android:layout_height="206dp"
+            android:layout_marginTop="70dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/error"
+            app:layout_constraintHorizontal_bias="0.502"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:contentDescription="Image que indica que no se ha podido añadir un producto a la lista definitiva"
+            />
+
+        <TextView
+            android:id="@+id/textViewError"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
+            android:text="ERROR! NO SE PUEDE AÑADIR MÁS DE DOS VECES EL MISMO PRODUCTO! INTÉNTELO NUEVAMENTE CON UN PRODUCTO DISTINTO! RECUÉRDE QUE TIENE UN LÍMITE MÁXIMO DE SOLICITUD DE $30!"
+            android:textColor="@color/mpsdk_dark_font_color"
+            android:textSize="20sp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewError"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/button" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:onClick="vovlerAIntentar"
+            android:text="VOLVER A INTENTAR"
+            android:background="@drawable/border_button"
+            android:textColor="@color/mpsdk_white"
+            android:padding="10dp"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintBottom_toTopOf="@+id/button6" />
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="75dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/border_button"
+            android:onClick="verDetalles"
+            android:padding="10dp"
+            android:text="VER DETALLES"
+            android:textColor="@color/mpsdk_white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>
+    <ImageButton
+        android:id="@+id/zoomIn"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@android:drawable/btn_plus"
+        app:layout_constraintLeft_toRightOf="@+id/zoomOut"
+        android:background="@drawable/border_image_button"
+        android:contentDescription="Botón para aumentar el tamaño de letra"
+        />
+
+    <ImageButton
+        android:id="@+id/zoomOut"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:srcCompat="@android:drawable/btn_minus"
+        app:layout_constraintRight_toLeftOf="@+id/zoomIn"
+        app:layout_constraintHorizontal_bias="0.6"
+        android:background="@drawable/border_image_button"
+        android:contentDescription="Botón para disminuir el tamaño de letra"
+        />
 
 </android.support.constraint.ConstraintLayout>

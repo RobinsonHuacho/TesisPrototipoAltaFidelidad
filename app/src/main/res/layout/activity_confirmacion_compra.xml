@@ -6,9 +6,22 @@
     android:layout_height="match_parent"
     tools:context="com.example.usuario.pruebas.ConfirmacionCompra">
 
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:scrollbars="horizontal"
+        >
+
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/Pantalla"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -26,6 +39,19 @@
             android:layout_marginTop="0dp"
             android:layout_marginRight="0dp"
             app:layout_constraintRight_toRightOf="parent"
+            android:contentDescription="Botón para volver a repetir la lectura de pantalla"
+            />
+
+        <ImageButton
+            android:id="@+id/btnDeshabiltarTTSSTT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/ic_disable_accesibilidad"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:contentDescription="Botón para deshabilitar lectura de pantalla y comandos por voz"
+            android:layout_marginTop="0dp"
+            android:visibility="gone"
             />
 
     <ImageView
@@ -39,7 +65,8 @@
         app:srcCompat="@drawable/check"
         app:layout_constraintHorizontal_bias="0.502"
         android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp" />
+        android:layout_marginRight="32dp"
+        android:contentDescription="Imagen que indica que la solicitud se ha realizado con éxito"/>
 
     <TextView
         android:id="@+id/TextViewInformacion"
@@ -49,7 +76,7 @@
         android:layout_marginRight="24dp"
         android:layout_marginTop="32dp"
         android:gravity="center"
-        android:text="COMPRA EXITOSA!"
+        android:text="SU SOLICITUD HA SIDO INGRESADA EXITOSAMENTE A LA ESPERA DE UN DONADOR! SE LE NOTIFICARÁ CUANDO PUEDA RETIRAR LOS PRODUCTOS!"
         android:textColor="@color/mpsdk_dark_font_color"
         android:textSize="35sp"
         app:layout_constraintHorizontal_bias="0.0"
@@ -65,15 +92,18 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="32dp"
             android:onClick="closeApplication"
-            android:text="CONTINUAR"
+            android:text="FINALIZAR"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-
+            android:background="@drawable/border_button"
+            android:textColor="@color/mpsdk_white"
+            android:padding="10dp"
             app:layout_constraintTop_toBottomOf="@+id/TextViewInformacion" />
 
 </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 
 
 <ImageButton
@@ -87,6 +117,8 @@ app:layout_constraintBottom_toBottomOf="parent"
 app:layout_constraintRight_toRightOf="parent"
 app:srcCompat="@android:drawable/btn_plus"
 app:layout_constraintLeft_toRightOf="@+id/zoomOut"
+    android:background="@drawable/border_image_button"
+    android:contentDescription="Botón para aumentar el tamaño de letra"
     />
 
 <ImageButton
@@ -101,7 +133,10 @@ app:layout_constraintBottom_toBottomOf="parent"
 app:layout_constraintLeft_toLeftOf="parent"
 app:srcCompat="@android:drawable/btn_minus"
 app:layout_constraintRight_toLeftOf="@+id/zoomIn"
-app:layout_constraintHorizontal_bias="0.6" />
+app:layout_constraintHorizontal_bias="0.6"
+    android:background="@drawable/border_image_button"
+    android:contentDescription="Botón para disminuir el tamaño de letra"
+    />
 
 
 

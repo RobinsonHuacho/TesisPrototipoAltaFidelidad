@@ -116,6 +116,21 @@ public class DatabaseHandlerProducto extends SQLiteOpenHelper {
         }
     }*/
 
+
+
+
+    public ArrayList getAllProductos(int elemento,String idCategoria) {
+        ArrayList<String> productosList = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRODUCTOS +" WHERE "+ KEY_ID_CATEGORIA + "=?", new String[]{idCategoria});
+        if (cursor.moveToFirst()) {
+            do {
+                productosList.add(cursor.getString(elemento));
+            } while (cursor.moveToNext());
+        }
+        return productosList;
+    }
+
     public ElementoProducto getIdProductoPorNombre(String nombre) {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
@@ -137,32 +152,29 @@ public class DatabaseHandlerProducto extends SQLiteOpenHelper {
     }
 
 
-
-    public ArrayList getAllProductos(int elemento) {
-        ArrayList<String> productosList = new ArrayList<>();
-        String sql_select = "SELECT * FROM " + TABLE_PRODUCTOS;
+    public ElementoProducto getIdProductoPorCategoria(String idCategoria) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(sql_select, null);
-        if (cursor.moveToFirst()) {
-            do {
-                productosList.add(cursor.getString(elemento));
-            } while (cursor.moveToNext());
+        try {
+            Cursor cursor = db.query(TABLE_PRODUCTOS, new
+                    String[]{KEY_ID, KEY_ID_CATEGORIA, KEY_NOMBRE, KEY_DESCRIPCION, KEY_PRECIO_UNITARIO, KEY_IMAGEN}, KEY_ID_CATEGORIA + "=?", new
+                    String[]{String.valueOf(idCategoria)}, null, null, null);
+
+            if (cursor != null) {
+                cursor.moveToFirst();
+            }
+            ElementoProducto producto = new ElementoProducto(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5));
+
+            return producto;
+        } catch (Exception error) {
+
+            ElementoProducto productoR = new ElementoProducto();
+            return productoR;
         }
-        return productosList;
     }
 
-    public ArrayList getProductos(String id, int elemento) {
-        ArrayList<String> productosList = new ArrayList<>();
-        String sql_select = "SELECT * FROM " + TABLE_PRODUCTOS+" WHERE "+KEY_ID+" = "+id;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(sql_select, null);
-        if (cursor.moveToFirst()) {
-            do {
-                productosList.add(cursor.getString(elemento));
-            } while (cursor.moveToNext());
-        }
-        return productosList;
-    }
+
+
+
 
     public int updateProducto(ElementoProducto producto) {
         SQLiteDatabase db = this.getWritableDatabase();

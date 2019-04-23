@@ -8,6 +8,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ public class ErrorConfirmacionCompra extends AppCompatActivity {
     private ConstraintLayout pantalla;
     private TextView TextoResultado;
     private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar;
+    private Button btnIntentarNuevamente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,7 @@ public class ErrorConfirmacionCompra extends AppCompatActivity {
 
 
         TextoResultado = (TextView) findViewById(R.id.textViewError);
+        btnIntentarNuevamente = (Button) findViewById(R.id.button);
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
 
@@ -55,33 +58,33 @@ public class ErrorConfirmacionCompra extends AppCompatActivity {
         ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
 
         ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(TextoResultado.getTextSize()<105) {
+                    TextoResultado.setTextSize(0, TextoResultado.getTextSize() + 12.0f);
+                    btnIntentarNuevamente.setTextSize(0, btnIntentarNuevamente.getTextSize() + 12.0f);
 
-                pantalla.setScaleX((float) (x + 1));
-                pantalla.setScaleY((float) (y + 1));
-
-
-
+                }
 
             }
+
+
         });
 
         ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
 
-                pantalla.setScaleX((float) (x - 1));
-                pantalla.setScaleY((float) (y - 1));
+                if(TextoResultado.getTextSize()>66) {
+                    TextoResultado.setTextSize(0, TextoResultado.getTextSize() - 12.0f);
+                    btnIntentarNuevamente.setTextSize(0, btnIntentarNuevamente.getTextSize() -12.0f);
 
 
-
+                }
             }
         });
 
@@ -176,8 +179,7 @@ public class ErrorConfirmacionCompra extends AppCompatActivity {
     }
 
     public void intentarMasTarde(View view){
-        finish();
-        moveTaskToBack(true);
+        finishAffinity();
     }
 
 }

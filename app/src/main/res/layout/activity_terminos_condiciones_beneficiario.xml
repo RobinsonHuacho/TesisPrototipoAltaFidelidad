@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mpsdk_white"
+    android:fillViewport="true"
+    android:id="@+id/Contenedor"
+    tools:context="com.example.usuario.pruebas.TerminosCondicionesBeneficiario"
+    >
+
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/Pantalla"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
+            <ImageButton
+                android:id="@+id/btnHabiltarTTSSTT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/ic_enable_accesibilidad"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:contentDescription="Botón para habilitar lectura de pantalla y comandos por voz"
+                android:textColor="@color/cardview_dark_background"
+
+                />
+
+
+            <ImageButton
+                android:id="@+id/btnDeshabiltarTTSSTT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/ic_disable_accesibilidad"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:contentDescription="Botón para deshabilitar lectura de pantalla y comandos por voz"
+                android:textColor="@color/cardview_dark_background"
+                android:layout_marginTop="0dp"
+                android:visibility="gone"
+                />
+
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="70dp"
+                android:text="TÉRMINOS Y CONDICIONES"
+                android:textColor="@color/cardview_dark_background"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintHorizontal_bias="0.507"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:gravity="center"
+                android:foregroundGravity="center"/>
+
+            <TextView
+                android:id="@+id/TextViewInformacion"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:fadeScrollbars="false"
+                android:focusable="true"
+                android:gravity="center_vertical|fill_horizontal"
+                android:padding="10dp"
+                android:scrollbarStyle="outsideInset"
+                android:scrollbars="vertical"
+                android:text="Dona y Ayuda es una aplicación accesible que permite a las personas realizar solicitudes de productos de primera necesidad.\nEl uso de la App atribuye la condición de Usuario a cualquier persona que maneje la misma (en adelante, el “Usuario”) e implica la aceptación plena, sin reservas y en su totalidad de los presentes términos y condiciones de uso de la App.
+                \n\nUTILIZACIÓN DE LA APP POR PARTE DEL BENEFICIARIO\nEl beneficiario deberá ser mayor de edad para descargarse la App y deberá usar la App y sus contenidos conforme a las presentes Condiciones Generales, la buena fe y la legislación vigente aplicable. \n\nUTILIZACIÓN DE LA APP (BENEFICIARIO)\n\n* El beneficiario deberá registrarse en la aplicación.\n* El beneficiario podrá solicitar productos no perescibles.\n* Al momento de haber seleccionado un producto de una categoría en específico, solamente podrá elejir una cantidad máxima de 2.\n* El beneficiario no podrá añadir a su lista, un tipo de producto que ya haya añadido anteriomente."
+                android:textColor="@color/mpsdk_dark_font_color"
+                android:textSize="18sp"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/btn_Continuar" />
+
+            <Button
+                android:id="@+id/btn_Continuar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="75dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/border_button"
+                android:foregroundGravity="bottom"
+                android:padding="10dp"
+                android:text="ACEPTAR Y CONTINUAR"
+                android:textColor="@color/mpsdk_white"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.358"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/btn_Regresar" />
+
+            <Button
+                android:id="@+id/btn_Regresar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="24dp"
+                android:background="@drawable/border_button"
+                android:foregroundGravity="bottom"
+                android:padding="10dp"
+                android:text="REGRESAR"
+                android:textColor="@color/mpsdk_white"
+                android:textSize="20dp"
+                app:layout_constraintLeft_toRightOf="@+id/Btn_Continuar"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBaseline_toBaselineOf="@+id/btn_Continuar" />
+
+
+
+
+
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+        <ImageButton
+            android:id="@+id/zoomIn"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/zoomOut"
+            app:layout_constraintRight_toRightOf="parent"
+            app:srcCompat="@android:drawable/btn_plus"
+            android:background="@drawable/border_image_button"
+            android:contentDescription="Botón para aumentar el tamaño de letra"
+            />
+
+        <ImageButton
+            android:id="@+id/zoomOut"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.6"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/zoomIn"
+            app:srcCompat="@android:drawable/btn_minus"
+            android:background="@drawable/border_image_button"
+            android:contentDescription="Botón para disminuir el tamaño de letra"
+            />
+
+
+
+</android.support.constraint.ConstraintLayout>

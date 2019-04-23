@@ -28,11 +28,13 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 import static android.content.Intent.EXTRA_INDEX;
+import static android.content.Intent.EXTRA_REFERRER;
+import static android.content.Intent.EXTRA_TITLE;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class Donacion extends AppCompatActivity {
 
-    private ValidadorTarjetaCredito validadorTarjetaCredito;
+
 
     private EditText EditTextMonto;
 
@@ -41,15 +43,21 @@ public class Donacion extends AppCompatActivity {
     private static final int RECONOCEDOR_VOZ = 7;
     private TextToSpeech myTTS;
     private ConstraintLayout pantalla;
-    private TextView InformacionPantalla;
-    private ImageButton ImageButtonActivar,ImageButtonDesactivar,ImageButtonZoomIn,ImageButtonZoomOut;
+    private TextView InformacionPantalla,
+            TextView_Monto,
+            TextView_Monto$;
+    private ImageButton ImageButtonActivar,
+            ImageButtonDesactivar,
+            ImageButtonZoomIn,
+            ImageButtonZoomOut;
 
     private static final int PAYPAL_REQUEST_CODE=7171;
 
     private static PayPalConfiguration config = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
             .clientId(Config.PAYPAL_CLIENT_ID);
 
-    Button buttonPagar;
+    Button buttonContinuar,
+            buttonRegresar;
     String monto="";
 
     @Override
@@ -62,12 +70,15 @@ public class Donacion extends AppCompatActivity {
         startService(intent);
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
-        buttonPagar = (Button) findViewById(R.id.Btn_Continuar);
 
         EditTextMonto=(EditText) findViewById(R.id.EditText_Monto);
         EditTextMonto.setBackgroundResource(R.drawable.border_color);
 
         InformacionPantalla=(TextView) findViewById(R.id.textView14);
+        buttonContinuar = (Button) findViewById(R.id.Btn_Continuar);
+        buttonRegresar = (Button) findViewById(R.id.Btn_Regresar);
+        TextView_Monto=(TextView) findViewById(R.id.TextView_Monto);
+        TextView_Monto$=(TextView) findViewById(R.id.TextView_Monto$);
 
         ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
         ImageButtonDesactivar= (ImageButton) findViewById(R.id.btnDeshabiltarTTSSTT) ;
@@ -82,7 +93,8 @@ public class Donacion extends AppCompatActivity {
 
                 iniciarTextToSpeech();
 
-
+                ImageButtonActivar.setVisibility(View.GONE);
+                ImageButtonDesactivar.setVisibility(View.VISIBLE);
 
             }
         });
@@ -104,38 +116,46 @@ public class Donacion extends AppCompatActivity {
         ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
 
         ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(InformacionPantalla.getTextSize()<75) {
+                    InformacionPantalla.setTextSize(0, InformacionPantalla.getTextSize() + 12.0f);
+                    TextView_Monto.setTextSize(0, TextView_Monto.getTextSize() + 12.0f);
+                    TextView_Monto$.setTextSize(0, TextView_Monto$.getTextSize() + 12.0f);
+                    EditTextMonto.setTextSize(0, EditTextMonto.getTextSize() + 12.0f);
+                    buttonContinuar.setTextSize(0, buttonContinuar.getTextSize() + 12.0f);
+                    buttonRegresar.setTextSize(0, buttonRegresar.getTextSize() + 12.0f);
 
-                pantalla.setScaleX((float) (x + 1));
-                pantalla.setScaleY((float) (y + 1));
-
-
-
+                }
 
             }
+
+
         });
 
         ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
 
-                pantalla.setScaleX((float) (x - 1));
-                pantalla.setScaleY((float) (y - 1));
+                if(InformacionPantalla.getTextSize()>66) {
+                    InformacionPantalla.setTextSize(0, InformacionPantalla.getTextSize() - 12.0f);
+                    TextView_Monto.setTextSize(0, TextView_Monto.getTextSize() - 12.0f);
+                    TextView_Monto$.setTextSize(0, TextView_Monto$.getTextSize() - 12.0f);
+                    EditTextMonto.setTextSize(0, EditTextMonto.getTextSize() - 12.0f);
+                    buttonContinuar.setTextSize(0, buttonContinuar.getTextSize() - 12.0f);
+                    buttonRegresar.setTextSize(0, buttonRegresar.getTextSize() - 12.0f);
 
-
-
+                }
             }
         });
 
 
-        buttonPagar.setOnClickListener(new View.OnClickListener() {
+
+        buttonContinuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -172,6 +192,8 @@ public class Donacion extends AppCompatActivity {
         final Intent intent = getIntent();
         final String messageIdCompra = intent.getStringExtra(EXTRA_INDEX);
         final String messageIdUsuario = intent.getStringExtra(EXTRA_MESSAGE);
+        final String messageNombre = intent.getStringExtra(EXTRA_TITLE);
+        final String messageApellido = intent.getStringExtra(EXTRA_REFERRER);
 
         if(requestCode == PAYPAL_REQUEST_CODE ){
             if(resultCode == RESULT_OK){
@@ -185,6 +207,8 @@ public class Donacion extends AppCompatActivity {
                                 .putExtra("PaymentAmount",EditTextMonto.getText().toString())
                                 .putExtra(Intent.EXTRA_INDEX, messageIdCompra)
                                 .putExtra(EXTRA_MESSAGE, messageIdUsuario)
+                                .putExtra(EXTRA_TITLE, messageNombre)
+                                .putExtra(EXTRA_REFERRER, messageApellido)
                         );
 
                         Toast.makeText(this,monto,Toast.LENGTH_LONG).show();
@@ -249,7 +273,7 @@ public class Donacion extends AppCompatActivity {
         //Toast.makeText(getApplicationContext(),messageIdCompra,Toast.LENGTH_LONG).show();
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://192.168.0.4:8080/ProyectoIntegrador/nuevaDonacion.php";
+        String url ="http://192.168.0.10:8080/ProyectoIntegrador/nuevaDonacion.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,new
                 Response.Listener<String>() {
                     @Override

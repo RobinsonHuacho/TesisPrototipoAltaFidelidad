@@ -1,9 +1,6 @@
 package com.example.usuario.pruebas;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -12,44 +9,31 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.text.Normalizer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import static android.content.Intent.EXTRA_INDEX;
+import static android.content.Intent.EXTRA_REFERRER;
+import static android.content.Intent.EXTRA_TITLE;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class ListaProductos extends AppCompatActivity {
 
     GridView gridView;
-    public String idCategoriaProducto;
+    private String idCategoriaProducto;
     private ArrayList<String> gridViewItemsID = new ArrayList<String>();
     private ArrayList<String> gridViewItemsNombre = new ArrayList<String>();
     private ArrayList<String> gridViewItemsDetalle = new ArrayList<String>();
     private ArrayList<String> gridViewItemsPrecio = new ArrayList<String>();
     private ArrayList<String> gridViewItemsImagen = new ArrayList<String>();
 
-    private String selectedId, selectedItem, selectedPrecio;
+    private String selectedId, selectedImage,selectedItem, selectedPrecio;
     String[] arregloID;
     ElementosProductosAdaptador adapter;
     DatabaseHandlerProducto db = new DatabaseHandlerProducto(this);
@@ -59,8 +43,8 @@ public class ListaProductos extends AppCompatActivity {
     private TextToSpeech myTTS;
     private ConstraintLayout pantalla;
     private GridView GridView_Productos;
-    private TextView InformacionPantalla;
-    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar;
+    private TextView InformacionPantalla,TextView_Precio$;
+    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar,ImageButtonDesactivar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,33 +55,103 @@ public class ListaProductos extends AppCompatActivity {
         idCategoriaProducto=intent.getStringExtra(EXTRA_INDEX);
         //Toast.makeText(getApplicationContext(),idCategoriaProducto, Toast.LENGTH_LONG).show();
 
-        db.deleteProductos();
 
-        for (int i=0;i<2;i++){
-            ExecTasks t = new ExecTasks(ListaProductos.this);
-            t.execute();
-        }
+             db.deleteProductos();
 
-        InformacionPantalla=(TextView) findViewById(R.id.textView3);
+
+
+           DatabaseHandlerProducto db = new DatabaseHandlerProducto(getApplicationContext());
+            db.addProductos(new ElementoProducto("1","1","LECHE","","1.5","leche.png"));
+            db.addProductos(new ElementoProducto("5", "2", "ATUN", "", "0.5", "atun.jpg"));
+            db.addProductos(new ElementoProducto("6", "2", "SARDINA", "", "1.25", "sardina.jpg"));
+            db.addProductos(new ElementoProducto("7", "2", "ACEITE", "", "1.5", "aceite.jpg"));
+            db.addProductos(new ElementoProducto("8", "2", "ARROZ", "", "2.5", "arroz.jpg"));
+            db.addProductos(new ElementoProducto("9", "2", "AZUCAR", "", "2.75", "azucar.jpg"));
+            db.addProductos(new ElementoProducto("10", "2", "FIDEOS", "", "1.75", "fideos.jpg"));
+            db.addProductos(new ElementoProducto("11", "2", "GELATINA", "", "1.05", "gelatina.jpg"));
+            db.addProductos(new ElementoProducto("12", "2", "HARINA", "", "2.25", "harina.jpg"));
+            db.addProductos(new ElementoProducto("13", "2", "MAYONESA", "", "2.5", "mayonesa.jpg"));
+            db.addProductos(new ElementoProducto("4", "2", "SAL", "", "1.65", "sal.jpg"));
+            db.addProductos(new ElementoProducto("15", "2", "SALSA DE TOMATE", "", "1.75", "salsa_tomate.jpg"));
+            db.addProductos(new ElementoProducto("16", "2", "SOPAS Y CREMAS", "", "0.85","sopa.jpg"));
+            db.addProductos(new ElementoProducto("20", "2", "AVENA", "", "1.65", "avena.jpg"));
+            db.addProductos(new ElementoProducto("26", "3", "ARVEJA", "", "1.25", "arvejas.jpg"));
+            db.addProductos(new ElementoProducto("27", "3", "FREJOL", "", "1.25", "frejol.jpg"));
+            db.addProductos(new ElementoProducto("28", "3", "LENTEJA", "", "1.25", "lentejas.jpg"));
+            db.addProductos(new ElementoProducto("29", "3", "MAIZ", "", "1.25", "maiz.jpg"));
+            db.addProductos(new ElementoProducto("32", "3", "GARBANZO", "", "1.25", "garbanzos.jpg"));
+            db.addProductos(new ElementoProducto("33", "4", "CAFE", "", "1.75", "cafe.jpg"));
+            db.addProductos(new ElementoProducto("34", "4", "AGUA", "", "1", "agua.jpg"));
+            db.addProductos(new ElementoProducto("35", "4", "JUGO", "", "1.75", "jugos.jpg"));
+            db.addProductos(new ElementoProducto("38", "5", "PASTA DE DIENTES", "", "2.25", "pasta_dientes.jpg"));
+            db.addProductos(new ElementoProducto("39", "5", "JABON", "", "0.75", "jabon.jpg"));
+            db.addProductos(new ElementoProducto("40", "5", "SHAMPOO", "", "3", "shampoo.png"));
+            db.addProductos(new ElementoProducto("41", "5", "DETERGENTE", "", "1.75", "detergente.jpg"));
+            db.addProductos(new ElementoProducto("42", "5", "CEPILLO DE DIENTES", "", "0.75", "cepilloDientes.jpg"));
+            db.addProductos(new ElementoProducto("43", "5", "APEL HIGIENICO", "", "3.75", "papelHigienico.jpg"));
+            db.addProductos(new ElementoProducto("44", "5", "DESODORANTE", "", "3.75", "desodorante.jpg"));
+
+
+        gridViewItemsID = db.getAllProductos(0,idCategoriaProducto);
+        gridViewItemsNombre = db.getAllProductos(2,idCategoriaProducto);
+        gridViewItemsDetalle = db.getAllProductos(3,idCategoriaProducto);
+        gridViewItemsPrecio = db.getAllProductos(4,idCategoriaProducto);
+        gridViewItemsImagen = db.getAllProductos(5,idCategoriaProducto);
+
+        //Toast.makeText(getApplicationContext(),gridViewItemsImagen.toString(), Toast.LENGTH_LONG).show();
+        arregloID = gridViewItemsID.toArray(new String[0]);
+        String[] arregloProductos = gridViewItemsNombre.toArray(new String[0]);
+        String[] arregloDescripcion = gridViewItemsDetalle.toArray(new String[0]);
+        String[] arregloImagenes = gridViewItemsImagen.toArray(new String[0]);
+        String[] arregloPrecios = gridViewItemsPrecio.toArray(new String[0]);
+
+        adapter = new ElementosProductosAdaptador(ListaProductos.this, arregloProductos, arregloDescripcion, arregloPrecios, "Productos", arregloImagenes,16);
+        gridView = (GridView) findViewById(R.id.GridView_Productos);
+        gridView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                                ConstraintLayout ll = (ConstraintLayout) view;
+                                                TextView tv = (TextView) ll.findViewById(R.id.TextView_Nombre);
+                                                TextView tv2 = (TextView) ll.findViewById(R.id.TextView_Precio);
+
+                                                selectedId = arregloID[position].toString();
+                                                selectedImage=arregloImagenes[position].toString();
+                                                selectedItem = tv.getText().toString();
+                                                selectedPrecio = tv2.getText().toString();
+
+                                                Intent intent = new Intent(getApplicationContext(), AnadirDetalleCompra.class);
+
+                                                intent.putExtra(EXTRA_INDEX, selectedId);
+                                                intent.putExtra(EXTRA_TITLE,selectedImage);
+                                                intent.putExtra(EXTRA_MESSAGE, selectedItem);
+                                                intent.putExtra(Intent.EXTRA_TEXT, selectedPrecio);
+                                                intent.putExtra(EXTRA_REFERRER, idCategoriaProducto);
+
+                                                //Toast.makeText(getApplicationContext(),selectedId+" "+selectedItem+" "+selectedDescription+" "+selectedPrecio, Toast.LENGTH_LONG).show();
+
+                                                startActivity(intent);
+                                            }
+                                        });
+
+
+
+
+
+
+
+                InformacionPantalla=(TextView) findViewById(R.id.textView3);
+        TextView_Precio$=(TextView) findViewById(R.id.textView3);
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
         GridView_Productos = (GridView) findViewById(R.id.GridView_Productos);
-
-        pantalla.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-                speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie el producto que desea comprar!");
-                startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+        GridView_Productos.setHorizontalScrollBarEnabled(true);
+        GridView_Productos.setVerticalScrollBarEnabled(true);
 
 
-            }
-        });
-
-        iniciarTextToSpeech();
 
         ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
         ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
@@ -105,12 +159,19 @@ public class ListaProductos extends AppCompatActivity {
         ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(InformacionPantalla.getTextSize()<90) {
+                    InformacionPantalla.setTextSize(0, InformacionPantalla.getTextSize() + 12.0f);
+                    TextView_Precio$.setTextSize(0, TextView_Precio$.getTextSize() + 12.0f);
 
-                pantalla.setScaleX((float) (x + 1));
-                pantalla.setScaleY((float) (y + 1));
+                    String[] arregloProductos = gridViewItemsNombre.toArray(new String[0]);
+                    String[] arregloDescripcion = gridViewItemsDetalle.toArray(new String[0]);
+                    String[] arregloImagenes = gridViewItemsImagen.toArray(new String[0]);
+                    String[] arregloPrecios = gridViewItemsPrecio.toArray(new String[0]);
+
+                    adapter = new ElementosProductosAdaptador(ListaProductos.this, arregloProductos, arregloDescripcion, arregloPrecios, "Productos", arregloImagenes,22);
+                    gridView.setAdapter(adapter);
+
+                }
 
 
 
@@ -121,29 +182,65 @@ public class ListaProductos extends AppCompatActivity {
         ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(InformacionPantalla.getTextSize()>66) {
+                    InformacionPantalla.setTextSize(0, InformacionPantalla.getTextSize() - 12.0f);
+                    TextView_Precio$.setTextSize(0, TextView_Precio$.getTextSize() - 12.0f);
 
-                pantalla.setScaleX((float) (x - 1));
-                pantalla.setScaleY((float) (y - 1));
+                    String[] arregloProductos = gridViewItemsNombre.toArray(new String[0]);
+                    String[] arregloDescripcion = gridViewItemsDetalle.toArray(new String[0]);
+                    String[] arregloImagenes = gridViewItemsImagen.toArray(new String[0]);
+                    String[] arregloPrecios = gridViewItemsPrecio.toArray(new String[0]);
 
+                    adapter = new ElementosProductosAdaptador(ListaProductos.this, arregloProductos, arregloDescripcion, arregloPrecios, "Productos", arregloImagenes,16);
+                    gridView.setAdapter(adapter);
+
+                }
 
 
             }
         });
 
         ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+        ImageButtonDesactivar= (ImageButton) findViewById(R.id.btnDeshabiltarTTSSTT) ;
         ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                iniciarTextToSpeech();
+
+                pantalla.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie el producto que desea comprar!");
+                        startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+
+
+                    }
+                });
+
+                ImageButtonActivar.setVisibility(View.GONE);
+                ImageButtonDesactivar.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        ImageButtonDesactivar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 myTTS.stop();
 
-                iniciarTextToSpeech();
+                pantalla.setOnClickListener(null);
 
+                ImageButtonActivar.setVisibility(View.VISIBLE);
+                ImageButtonDesactivar.setVisibility(View.GONE);
             }
         });
+
 
 
     }
@@ -203,6 +300,7 @@ public class ListaProductos extends AppCompatActivity {
 
         try {
             selectedId = db.getIdProductoPorNombre(escuchado).getIdProducto().toString();
+
             selectedItem = tv.getText().toString();
             selectedPrecio = tv2.getText().toString();
 
@@ -212,7 +310,7 @@ public class ListaProductos extends AppCompatActivity {
             intent.putExtra(EXTRA_MESSAGE, selectedItem);
             intent.putExtra(Intent.EXTRA_TEXT, selectedPrecio);
 
-            Toast.makeText(getApplicationContext(), selectedId + " " + selectedItem + " " + selectedPrecio, Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), selectedId + " " + selectedItem + " " + selectedPrecio, Toast.LENGTH_LONG).show();
 
             startActivity(intent);
         }catch (Exception e){
@@ -244,7 +342,7 @@ public class ListaProductos extends AppCompatActivity {
                 }else{
                     myTTS.setLanguage(Locale.getDefault());
                     speak("En esta pantalla se presentan los diferentes "+InformacionPantalla.getText().toString()+"." +
-                            ". Toque la pantalla y pronuncie el que desee después del tono");
+                            ". Toque la pantalla y pronuncie el que desee ");
                 }
             }
         });
@@ -258,134 +356,8 @@ public class ListaProductos extends AppCompatActivity {
         }
     }
 
-    public class ExecTasks extends AsyncTask<Void, Void, ArrayAdapter<String>> {
-
-        Context context;
-        ProgressDialog pDialog;
-
-        public ExecTasks(Context context){
-            this.context = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            pDialog = new ProgressDialog(context);
-            pDialog.setMessage("Cargando Lista");
-            pDialog.setCancelable(true);
-            pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            pDialog.show();
-        }
-
-        @Override
-        protected ArrayAdapter<String> doInBackground(Void... params) {
-
-            try{
-                Thread.sleep(3000);
 
 
-            }catch(Exception ex){
-                ex.printStackTrace();
-            }
-
-            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url2 ="http://192.168.0.4:8080/ProyectoIntegrador/producto.php";
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
-                    try {
-                        JSONObject jsonObj = new
-                                JSONObject(response.toString());
-
-                        JSONArray contacts = jsonObj.getJSONArray("producto");
-                        for (int i = 0; i < contacts.length(); i++) {
-                            JSONObject c = contacts.getJSONObject(i);
-
-                            String id = c.getString("ID_PRODUCTO");
-                            String id_categoria_producto  = c.getString("ID_CATEGORIA_PRODUCTO");
-                            String nombre_producto = c.getString("NOMBRE_PRODUCTO");
-                            String detalle_producto = c.getString("DETALLE_PRODUCTO");
-                            String precio_unitario=c.getString("PRECIO_UNITARIO");
-                            String imagen_producto = c.getString("IMAGEN_PRODUCTO");
-                            DatabaseHandlerProducto db = new DatabaseHandlerProducto(getApplicationContext());
-                            db.addProductos(new ElementoProducto(id, id_categoria_producto,nombre_producto,detalle_producto,precio_unitario,imagen_producto));
-                            //Log.d("Insert","Contacto insertado correctamente");
-                        }
-                    }
-                    catch (final JSONException e) {
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    //mTextView.setText("That didn't work!");
-                }
-            }){
-                @Override
-                protected Map<String,String> getParams() {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("idCategoria", idCategoriaProducto);
-                    return params;
-                }
-            };
-            queue.add(stringRequest);
-
-
-            gridViewItemsID = db.getAllProductos(0);
-            gridViewItemsNombre = db.getAllProductos(2);
-            gridViewItemsDetalle = db.getAllProductos(3);
-            gridViewItemsPrecio = db.getAllProductos(4);
-            gridViewItemsImagen = db.getAllProductos(5);
-
-            //Toast.makeText(getApplicationContext(),gridViewItemsImagen.toString(), Toast.LENGTH_LONG).show();
-            arregloID = gridViewItemsID.toArray(new String[0]);
-            String[] arregloProductos = gridViewItemsNombre.toArray(new String[0]);
-            String[] arregloDescripcion = gridViewItemsDetalle.toArray(new String[0]);
-            String[] arregloImagenes = gridViewItemsImagen.toArray(new String[0]);
-            String[] arregloPrecios = gridViewItemsPrecio.toArray(new String[0]);
-
-            adapter = new ElementosProductosAdaptador(ListaProductos.this, arregloProductos, arregloDescripcion, arregloPrecios, "Productos", arregloImagenes);
-            gridView = (GridView) findViewById(R.id.GridView_Productos);
-
-            return adapter;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayAdapter<String> stringArrayAdapter) {
-            super.onPostExecute(stringArrayAdapter);
-
-            gridView.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            pDialog.dismiss();
-
-            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                    LinearLayout ll = (LinearLayout) view;
-                    TextView tv = (TextView) ll.findViewById(R.id.TextView_Nombre);
-                    TextView tv2 = (TextView) ll.findViewById(R.id.TextView_Precio);
-
-                    selectedId = arregloID[position].toString();
-                    selectedItem = tv.getText().toString();
-                    selectedPrecio = tv2.getText().toString();
-
-                    Intent intent = new Intent(getApplicationContext(), AnadirDetalleCompra.class);
-
-                    intent.putExtra(EXTRA_INDEX, selectedId);
-                    intent.putExtra(EXTRA_MESSAGE, selectedItem);
-                    intent.putExtra(Intent.EXTRA_TEXT, selectedPrecio);
-
-                    //Toast.makeText(getApplicationContext(),selectedId+" "+selectedItem+" "+selectedDescription+" "+selectedPrecio, Toast.LENGTH_LONG).show();
-
-                    startActivity(intent);
-                }
-            });
-        }
-
-    }
 
 }
 

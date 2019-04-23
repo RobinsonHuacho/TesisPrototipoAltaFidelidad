@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.github.snowdream.android.widget.SmartImageView;
 
+
 /**
  * Adaptador de leads
  */
@@ -18,16 +19,18 @@ public class ElementosCategoriaProductoAdaptador extends ArrayAdapter<String> {
     private final Activity context;
     private final String[] itemname;
     private final String []itemImagenes;
-    private final String tipoImagen;
+    private float tamanoTexto;
 
 
-    public ElementosCategoriaProductoAdaptador(Activity context, String[] itemname, String tipoImagen,String []itemImagenes) {
+    public ElementosCategoriaProductoAdaptador(Activity context, String[] itemname, String []itemImagenes, float tamanoTexto) {
         super(context, R.layout.item_categoria_producto, itemname);
         this.context=context;
         this.itemname = itemname;
         this.itemImagenes = itemImagenes;
-        this.tipoImagen = tipoImagen;
+        this.tamanoTexto=tamanoTexto;
     }
+
+
 
 
     @Override
@@ -37,8 +40,10 @@ public class ElementosCategoriaProductoAdaptador extends ArrayAdapter<String> {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.TextView_Nombre_Categoria);
         SmartImageView imageView= (SmartImageView) rowView.findViewById(R.id.ImageView_Categoria_Producto);
         txtTitle.setText(itemname[position]);
+        txtTitle.setTextSize(tamanoTexto);
+
         Rect rect = new Rect(imageView.getLeft(),imageView.getTop(), imageView.getRight(),imageView.getBottom());
-        imageView.setImageUrl("http://192.168.0.4:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[position], rect);
+        imageView.setImageUrl("http://192.168.0.10:8080/ProyectoIntegrador/Images/CategoriaProductos/"+itemImagenes[position], rect);
 
         return rowView;
 

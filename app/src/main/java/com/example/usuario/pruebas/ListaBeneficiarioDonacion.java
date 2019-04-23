@@ -136,13 +136,21 @@ public class ListaBeneficiarioDonacion extends AppCompatActivity {
        ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               float x = pantalla.getScaleX();
-               float y = pantalla.getScaleY();
-               // set increased value of scale x and y to perform zoom in functionality
+               if(InformacionPantalla.getTextSize()<80) {
+                   InformacionPantalla.setTextSize(0, InformacionPantalla.getTextSize() + 12.0f);
 
-               pantalla.setScaleX((float) (x + 1));
-               pantalla.setScaleY((float) (y + 1));
 
+                   arregloIDCompra = ListViewItemsIDCompra.toArray(new String[0]);
+                   arregloIDUsuario = ListViewItemsIDUsuario.toArray(new String[0]);
+                   arregloNombres = ListViewItemsNombreUsuario.toArray(new String[0]);
+                   arregloProductos = ListViewItemsTotalCompra.toArray(new String[0]);
+                   arregloDescripcion = ListViewItemsSaldoCompra.toArray(new String[0]);
+                   arregloImagenes = ListViewImagenes.toArray(new String[0]);
+
+
+                   adapter = new ElementosComprasAdaptador(ListaBeneficiarioDonacion.this, arregloNombres, arregloProductos, arregloDescripcion, "Beneficiarios", arregloImagenes,22);
+                   gridView.setAdapter(adapter);
+               }
 
 
 
@@ -152,13 +160,23 @@ public class ListaBeneficiarioDonacion extends AppCompatActivity {
        ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               float x = pantalla.getScaleX();
-               float y = pantalla.getScaleY();
-               // set increased value of scale x and y to perform zoom in functionality
+               if(InformacionPantalla.getTextSize()>66) {
+                   InformacionPantalla.setTextSize(0, InformacionPantalla.getTextSize() - 12.0f);
 
-               pantalla.setScaleX((float) (x - 1));
-               pantalla.setScaleY((float) (y - 1));
 
+                   arregloIDCompra = ListViewItemsIDCompra.toArray(new String[0]);
+                   arregloIDUsuario = ListViewItemsIDUsuario.toArray(new String[0]);
+                   arregloNombres = ListViewItemsNombreUsuario.toArray(new String[0]);
+                   arregloProductos = ListViewItemsTotalCompra.toArray(new String[0]);
+                   arregloDescripcion = ListViewItemsSaldoCompra.toArray(new String[0]);
+                   arregloImagenes = ListViewImagenes.toArray(new String[0]);
+
+
+                   adapter = new ElementosComprasAdaptador(ListaBeneficiarioDonacion.this, arregloNombres, arregloProductos, arregloDescripcion, "Beneficiarios", arregloImagenes,18);
+                   gridView.setAdapter(adapter);
+
+
+               }
 
 
            }
@@ -309,7 +327,7 @@ try {
                 }else{
                     myTTS.setLanguage(Locale.getDefault());
                     speak("En esta pantalla se presentan los distintos "+InformacionPantalla.getText().toString()+"." +
-                            ". Toque la pantalla y pronuncie el nombre del que desee ayudar después del tono");
+                            ". Toque la pantalla y pronuncie el nombre del que desee ayudar ");
 
                 }
             }
@@ -358,7 +376,7 @@ try {
             textView4.setVisibility(View.VISIBLE);
 
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url ="http://192.168.0.4:8080/ProyectoIntegrador/ActualizarDetalleBeneficiario.php";
+            String url ="http://192.168.0.10:8080/ProyectoIntegrador/ActualizarDetalleBeneficiario.php";
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
                         @Override
@@ -388,7 +406,7 @@ try {
 
 
             RequestQueue queue1 = Volley.newRequestQueue(getApplicationContext());
-            String url3 ="http://192.168.0.4:8080/ProyectoIntegrador/comprasBeneficiario.php";
+            String url3 ="http://192.168.0.10:8080/ProyectoIntegrador/comprasBeneficiario.php";
             StringRequest jsObjRequest1 = new StringRequest
                     (Request.Method.GET, url3, new
                             Response.Listener<String>() {
@@ -414,9 +432,7 @@ try {
                                             String id_rol = c.getString("ID_ROL");
                                             String foto_usuario = c.getString("FOTO_USUARIO");
                                             String primer_nombre_usuario = c.getString("PRIMER_NOMBRE_USUARIO");
-                                            String segundo_nombre_usuario = c.getString("SEGUNDO_NOMBRE_USUARIO");
                                             String primer_apellido_usuario = c.getString("PRIMER_APELLIDO_USUARIO");
-                                            String segundo_apellido_usuario = c.getString("SEGUNDO_APELLIDO_USUARIO");
                                             String direccion_usuario = c.getString("DIRECCION_USUARIO");
                                             String telefono_usuario = c.getString("TELEFONO_USUARIO");
                                             String email_usuario = c.getString("EMAIL_USUARIO");
@@ -426,7 +442,7 @@ try {
 
                                             //Toast.makeText(getApplicationContext(),nombres,Toast.LENGTH_LONG).show();
                                             db = new DatabaseHandlerCompras(getApplicationContext());
-                                            db.addCompras(new ElementoCompra(id_compra,id_usuario,fecha_compra,total_compra,saldo_compra,estado_compra,id_rol,foto_usuario,primer_nombre_usuario,segundo_nombre_usuario,primer_apellido_usuario,segundo_apellido_usuario,direccion_usuario,telefono_usuario,email_usuario,usuario_aplicativo,password_aplicativo,nombres));
+                                            db.addCompras(new ElementoCompra(id_compra,id_usuario,fecha_compra,total_compra,saldo_compra,estado_compra,id_rol,foto_usuario,primer_nombre_usuario,primer_apellido_usuario,direccion_usuario,telefono_usuario,email_usuario,usuario_aplicativo,password_aplicativo,nombres));
                                             //Log.d("Insert","Contacto insertado correctamente");
                                             //db1.deleteProductos();
 
@@ -448,7 +464,7 @@ try {
 
                 ListViewItemsIDCompra = db.getAllProductos(0);
                 ListViewItemsIDUsuario = db.getAllProductos(1);
-                ListViewItemsNombreUsuario = db.getAllProductos(17);
+                ListViewItemsNombreUsuario = db.getAllProductos(15);
                 ListViewItemsTotalCompra = db.getAllProductos(3);
                 ListViewItemsSaldoCompra = db.getAllProductos(4);
                 ListViewImagenes = db.getAllProductos(7);
@@ -461,7 +477,7 @@ try {
                 arregloImagenes = ListViewImagenes.toArray(new String[0]);
 
 
-                adapter = new ElementosComprasAdaptador(ListaBeneficiarioDonacion.this, arregloNombres, arregloProductos, arregloDescripcion, "Beneficiarios", arregloImagenes);
+                adapter = new ElementosComprasAdaptador(ListaBeneficiarioDonacion.this, arregloNombres, arregloProductos, arregloDescripcion, "Beneficiarios", arregloImagenes,18);
                 gridView = (ListView) findViewById(R.id.ListView_Beneficiarios);
 
 

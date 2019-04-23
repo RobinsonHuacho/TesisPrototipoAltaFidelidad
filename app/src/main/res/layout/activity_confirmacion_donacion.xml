@@ -7,9 +7,21 @@
     android:orientation="vertical"
     tools:context="com.example.usuario.pruebas.ConfirmacionDonacion">
 
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        >
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/Pantalla"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -24,7 +36,9 @@
             android:layout_height="wrap_content"
             app:srcCompat="@mipmap/ic_enable_accesibilidad"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            android:contentDescription="Botón para habilitar lectura de pantalla y comandos por voz"
+            />
 
 
         <ImageButton
@@ -33,21 +47,24 @@
             android:layout_height="wrap_content"
             app:srcCompat="@mipmap/ic_disable_accesibilidad"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            android:contentDescription="Botón para deshabilitar lectura de pantalla y comandos por voz"
+            android:visibility="gone"/>
 
 
         <ImageView
         android:id="@+id/imageView3"
         android:layout_width="165dp"
         android:layout_height="206dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="60dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/check"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.503"
         android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp" />
+        android:layout_marginRight="32dp"
+            android:contentDescription="Imagen que indica que la donaci{on se ha realizado con éxito"/>
 
     <TextView
         android:id="@+id/TextViewInformacion"
@@ -55,41 +72,60 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="DONACIÓN EXITOSA!"
+        android:text="DONACIÓN EXITOSA!\nDonación realizada exitosamente a favor del beneficiario:"
         android:textColor="@color/mpsdk_dark_font_color"
-        android:textSize="35sp"
+        android:textSize="30sp"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
+
         <TextView
-            android:id="@+id/TextViewTransaccion"
+            android:id="@+id/textView7"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
-            android:text="ID TRANSACCION"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="AL BENEFICIARIO"
             android:textColor="@color/mpsdk_dark_font_color"
-            android:textSize="20sp"
+            android:textSize="24sp"
+             app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBaseline_toBaselineOf="@+id/LabelTransaccion"
-            app:layout_constraintLeft_toRightOf="@+id/LabelTransaccion"
-            android:layout_marginLeft="8dp" />
+            app:layout_constraintTop_toBottomOf="@+id/TextViewInformacion" />
 
         <TextView
             android:id="@+id/LabelTransaccion"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="NÚMERO DE\nTRANSACCION: "
+            android:text="NÚMERO DE TRANSACCIÓN: "
             android:textStyle="bold"
             android:textColor="@color/mpsdk_dark_font_color"
             android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@+id/TextViewInformacion"
             android:layout_marginLeft="24dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="32dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+        <TextView
+            android:id="@+id/TextViewTransaccion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="ID TRANSACCION"
+            android:textColor="@color/mpsdk_dark_font_color"
+            android:textSize="20sp"
+            android:layout_marginLeft="24dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="5dp"
+            app:layout_constraintTop_toBottomOf="@+id/LabelTransaccion"
+            android:layout_marginRight="24dp"
+            app:layout_constraintRight_toRightOf="parent" />
+
 
 
         <TextView
@@ -104,9 +140,10 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/TextViewEstado"
             android:layout_marginRight="8dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintHorizontal_bias="0.0"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/TextViewTransaccion" />
+            app:layout_constraintTop_toBottomOf="@+id/TextViewTransaccion"
+            />
 
         <TextView
             android:id="@+id/TextViewEstado"
@@ -132,9 +169,11 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/TextViewMonto"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             app:layout_constraintTop_toBottomOf="@+id/LabelEstado"
-            app:layout_constraintHorizontal_bias="0.0" />
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/buttonSalir" />
 
         <TextView
             android:id="@+id/TextViewMonto"
@@ -151,60 +190,73 @@
             android:id="@+id/buttonSalir"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="82dp"
             android:layout_marginRight="24dp"
             android:onClick="salirAplicacion"
             android:text="SALIR"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/border_button"
+            android:textColor="@color/mpsdk_white"
+            android:padding="10dp"
             app:layout_constraintLeft_toRightOf="@+id/buttonContinuarDonando"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            android:foregroundGravity="bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="100dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@+id/TextViewMonto"
+            app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/buttonContinuarDonando"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="74dp"
         android:layout_marginLeft="24dp"
         android:onClick="regresarListaBeneficiarios"
         android:text="CONTINUAR DONANDO"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/border_button"
+        android:textColor="@color/mpsdk_white"
+        android:padding="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/buttonSalir"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+         android:foregroundGravity="bottom"
+        app:layout_constraintBaseline_toBaselineOf="@+id/buttonSalir" />
 
 
 
 </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 
+    <ImageButton
+        android:id="@+id/zoomIn"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/border_image_button"
+        android:contentDescription="Botón para aumentar el tamaño de letra"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/zoomOut"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@android:drawable/btn_plus" />
 
-<ImageButton
-android:id="@+id/zoomIn"
-android:layout_width="0dp"
-android:layout_height="60dp"
-android:layout_marginBottom="8dp"
-android:layout_marginEnd="24dp"
-android:layout_marginRight="24dp"
-app:layout_constraintBottom_toBottomOf="parent"
-app:layout_constraintRight_toRightOf="parent"
-app:srcCompat="@android:drawable/btn_plus"
-app:layout_constraintLeft_toRightOf="@+id/zoomOut"
-    />
-
-<ImageButton
-android:id="@+id/zoomOut"
-android:layout_width="0dp"
-android:layout_height="60dp"
-android:layout_marginBottom="8dp"
-android:layout_marginLeft="24dp"
-android:layout_marginRight="8dp"
-android:layout_marginStart="24dp"
-app:layout_constraintBottom_toBottomOf="parent"
-app:layout_constraintLeft_toLeftOf="parent"
-app:srcCompat="@android:drawable/btn_minus"
-app:layout_constraintRight_toLeftOf="@+id/zoomIn"
-app:layout_constraintHorizontal_bias="0.6" />
+    <ImageButton
+        android:id="@+id/zoomOut"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="24dp"
+        android:background="@drawable/border_image_button"
+        android:contentDescription="Botón para disminuir el tamaño de letra"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/zoomIn"
+        app:srcCompat="@android:drawable/btn_minus" />
 
 
 

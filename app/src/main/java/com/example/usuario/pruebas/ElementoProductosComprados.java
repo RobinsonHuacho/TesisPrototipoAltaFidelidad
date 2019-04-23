@@ -4,7 +4,7 @@ package com.example.usuario.pruebas;
  * Created by Robinson Huacho on 14/08/17.
  */
 
-public class ProductosComprados {
+public class ElementoProductosComprados {
 
     String _idDetalle;
     String _idProducto;
@@ -16,7 +16,7 @@ public class ProductosComprados {
     String _imagenProducto;
     String _nombreProdcuto;
 
-    public ProductosComprados(String _idDetalle, String _idProducto, String _idUsuario, String _precioVenta, String _cantidadDetalle, String _totalDetalle, String _estado, String _imagenProducto, String _nombreProdcuto) {
+    public ElementoProductosComprados(String _idDetalle, String _idProducto, String _idUsuario, String _precioVenta, String _cantidadDetalle, String _totalDetalle, String _estado, String _imagenProducto, String _nombreProdcuto) {
         this._idDetalle = _idDetalle;
         this._idProducto = _idProducto;
         this._idUsuario = _idUsuario;

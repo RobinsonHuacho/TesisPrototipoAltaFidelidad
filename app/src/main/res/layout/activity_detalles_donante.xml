@@ -7,11 +7,21 @@
     tools:context="com.example.usuario.pruebas.DetallesDonante"
     android:background="@color/mpsdk_white">
 
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
 
+        >
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/Pantalla"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -28,7 +38,9 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="0dp"
         android:layout_marginRight="0dp"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:contentDescription="Botón para habilitar lectura de pantalla y comandos por voz"
+        />
 
 
     <ImageButton
@@ -40,7 +52,8 @@
         android:layout_marginTop="0dp"
         android:layout_marginRight="0dp"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        android:contentDescription="Botón para deshabilitar lectura de pantalla y comandos por voz"
+        android:visibility="gone"/>
 
     <com.github.snowdream.android.widget.SmartImageView
         android:id="@+id/ImageView_Foto"
@@ -58,29 +71,28 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
         android:layout_marginTop="32dp"
         android:text="Nombres"
         android:textColor="@color/mpsdk_dark_font_color"
         android:textSize="15dp"
         app:layout_constraintLeft_toRightOf="@+id/ImageView_Foto"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintRight_toLeftOf="@+id/btnDeshabiltarTTSSTT"
+        android:layout_marginRight="8dp" />
 
     <TextView
         android:id="@+id/TextView_ApellidoBeneficiario"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
         android:layout_marginTop="14dp"
         android:text="Apellidos"
         android:textColor="@color/mpsdk_dark_font_color"
         android:textSize="15dp"
         app:layout_constraintLeft_toRightOf="@+id/ImageView_Foto"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TextView_NombreBeneficiario" />
+        app:layout_constraintTop_toBottomOf="@+id/TextView_NombreBeneficiario"
+        app:layout_constraintRight_toLeftOf="@+id/btnDeshabiltarTTSSTT"
+        android:layout_marginRight="8dp" />
 
     <TextView
         android:id="@+id/TextView_CondicionBeneficiario"
@@ -110,23 +122,26 @@
         app:layout_constraintHorizontal_bias="0.52"
         android:textColor="@color/mpsdk_dark_font_color"
         android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp" />
-
-    <ListView
-        android:id="@+id/ListView_ListaProductosBeneficiario"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/mpsdk_dark_font_color"
-        app:layout_constraintBottom_toTopOf="@+id/textView26"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView25"
-        app:layout_constraintVertical_bias="0.6" />
+        app:layout_constraintBottom_toTopOf="@+id/ListView_ListaProductosBeneficiario"
+        android:gravity="center"
+        android:foregroundGravity="center"/>
+
+        <ListView
+            android:id="@+id/ListView_ListaProductosBeneficiario"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="16dp"
+            android:scrollbars="horizontal|vertical"
+            android:textColor="@color/mpsdk_dark_font_color"
+            app:layout_constraintBottom_toTopOf="@+id/textView26"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView25" />
 
     <TextView
         android:id="@+id/textView26"
@@ -139,7 +154,7 @@
         android:textSize="18dp"
         app:layout_constraintRight_toLeftOf="@+id/textView_CostoTotal"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/textView34" />
 
     <TextView
@@ -175,7 +190,7 @@
         android:text="SALDO : "
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_Regresar"
         android:textColor="@color/mpsdk_dark_font_color"
@@ -195,6 +210,8 @@
         android:layout_marginRight="4dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView34" />
 
+
+
     <TextView
         android:id="@+id/textView27"
         android:layout_width="wrap_content"
@@ -212,63 +229,73 @@
         android:id="@+id/btn_Regresar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="85dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="24dp"
         android:onClick="regresarListaBeneficiarios"
         android:text="REGRESAR"
         android:textSize="20dp"
+        android:background="@drawable/border_button"
+        android:textColor="@color/mpsdk_white"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btn_Donar"
-        android:layout_marginLeft="0dp" />
+        android:layout_marginLeft="0dp"
+        android:foregroundGravity="bottom"/>
 
         <Button
             android:id="@+id/btn_Donar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="70dp"
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
             android:layout_marginStart="8dp"
             android:onClick="irADonacion"
             android:text="DONAR"
             android:textSize="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/border_button"
+            android:textColor="@color/mpsdk_white"
+            android:padding="10dp"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/btn_Regresar" />
+            app:layout_constraintRight_toLeftOf="@+id/btn_Regresar"
+            android:foregroundGravity="bottom"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btn_Regresar" />
 
 
 </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 
+    <ImageButton
+        android:id="@+id/zoomIn"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/border_image_button"
+        android:contentDescription="Botón para aumentar el tamaño de letra"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/zoomOut"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@android:drawable/btn_plus" />
 
-<ImageButton
-android:id="@+id/zoomIn"
-android:layout_width="0dp"
-android:layout_height="60dp"
-android:layout_marginBottom="8dp"
-android:layout_marginEnd="24dp"
-android:layout_marginRight="24dp"
-app:layout_constraintBottom_toBottomOf="parent"
-app:layout_constraintRight_toRightOf="parent"
-app:srcCompat="@android:drawable/btn_plus"
-app:layout_constraintLeft_toRightOf="@+id/zoomOut"
-    />
-
-<ImageButton
-android:id="@+id/zoomOut"
-android:layout_width="0dp"
-android:layout_height="60dp"
-android:layout_marginBottom="8dp"
-android:layout_marginLeft="24dp"
-android:layout_marginRight="8dp"
-android:layout_marginStart="24dp"
-app:layout_constraintBottom_toBottomOf="parent"
-app:layout_constraintLeft_toLeftOf="parent"
-app:srcCompat="@android:drawable/btn_minus"
-app:layout_constraintRight_toLeftOf="@+id/zoomIn"
-app:layout_constraintHorizontal_bias="0.6" />
+    <ImageButton
+        android:id="@+id/zoomOut"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="24dp"
+        android:background="@drawable/border_image_button"
+        android:contentDescription="Botón para disminuir el tamaño de letra"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/zoomIn"
+        app:srcCompat="@android:drawable/btn_minus" />
 
 
 </android.support.constraint.ConstraintLayout>

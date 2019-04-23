@@ -19,6 +19,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo_final" />
+        app:srcCompat="@drawable/logo_final"
+        android:contentDescription="Logo de la aplicación"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -19,7 +19,7 @@ public class DatabaseHandlerCompras extends SQLiteOpenHelper{
     private static final String DATABASE_NAME = "comprasManager";
 
     //Versión de la base de datos
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     //Nombre de la tabla de casos
     private static final String TABLE_COMPRAS = "compras";
@@ -34,9 +34,7 @@ public class DatabaseHandlerCompras extends SQLiteOpenHelper{
     private static final String KEY_ID_ROL = "ID_ROL";
     private static final String KEY_FOTO_USUARIO = "FOTO_USUARIO";
     private static final String KEY_PRIMER_NOMBRE_USUARIO = "PRIMER_NOMBRE_USUARIO";
-    private static final String KEY_SEGUNDO_NOMBRE_USUARIO = "SEGUNDO_NOMBRE_USUARIO";
     private static final String KEY_PRIMER_APELLIDO_USUARIO = "PRIMER_APELLIDO_USUARIO";
-    private static final String KEY_SEGUNDO_APELLIDO_USUARIO = "SEGUNDO_APELLIDO_USUARIO";
     private static final String KEY_DIRECCION_USUARIO = "DIRECCION_USUARIO";
     private static final String KEY_TELEFONO_USUARIO = "TELEFONO_USUARIO";
     private static final String KEY_EMAIL_USUARIO = "EMAIL_USUARIO";
@@ -63,9 +61,7 @@ public class DatabaseHandlerCompras extends SQLiteOpenHelper{
                 + KEY_ID_ROL + " TEXT,"
                 + KEY_FOTO_USUARIO + " TEXT,"
                 + KEY_PRIMER_NOMBRE_USUARIO + " TEXT,"
-                + KEY_SEGUNDO_NOMBRE_USUARIO + " TEXT,"
                 + KEY_PRIMER_APELLIDO_USUARIO + " TEXT,"
-                + KEY_SEGUNDO_APELLIDO_USUARIO + " TEXT,"
                 + KEY_DIRECCION_USUARIO + " TEXT,"
                 + KEY_TELEFONO_USUARIO + " TEXT,"
                 + KEY_EMAIL_USUARIO + " TEXT,"
@@ -94,9 +90,7 @@ public class DatabaseHandlerCompras extends SQLiteOpenHelper{
         values.put(KEY_ID_ROL, producto.get_idRol());
         values.put(KEY_FOTO_USUARIO, producto.get_fotoUsuario());
         values.put(KEY_PRIMER_NOMBRE_USUARIO, producto.get_primerNombreUsuario());
-        values.put(KEY_SEGUNDO_NOMBRE_USUARIO, producto.get_segundoNombreUsuario());
         values.put(KEY_PRIMER_APELLIDO_USUARIO, producto.get_primerApellidoUsuario());
-        values.put(KEY_SEGUNDO_APELLIDO_USUARIO, producto.get_segundoApellidoUsuario());
         values.put(KEY_DIRECCION_USUARIO, producto.get_direccionUsuario());
         values.put(KEY_TELEFONO_USUARIO, producto.get_telefonoUsuario());
         values.put(KEY_EMAIL_USUARIO, producto.get_emailUsuario());
@@ -134,8 +128,8 @@ public class DatabaseHandlerCompras extends SQLiteOpenHelper{
         try {
             Cursor cursor = db.query(TABLE_COMPRAS, new
                     String[]{KEY_ID_COMPRA, KEY_ID_USUARIO, KEY_FECHA_COMPRA, KEY_TOTAL_COMPRA, KEY_SALDO_COMPRA, KEY_ESTADO_COMPRA,
-                    KEY_ID_ROL,KEY_FOTO_USUARIO,KEY_PRIMER_NOMBRE_USUARIO,KEY_SEGUNDO_NOMBRE_USUARIO, KEY_PRIMER_APELLIDO_USUARIO,
-                    KEY_SEGUNDO_APELLIDO_USUARIO,KEY_DIRECCION_USUARIO, KEY_TELEFONO_USUARIO, KEY_EMAIL_USUARIO,
+                    KEY_ID_ROL,KEY_FOTO_USUARIO,KEY_PRIMER_NOMBRE_USUARIO,KEY_PRIMER_APELLIDO_USUARIO,
+                    KEY_DIRECCION_USUARIO, KEY_TELEFONO_USUARIO, KEY_EMAIL_USUARIO,
                     KEY_USUARIO_APLICATIVO, KEY_PASSWORD_APLICATIVO, KEY_NOMBRES}, KEY_PRIMER_NOMBRE_USUARIO + "=?", new
                     String[]{String.valueOf(nombre)}, null, null, null);
 
@@ -145,7 +139,7 @@ public class DatabaseHandlerCompras extends SQLiteOpenHelper{
             ElementoCompra producto = new ElementoCompra(cursor.getString(0), cursor.getString(1), cursor.getString(2),
                     cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7),
                     cursor.getString(8), cursor.getString(9), cursor.getString(10), cursor.getString(11), cursor.getString(12),
-                    cursor.getString(13), cursor.getString(14), cursor.getString(15), cursor.getString(16), cursor.getString(17));
+                    cursor.getString(13), cursor.getString(14), cursor.getString(15));
 
             return producto;
         } catch (Exception error) {
@@ -167,7 +161,7 @@ public class DatabaseHandlerCompras extends SQLiteOpenHelper{
             ElementoCompra producto = new ElementoCompra(cursor.getString(0), cursor.getString(1), cursor.getString(2),
                     cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7),
                     cursor.getString(8), cursor.getString(9), cursor.getString(10), cursor.getString(11), cursor.getString(12),
-                    cursor.getString(13), cursor.getString(14), cursor.getString(15), cursor.getString(16), cursor.getString(17));
+                    cursor.getString(13), cursor.getString(14), cursor.getString(15));
 
             return producto;
         } catch (Exception error) {
@@ -189,7 +183,7 @@ public class DatabaseHandlerCompras extends SQLiteOpenHelper{
             ElementoCompra producto = new ElementoCompra(cursor.getString(0), cursor.getString(1), cursor.getString(2),
                     cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7),
                     cursor.getString(8), cursor.getString(9), cursor.getString(10), cursor.getString(11), cursor.getString(12),
-                    cursor.getString(13), cursor.getString(14), cursor.getString(15), cursor.getString(16), cursor.getString(17));
+                    cursor.getString(13), cursor.getString(14), cursor.getString(15));
 
             return producto;
         } catch (Exception error) {
@@ -211,7 +205,7 @@ public class DatabaseHandlerCompras extends SQLiteOpenHelper{
             ElementoCompra producto = new ElementoCompra(cursor.getString(0), cursor.getString(1), cursor.getString(2),
                     cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7),
                     cursor.getString(8), cursor.getString(9), cursor.getString(10), cursor.getString(11), cursor.getString(12),
-                    cursor.getString(13), cursor.getString(14), cursor.getString(15), cursor.getString(16), cursor.getString(17));
+                    cursor.getString(13), cursor.getString(14), cursor.getString(15));
 
             return producto;
         } catch (Exception error) {

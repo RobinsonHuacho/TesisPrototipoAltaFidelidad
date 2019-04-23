@@ -27,7 +27,9 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="0dp"
         android:layout_marginRight="0dp"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:contentDescription="Botón para habilitar lectura de pantalla y comandos por voz"
+        />
 
 
     <ImageButton
@@ -39,27 +41,28 @@
         android:layout_marginTop="0dp"
         android:layout_marginRight="0dp"
         app:layout_constraintRight_toRightOf="parent"
+        android:contentDescription="Botón para deshabilitar lectura de pantalla y comandos por voz"
         />
 
 
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:text="POR FAVOR INGRESE EL\nMONTO QUE DESEE DONAR"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="24dp"
-        app:layout_constraintHorizontal_bias="0.0"
-        android:textColor="@color/mpsdk_dark_font_color"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp" />
 
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:text="POR FAVOR INGRESE EL MONTO QUE DESEE DONAR:"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="24dp"
+            android:textColor="@color/mpsdk_dark_font_color"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintRight_toLeftOf="@+id/btnHabiltarTTSSTT"
+            android:layout_marginRight="8dp" />
 
 
 
@@ -70,22 +73,24 @@
         android:layout_height="wrap_content"
         android:text="Monto"
         style="@style/mpsdk_form_label"
-        android:layout_marginLeft="24dp"
+        android:layout_marginLeft="32dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="17dp"
+        android:textColor="@color/mpsdk_dark_font_color"
         app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
-    <EditText
-        android:id="@+id/EditText_Monto"
-        style="@style/mpsdk_form_input"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        app:layout_constraintLeft_toRightOf="@+id/TextView_Monto$"
-        android:layout_marginLeft="8dp"
-        android:padding="10dp"
-        android:background="@color/mpsdk_white"
-        app:layout_constraintBaseline_toBaselineOf="@+id/TextView_Monto$" />
+        <EditText
+            android:id="@+id/EditText_Monto"
+            style="@style/mpsdk_form_input"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:background="@color/mpsdk_white"
+            android:inputType="numberDecimal"
+            android:padding="10dp"
+            android:textSize="24sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/TextView_Monto$"
+            app:layout_constraintLeft_toRightOf="@+id/TextView_Monto$" />
 
     <TextView
         android:id="@+id/TextView_Monto$"
@@ -95,21 +100,25 @@
         android:text="$"
         android:textSize="18dp"
         android:textStyle="bold"
-        android:layout_marginLeft="24dp"
+        android:layout_marginLeft="32dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
+        android:textColor="@color/mpsdk_dark_font_color"
         app:layout_constraintTop_toBottomOf="@+id/TextView_Monto" />
 
     <Button
         android:id="@+id/Btn_Regresar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="78dp"
+        android:layout_marginBottom="75dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:onClick="regresarListaBeneficiarios"
         android:text="REGRESAR"
         android:textSize="20dp"
+        android:background="@drawable/border_button"
+        android:textColor="@color/mpsdk_white"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/Btn_Continuar"
@@ -119,7 +128,7 @@
             android:id="@+id/Btn_Continuar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="70dp"
+            android:layout_marginBottom="75dp"
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
             android:layout_marginStart="8dp"
@@ -127,6 +136,9 @@
             android:onClick="irADonacion"
             android:text="CONFIRMAR MONTO"
             android:textSize="20dp"
+            android:background="@drawable/border_button"
+            android:textColor="@color/mpsdk_white"
+            android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -147,6 +159,8 @@ app:layout_constraintBottom_toBottomOf="parent"
 app:layout_constraintRight_toRightOf="parent"
 app:srcCompat="@android:drawable/btn_plus"
 app:layout_constraintLeft_toRightOf="@+id/zoomOut"
+    android:background="@drawable/border_image_button"
+    android:contentDescription="Botón para aumentar el tamaño de letra"
     />
 
 <ImageButton
@@ -161,7 +175,10 @@ app:layout_constraintBottom_toBottomOf="parent"
 app:layout_constraintLeft_toLeftOf="parent"
 app:srcCompat="@android:drawable/btn_minus"
 app:layout_constraintRight_toLeftOf="@+id/zoomIn"
-app:layout_constraintHorizontal_bias="0.6" />
+app:layout_constraintHorizontal_bias="0.6"
+    android:background="@drawable/border_image_button"
+    android:contentDescription="Botón para disminuir el tamaño de letra"
+    />
 
 
 

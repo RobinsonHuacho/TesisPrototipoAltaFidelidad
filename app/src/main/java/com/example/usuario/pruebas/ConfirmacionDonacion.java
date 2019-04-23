@@ -9,6 +9,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import static android.content.Intent.EXTRA_INDEX;
+import static android.content.Intent.EXTRA_REFERRER;
+import static android.content.Intent.EXTRA_TITLE;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class ConfirmacionDonacion extends AppCompatActivity {
@@ -38,8 +41,25 @@ public class ConfirmacionDonacion extends AppCompatActivity {
     private ConstraintLayout pantalla;
     private SpeechRecognizer mySpeechRecognizer;
 
-    private TextView TextViewTitulo,TextViewContenido,TextViewTransaccion,TextViewEstado,TextViewMonto;
-    private ImageButton ImageButtonActivar,ImageButtonDesactivar,ImageButtonZoomIn,ImageButtonZoomOut;
+    private TextView TextViewTitulo,
+            TextViewContenido,
+            TextViewBeneficiario,
+            TextViewTransaccion,
+            TextViewEstado,
+            TextViewMonto,
+            Label_Transaccion,
+            Label_Estado,
+            Label_Monto;
+
+    private Button btnContinuar,
+                    btnSalir;
+
+    private ImageButton ImageButtonActivar,
+            ImageButtonDesactivar,
+            ImageButtonZoomIn,
+            ImageButtonZoomOut;
+
+    private String messageNombre, messageApellido;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +69,20 @@ public class ConfirmacionDonacion extends AppCompatActivity {
         getSupportActionBar().hide();
 
         TextViewContenido = (TextView) findViewById(R.id.TextViewInformacion);
+        TextViewBeneficiario= (TextView) findViewById(R.id.textView7);
         TextViewTransaccion = (TextView) findViewById(R.id.TextViewTransaccion);
         TextViewEstado = (TextView) findViewById(R.id.TextViewEstado);
         TextViewMonto = (TextView) findViewById(R.id.TextViewMonto);
+
+        Label_Transaccion = (TextView) findViewById(R.id.LabelTransaccion);
+        Label_Estado = (TextView) findViewById(R.id.LabelEstado);
+        Label_Monto = (TextView) findViewById(R.id.LabelMonto);
+
+        btnContinuar=(Button) findViewById(R.id.buttonContinuarDonando);
+        btnSalir=(Button) findViewById(R.id.buttonSalir);
+
+
+
 
         Intent intent = getIntent();
         try{
@@ -60,18 +91,22 @@ public class ConfirmacionDonacion extends AppCompatActivity {
             final String messageIdCompra = intent.getStringExtra(EXTRA_INDEX);
             final String messageIdUsuario = intent.getStringExtra(EXTRA_MESSAGE);
             final String messageMonto = intent.getStringExtra("PaymentAmount");
+           messageNombre = intent.getStringExtra(EXTRA_TITLE);
+           messageApellido = intent.getStringExtra(EXTRA_REFERRER);
+
+
             //Toast.makeText(getApplicationContext(),messageMonto,Toast.LENGTH_LONG).show();
 
             RequestQueue queue = Volley.newRequestQueue(this);
-            String url ="http://192.168.0.4:8080/ProyectoIntegrador/nuevaDonacion.php";
+            String url ="http://192.168.0.10:8080/ProyectoIntegrador/nuevaDonacion.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,new
                     Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             if(response.matches("1")){
-                                Toast.makeText(getApplicationContext(),"Donación Realizada Exitosamente",Toast.LENGTH_LONG).show();
+                               // Toast.makeText(getApplicationContext(),"Donación Realizada Exitosamente",Toast.LENGTH_LONG).show();
                             }else{
-                                Toast.makeText(getApplicationContext(),"Algo salio mal. Inténtalo de nuevo",Toast.LENGTH_LONG).show();
+                               // Toast.makeText(getApplicationContext(),"Algo salio mal. Inténtalo de nuevo",Toast.LENGTH_LONG).show();
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -97,7 +132,7 @@ public class ConfirmacionDonacion extends AppCompatActivity {
 
 
             RequestQueue queue1 = Volley.newRequestQueue(getApplicationContext());
-            String url1 ="http://192.168.0.4:8080/ProyectoIntegrador/ActualizarDetalleBeneficiario.php";
+            String url1 ="http://192.168.0.10:8080/ProyectoIntegrador/ActualizarDetalleBeneficiario.php";
             StringRequest stringRequest1 = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
                         @Override
@@ -168,35 +203,50 @@ public class ConfirmacionDonacion extends AppCompatActivity {
         ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
 
         ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(TextViewContenido.getTextSize()<110) {
+                    TextViewContenido.setTextSize(0, TextViewContenido.getTextSize() + 12.0f);
+                    TextViewTransaccion.setTextSize(0, TextViewTransaccion.getTextSize() + 12.0f);
+                    TextViewEstado.setTextSize(0, TextViewEstado.getTextSize() + 12.0f);
+                    TextViewMonto.setTextSize(0, TextViewMonto.getTextSize() + 12.0f);
+                    Label_Transaccion.setTextSize(0, Label_Transaccion.getTextSize() + 12.0f);
+                    Label_Estado.setTextSize(0, Label_Estado.getTextSize() + 12.0f);
+                    Label_Monto.setTextSize(0, Label_Monto.getTextSize() + 12.0f);
+                    btnContinuar.setTextSize(0, btnContinuar.getTextSize() + 12.0f);
+                    btnSalir.setTextSize(0, btnSalir.getTextSize() + 12.0f);
 
-                pantalla.setScaleX((float) (x + 1));
-                pantalla.setScaleY((float) (y + 1));
-
-
-
+                }
 
             }
+
+
         });
 
         ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
 
-                pantalla.setScaleX((float) (x - 1));
-                pantalla.setScaleY((float) (y - 1));
+                if(TextViewTransaccion.getTextSize()>66) {
+                    TextViewContenido.setTextSize(0, TextViewContenido.getTextSize() - 12.0f);
+                    TextViewTransaccion.setTextSize(0, TextViewTransaccion.getTextSize() - 12.0f);
+                    TextViewEstado.setTextSize(0, TextViewEstado.getTextSize() - 12.0f);
+                    TextViewMonto.setTextSize(0, TextViewMonto.getTextSize() - 12.0f);
+                    Label_Transaccion.setTextSize(0, Label_Transaccion.getTextSize() - 12.0f);
+                    Label_Estado.setTextSize(0, Label_Estado.getTextSize() - 12.0f);
+                    Label_Monto.setTextSize(0, Label_Monto.getTextSize() - 12.0f);
+                    btnContinuar.setTextSize(0, btnContinuar.getTextSize() - 12.0f);
+                    btnSalir.setTextSize(0, btnSalir.getTextSize() - 12.0f);
 
 
-
+                }
             }
         });
+
 
 
 
@@ -208,11 +258,20 @@ public class ConfirmacionDonacion extends AppCompatActivity {
         try{
 
 
+            TextViewBeneficiario.setText(messageNombre+" "+messageApellido);
             TextViewTransaccion.setText(response.getString("id"));
-            TextViewEstado.setText(response.getString("state").toUpperCase());
-            TextViewMonto.setText("$: " + response.getString("PaymentAmount"));
+            TextViewEstado.setText(response.getString("state"));
+            Toast.makeText(ConfirmacionDonacion.this,response.getString("state"),Toast.LENGTH_LONG).show();
 
-            Toast.makeText(ConfirmacionDonacion.this,response.toString(),Toast.LENGTH_LONG).show();
+            if(response.getString("state")=="approved"){
+                TextViewEstado.setText("FALLIDA");
+            }else{
+                TextViewEstado.setText("EXITOSA");
+            }
+
+            TextViewMonto.setText(pyymentAmount);
+
+            //Toast.makeText(ConfirmacionDonacion.this,response.toString(),Toast.LENGTH_LONG).show();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -267,7 +326,7 @@ public class ConfirmacionDonacion extends AppCompatActivity {
 
     private void prepararRespuesta(String escuchado) {
 
-        if(escuchado.indexOf("continuat")!=-1){
+        if(escuchado.indexOf("continuar")!=-1){
             Intent intent = new Intent(this,ListaBeneficiarioDonacion.class);
             startActivity(intent);
         }else{
@@ -295,7 +354,7 @@ public class ConfirmacionDonacion extends AppCompatActivity {
                     speak(TextViewContenido.getText().toString()+". Pronuncie la palabra, continuar para regresar a la lista de beneficiarios" +
                             " y continuar donando. Caso contrario, pronuncie la palabra, salir. Posterior a esto saldrá de la aplicación automáticamente.");
                     //deberá ingresar su usuario y contraseña. " +
-                    //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, después del tono." +
+                    //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, ." +
                     //    "Caso contario, presionar sobre cualquier parte de la pantalla ");
                     //speak(TextViewTitulo.getText().toString());
                     //speak(TextViewContenido.getText().toString());
@@ -320,7 +379,6 @@ public class ConfirmacionDonacion extends AppCompatActivity {
 
     public void salirAplicacion(View view)
     {
-        finish();
-        moveTaskToBack(true);
+       finishAffinity();
     }
 }

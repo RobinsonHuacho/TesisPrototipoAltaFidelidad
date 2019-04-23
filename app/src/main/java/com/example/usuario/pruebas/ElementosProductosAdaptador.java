@@ -22,7 +22,9 @@ public class ElementosProductosAdaptador extends ArrayAdapter<String> {
     private final String [] itemPrecios;
     private final String tipoImagen;
 
-    public ElementosProductosAdaptador(Activity context, String[] itemname, String[] itemDescription, String[] itemPrecios, String tipoImagen,String []itemImagenes) {
+    private float tamanoTexto;
+
+    public ElementosProductosAdaptador(Activity context, String[] itemname, String[] itemDescription, String[] itemPrecios, String tipoImagen,String []itemImagenes,float tamanoTexto) {
         super(context, R.layout.item_producto, itemname);
 
         this.context=context;
@@ -31,6 +33,7 @@ public class ElementosProductosAdaptador extends ArrayAdapter<String> {
         this.itemPrecios=itemPrecios;
         this.tipoImagen=tipoImagen;
         this.itemImagenes=itemImagenes;
+        this.tamanoTexto=tamanoTexto;
     }
 
     public View getView(int posicion, View view, ViewGroup parent){
@@ -39,12 +42,20 @@ public class ElementosProductosAdaptador extends ArrayAdapter<String> {
         View rowView=inflater.inflate(R.layout.item_producto,null,true);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.TextView_Nombre);
         TextView txtPrecio = (TextView) rowView.findViewById(R.id.TextView_Precio);
+        TextView labelPrecio = (TextView) rowView.findViewById(R.id.Label_Precio);
 
         SmartImageView imageView= (SmartImageView) rowView.findViewById(R.id.ImageView_Foto);
         txtTitle.setText(itemname[posicion]);
         txtPrecio.setText(itemPrecios[posicion]);
+
+        txtTitle.setTextSize(tamanoTexto);
+        txtPrecio.setTextSize(tamanoTexto);
+        labelPrecio.setTextSize(tamanoTexto);
+
+
         Rect rect = new Rect(imageView.getLeft(),imageView.getTop(), imageView.getRight(),imageView.getBottom());
-        imageView.setImageUrl("http://192.168.0.4:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[posicion], rect);
+        imageView.setImageUrl("http://192.168.0.10:8080/ProyectoIntegrador/Images/Productos/"+itemImagenes[posicion], rect);
+
 
         return rowView;
     }

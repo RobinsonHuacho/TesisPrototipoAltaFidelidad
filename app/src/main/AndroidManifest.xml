@@ -2,16 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.usuario.pruebas">
 
-
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
-    <uses-feature android:name="android.hardware.camera" android:required="false"/>
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission>
 
     <supports-screens
         android:largeScreens="true"
@@ -34,63 +39,70 @@
             </intent-filter>
         </activity>
         <activity android:name=".InformacionGeneral" />
-        <activity android:name=".IngresoAplicacion" />
-        <activity
-            android:name=".ListaProductos"
-            android:label="Productos"
-            android:parentActivityName=".ListaCategoriaProducto">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ListaCategoriaProducto" />
-        </activity>
+        <activity android:name=".InformacionGeneralBeneficiario"
+            android:parentActivityName=".SeleccionRol"/>
+        <activity android:name=".InformacionGeneralDonador"
+            android:parentActivityName=".SeleccionRol"/>
+        <activity android:name=".IngresoAplicacion"
+            android:parentActivityName=".InformacionGeneral"
+            />
         <activity
             android:name=".ListaBeneficiarioDonacion"
-            android:label="Lista de Beneficiarios" />
-        <activity
-            android:name=".AnadirDetalleCompra"
-            android:label="Añadir\nProducto" />
+            android:label="Lista de Beneficiarios"
+            android:parentActivityName=".IngresoAplicacion"/>
         <activity android:name=".ConfirmacionDonacion" />
         <activity
             android:name=".SeleccionRol"
             android:label="Selección de Rol" />
         <activity
             android:name=".RegistroBeneficiario"
-            android:label="Registro Beneficiario" />
+            android:label="Registro Beneficiario"
+            android:parentActivityName=".IngresoAplicacion"/>
         <activity
             android:name=".RegistroDonador"
-            android:label="Registro Donador" />
+            android:label="Registro Donador"
+            android:parentActivityName=".IngresoAplicacion"/>
         <activity
             android:name=".DetallesBeneficiario"
             android:label="Detalles - Beneficiario" />
         <activity
             android:name=".DetallesDonante"
-            android:label="Detalles - Beneficiario" />
+            android:label="Detalles - Donador"
+            android:parentActivityName=".ListaBeneficiarioDonacion"/>
         <activity
             android:name=".ListaCategoriaProducto"
-            android:label="Categorías" />
+            android:label="Categorías"
+            android:parentActivityName=".IngresoAplicacion"/>
         <activity android:name=".ConfirmacionCompra" />
         <activity
             android:name=".Donacion"
             android:label="Monto Donación" />
-        <activity
-            android:name=".RegistroBeneficiarioUsuarioContrasenia"
-            android:label="Registro Beneficiario" />
+        <activity android:name=".AnadirDetalleCompra"
+            android:label="Añadir Producto"
+            android:parentActivityName=".ListaProductos"/>
+        <activity android:name=".ListaProductos"
+            android:label="Productos"
+            android:parentActivityName=".ListaCategoriaProducto"/>
         <activity android:name=".ConfirmacionAnadirProducto" />
-        <activity android:name=".ErrorAnadirProducto"></activity>
-        <activity android:name=".ErrorConfirmacionCompra"></activity>
+        <activity android:name=".ErrorAnadirProducto" />
+        <activity android:name=".ErrorConfirmacionCompra" />
+        <activity
+            android:name=".TerminosCondicionesBeneficiario"
+            android:label="Beneficiario"
+            android:parentActivityName=".IngresoAplicacion"/>
 
-        <service android:name="com.paypal.android.sdk.payments.PayPalService"
-            android:exported="false"/>
+        <service
+            android:name="com.paypal.android.sdk.payments.PayPalService"
+            android:exported="false" />
 
         <activity android:name="com.paypal.android.sdk.payments.PaymentActivity" />
-        <activity android:name="com.paypal.android.sdk.payments.LoginActivity"/>
-        <activity android:name="com.paypal.android.sdk.payments.PaymentMethodActivity"/>
-        <activity android:name="com.paypal.android.sdk.payments.PaymentConfirmActivity"/>
-        <activity android:name="com.paypal.android.sdk.payments.PayPalFuturePaymentActivity"/>
-        <activity android:name="com.paypal.android.sdk.payments.FuturePaymentConsentActivity"/>
-        <activity android:name="com.paypal.android.sdk.payments.FuturePaymentInfoActivity"/>
-        <activity android:name="io.card.payment.DataEntryActivity"/>
-
+        <activity android:name="com.paypal.android.sdk.payments.LoginActivity" />
+        <activity android:name="com.paypal.android.sdk.payments.PaymentMethodActivity" />
+        <activity android:name="com.paypal.android.sdk.payments.PaymentConfirmActivity" />
+        <activity android:name="com.paypal.android.sdk.payments.PayPalFuturePaymentActivity" />
+        <activity android:name="com.paypal.android.sdk.payments.FuturePaymentConsentActivity" />
+        <activity android:name="com.paypal.android.sdk.payments.FuturePaymentInfoActivity" />
+        <activity android:name="io.card.payment.DataEntryActivity" />
     </application>
 
 </manifest>

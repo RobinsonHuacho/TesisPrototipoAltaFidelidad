@@ -21,8 +21,10 @@ public class ElementosProductosCompradosAdaptador extends ArrayAdapter<String> {
     private final String []itemImagenes;
     private final String [] itemTotal;
     private final String tipoImagen;
+    private float tamanoTexto;
 
-    public ElementosProductosCompradosAdaptador(Activity context, String[] itemname, String[] itemCantidad, String[] itemTotal, String tipoImagen, String []itemImagenes) {
+
+    public ElementosProductosCompradosAdaptador(Activity context, String[] itemname, String[] itemCantidad, String[] itemTotal, String tipoImagen, String []itemImagenes,float tamanoTexto) {
         super(context, R.layout.item_lista_detalle_beneficiario, itemname);
 
         this.context=context;
@@ -31,6 +33,7 @@ public class ElementosProductosCompradosAdaptador extends ArrayAdapter<String> {
         this.itemTotal=itemTotal;
         this.tipoImagen=tipoImagen;
         this.itemImagenes=itemImagenes;
+        this.tamanoTexto=tamanoTexto;
     }
 
     public View getView(int posicion, View view, ViewGroup parent){
@@ -40,13 +43,31 @@ public class ElementosProductosCompradosAdaptador extends ArrayAdapter<String> {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.TextView_lbNombreProducto);
         TextView txtCantidad = (TextView) rowView.findViewById(R.id.TextView_Cantidad);
         TextView txtTotal = (TextView) rowView.findViewById(R.id.TextView_TotalDetalleProducto);
+
+        TextView LabelSignoDolares = (TextView) rowView.findViewById(R.id.TextView_TotalDetalleProducto_$);
+        TextView LabelCantidad = (TextView) rowView.findViewById(R.id.TextView_lbCantidad);
+        TextView LabelTotal = (TextView) rowView.findViewById(R.id.TextView_lbTotalDetalleProducto);
+
+
+
         SmartImageView imageView= (SmartImageView) rowView.findViewById(R.id.ImageView_Foto);
 
         txtTitle.setText(itemname[posicion]);
         txtCantidad.setText(itemCantidad[posicion]);
         txtTotal.setText(itemTotal[posicion]);
+
+        txtTitle.setTextSize(tamanoTexto);
+        txtCantidad.setTextSize(tamanoTexto);
+        txtTotal.setTextSize(tamanoTexto);
+
+        LabelSignoDolares.setTextSize(tamanoTexto);
+        LabelCantidad.setTextSize(tamanoTexto);
+        LabelTotal.setTextSize(tamanoTexto);
+
+
+
         Rect rect = new Rect(imageView.getLeft(),imageView.getTop(), imageView.getRight(),imageView.getBottom());
-        imageView.setImageUrl("http://192.168.0.4:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[posicion], rect);
+        imageView.setImageUrl("http://192.168.0.10:8080/ProyectoIntegrador/Images/"+tipoImagen+"/"+itemImagenes[posicion], rect);
 
         return rowView;
     }

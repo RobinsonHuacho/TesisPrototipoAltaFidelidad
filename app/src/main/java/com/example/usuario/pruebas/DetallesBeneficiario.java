@@ -43,8 +43,8 @@ public class DetallesBeneficiario extends AppCompatActivity {
     private ArrayList<String> listViewItemsImagen = new ArrayList<String>();
     private int numeroComprasCliente;
 
-    TextView textView_TotalCompra,textView_SaldoCompra;
-    ElementosProductosCompradosAdaptador adapter;
+    private TextView textView_TotalCompra,textView_SaldoCompra,Label_TotalCompra,Label_SaldoCompra;
+    private ElementosProductosCompradosAdaptador adapter;
 
     DatabaseHandlerProductosComprados db = new DatabaseHandlerProductosComprados(this);
 
@@ -53,7 +53,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
     private TextToSpeech myTTS;
     private ConstraintLayout pantalla;
     private TextView InformacionPantalla;
-    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar;
+    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar,ImageButtonDesactivar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +66,17 @@ public class DetallesBeneficiario extends AppCompatActivity {
         for (int i=0;i<2;i++) {
             ExecTasks t = new ExecTasks(DetallesBeneficiario.this);
             t.execute();
-            conteoRegistros();
+
         }
 
         InformacionPantalla=(TextView) findViewById(R.id.textView25);
+        textView_TotalCompra= (TextView) findViewById(R.id.textView_CostoTotal);
+        textView_SaldoCompra= (TextView) findViewById(R.id.textView_SaldoCompra);
+        Label_TotalCompra= (TextView) findViewById(R.id.textView26);
+        Label_SaldoCompra= (TextView) findViewById(R.id.textView34);
 
         RequestQueue queue1 = Volley.newRequestQueue(getApplicationContext());
-        String url1 ="http://192.168.0.4:8080/ProyectoIntegrador/detalleBeneficiario_totales.php";
+        String url1 ="http://192.168.0.10:8080/ProyectoIntegrador/detalleBeneficiario_totales.php";
         StringRequest stringRequest1 = new StringRequest(Request.Method.POST, url1, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -91,12 +95,9 @@ public class DetallesBeneficiario extends AppCompatActivity {
                         total_compra_float=Float.parseFloat(total_compra);
                         saldo_compra_float=Float.parseFloat(saldo_compra);
 
-
-                        textView_TotalCompra= (TextView) findViewById(R.id.textView_CostoTotal);
                         textView_TotalCompra.setText(String.format("%.02f", total_compra_float));
                         //Toast.makeText(getApplcationContext(),textView_TotalCompra.getText(),Toast.LENGTH_LONG).show();
 
-                        textView_SaldoCompra= (TextView) findViewById(R.id.textView_SaldoCompra);
                         textView_SaldoCompra.setText(String.format("%.02f", saldo_compra_float));
                         //Toast.makeText(getApplicationContext(),textView_SaldoCompra.getText(),Toast.LENGTH_LONG).show();
                     }
@@ -124,20 +125,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
 
-        pantalla.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-                speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Finalizar o Continuar!");
-                //mySpeechRecognizer.startListening(speechIntent);
-                startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
-            }
-        });
-
-        iniciarTextToSpeech();
 
         ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
         ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
@@ -145,13 +133,22 @@ public class DetallesBeneficiario extends AppCompatActivity {
         ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(InformacionPantalla.getTextSize()<80) {
+                    InformacionPantalla.setTextSize(0, InformacionPantalla.getTextSize() + 12.0f);
+                    textView_TotalCompra.setTextSize(0, textView_TotalCompra.getTextSize() + 12.0f);
+                    textView_SaldoCompra.setTextSize(0, textView_SaldoCompra.getTextSize() + 12.0f);
+                    Label_TotalCompra.setTextSize(0, Label_TotalCompra.getTextSize() + 12.0f);
+                    Label_SaldoCompra.setTextSize(0, Label_SaldoCompra.getTextSize() + 12.0f);
 
-                pantalla.setScaleX((float) (x + 1));
-                pantalla.setScaleY((float) (y + 1));
+                    String[] arregloNombres = listViewItemsNombre.toArray(new String[0]);
+                    String[] arregloCantidades = listViewItemsCantidad.toArray(new String[0]);
+                    String[] arregloTotales = listViewItemsPrecio.toArray(new String[0]);
+                    String[] arregloImagenes = listViewItemsImagen.toArray(new String[0]);
 
+                    //Toast.makeText(getApplicationContext(),db.getAllCategorias(1).toString(),Toast.LENGTH_SHORT).show();
+                    adapter = new ElementosProductosCompradosAdaptador(DetallesBeneficiario.this, arregloNombres, arregloCantidades, arregloTotales, "Productos", arregloImagenes,24);
+                    listViewdetallesBeneficiario.setAdapter(adapter);
+                }
 
 
 
@@ -161,27 +158,71 @@ public class DetallesBeneficiario extends AppCompatActivity {
         ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(InformacionPantalla.getTextSize()>66) {
+                    InformacionPantalla.setTextSize(0, InformacionPantalla.getTextSize() - 12.0f);
+                    textView_TotalCompra.setTextSize(0, textView_TotalCompra.getTextSize() - 12.0f);
+                    textView_SaldoCompra.setTextSize(0, textView_SaldoCompra.getTextSize() - 12.0f);
+                    Label_TotalCompra.setTextSize(0, Label_TotalCompra.getTextSize() - 12.0f);
+                    Label_SaldoCompra.setTextSize(0, Label_SaldoCompra.getTextSize() - 12.0f);
 
-                pantalla.setScaleX((float) (x - 1));
-                pantalla.setScaleY((float) (y - 1));
+                    String[] arregloNombres = listViewItemsNombre.toArray(new String[0]);
+                    String[] arregloCantidades = listViewItemsCantidad.toArray(new String[0]);
+                    String[] arregloTotales = listViewItemsPrecio.toArray(new String[0]);
+                    String[] arregloImagenes = listViewItemsImagen.toArray(new String[0]);
+
+                    //Toast.makeText(getApplicationContext(),db.getAllCategorias(1).toString(),Toast.LENGTH_SHORT).show();
+                    adapter = new ElementosProductosCompradosAdaptador(DetallesBeneficiario.this, arregloNombres, arregloCantidades, arregloTotales, "Productos", arregloImagenes,18);
+                    listViewdetallesBeneficiario.setAdapter(adapter);
+
+
+                }
+
 
             }
         });
 
         ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+        ImageButtonDesactivar= (ImageButton) findViewById(R.id.btnDeshabiltarTTSSTT) ;
         ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                iniciarTextToSpeech();
+
+                pantalla.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,1);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la palabra Finalizar o Continuar!");
+                        //mySpeechRecognizer.startListening(speechIntent);
+                        startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+                    }
+                });
+
+                ImageButtonActivar.setVisibility(View.GONE);
+                ImageButtonDesactivar.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        ImageButtonDesactivar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 myTTS.stop();
 
-                iniciarTextToSpeech();
+                pantalla.setOnClickListener(null);
 
+                ImageButtonActivar.setVisibility(View.VISIBLE);
+                ImageButtonDesactivar.setVisibility(View.GONE);
             }
         });
+
 
 
     }
@@ -235,10 +276,10 @@ public class DetallesBeneficiario extends AppCompatActivity {
         escuchado = escuchado.toLowerCase();
 
         if(escuchado.indexOf("finalizar")!=-1){
-            if(conteoRegistros()<2) {
+            if(conteoRegistros()<1) {
                 //Toast.makeText(getApplicationContext(), String.valueOf(conteoRegistros())+IngresoAplicacion.getActivityInstance().getIdUsuario(), Toast.LENGTH_LONG).show();
                 RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                String url3 = "http://192.168.0.4:8080/ProyectoIntegrador/nuevaCompra.php";
+                String url3 = "http://192.168.0.10:8080/ProyectoIntegrador/nuevaCompra.php";
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url3, new
                         Response.Listener<String>() {
                             @Override
@@ -251,6 +292,8 @@ public class DetallesBeneficiario extends AppCompatActivity {
 
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Algo salió mal. No se pudo realizar la compra. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(getApplicationContext(), ErrorConfirmacionCompra.class);
+                                    startActivity(intent);
                                 }
                             }
                         }, new Response.ErrorListener() {
@@ -275,6 +318,8 @@ public class DetallesBeneficiario extends AppCompatActivity {
                 queue.add(stringRequest);
 
             }else {
+                Intent intent = new Intent(getApplicationContext(), ErrorConfirmacionCompra.class);
+                startActivity(intent);
                 Toast.makeText(getApplicationContext(), "Algo salió mal. No se pudo realizar la compra. Inténtalo de nuevo", Toast.LENGTH_LONG).show();
             }
 
@@ -325,10 +370,10 @@ public class DetallesBeneficiario extends AppCompatActivity {
 
 
     public void realizarCompra(View view){
-        if(conteoRegistros()<2) {
-            Toast.makeText(getApplicationContext(), String.valueOf(conteoRegistros())+IngresoAplicacion.getActivityInstance().getIdUsuario(), Toast.LENGTH_LONG).show();
+        if(conteoRegistros()<1) {
+            //Toast.makeText(getApplicationContext(), String.valueOf(conteoRegistros())+IngresoAplicacion.getActivityInstance().getIdUsuario(), Toast.LENGTH_LONG).show();
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url3 = "http://192.168.0.4:8080/ProyectoIntegrador/nuevaCompra.php";
+            String url3 = "http://192.168.0.10:8080/ProyectoIntegrador/nuevaCompra.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url3, new
                     Response.Listener<String>() {
                         @Override
@@ -378,7 +423,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
     public int conteoRegistros(){
 
         RequestQueue queue2 = Volley.newRequestQueue(getApplicationContext());
-        String url2 ="http://192.168.0.4:8080/ProyectoIntegrador/nuevaCompra_numeroComprasPorCliente.php";
+        String url2 ="http://192.168.0.10:8080/ProyectoIntegrador/nuevaCompra_numeroComprasPorCliente.php";
         StringRequest stringRequest2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -447,7 +492,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
                 ex.printStackTrace();
             }
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url = "http://192.168.0.4:8080/ProyectoIntegrador/detalleBeneficiario.php";
+            String url = "http://192.168.0.10:8080/ProyectoIntegrador/detalleBeneficiario.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -469,7 +514,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
                             String nombre_producto = c.getString("NOMBRE_PRODUCTO");
 
 
-                            db.addProductosDetalle(new ProductosComprados(id_detalle_compra, id_producto, id_usuario, precio_detalle, cantidad_detalle, total_detalle, estado, imagen_producto, nombre_producto));
+                            db.addProductosDetalle(new ElementoProductosComprados(id_detalle_compra, id_producto, id_usuario, precio_detalle, cantidad_detalle, total_detalle, estado, imagen_producto, nombre_producto));
 
                         }
 
@@ -502,7 +547,7 @@ public class DetallesBeneficiario extends AppCompatActivity {
             String[] arregloImagenes = listViewItemsImagen.toArray(new String[0]);
 
             //Toast.makeText(getApplicationContext(),db.getAllCategorias(1).toString(),Toast.LENGTH_SHORT).show();
-           adapter = new ElementosProductosCompradosAdaptador(DetallesBeneficiario.this, arregloNombres, arregloCantidades, arregloTotales, "Productos", arregloImagenes);
+           adapter = new ElementosProductosCompradosAdaptador(DetallesBeneficiario.this, arregloNombres, arregloCantidades, arregloTotales, "Productos", arregloImagenes,18);
            listViewdetallesBeneficiario = (ListView) findViewById(R.id.ListView_ProductosCompradosBeneficiario);
             return adapter;
         }

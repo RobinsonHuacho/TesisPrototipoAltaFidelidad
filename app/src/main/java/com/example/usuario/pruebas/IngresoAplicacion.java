@@ -63,21 +63,40 @@ public class IngresoAplicacion extends AppCompatActivity {
 
         INSTANCE = this;
 
+        Intent intent = getIntent();
+        String usuarioIngresado = intent.getStringExtra(Intent.EXTRA_INDEX);
+
+        editTextUsuario = (EditText) findViewById(R.id.EditText_Usuario);
+        editTextUsuario.setBackgroundResource(R.drawable.border_color);
+
+
+        if(usuarioIngresado!=null){
+        editTextUsuario.setText(usuarioIngresado);
+        }else{
+            editTextUsuario.setText("");
+        }
+
         ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
         ImageButtonDesactivar= (ImageButton) findViewById(R.id.btnDeshabiltarTTSSTT) ;
 
         ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
         ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
 
+
+        editTextContraseña = (EditText) findViewById(R.id.editText_Contrasenia);
+        editTextContraseña.setBackgroundResource(R.drawable.border_color);
+
+        textViewRegistro = (TextView) findViewById(R.id.TextView_Registro);
+
         ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(editTextUsuario.getTextSize()<80) {
+                    editTextUsuario.setTextSize(0, editTextUsuario.getTextSize() + 12.0f);
+                    editTextContraseña.setTextSize(0, editTextContraseña.getTextSize() + 12.0f);
+                    textViewRegistro.setTextSize(0, textViewRegistro.getTextSize() + 12.0f);
 
-                pantalla.setScaleX((float) (x + 1));
-                pantalla.setScaleY((float) (y + 1));
+                }
 
 
 
@@ -88,12 +107,13 @@ public class IngresoAplicacion extends AppCompatActivity {
         ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
 
-                pantalla.setScaleX((float) (x - 1));
-                pantalla.setScaleY((float) (y - 1));
+                if(editTextUsuario.getTextSize()>66) {
+                    editTextUsuario.setTextSize(0, editTextUsuario.getTextSize() - 12.0f);
+                    editTextContraseña.setTextSize(0, editTextContraseña.getTextSize() - 12.0f);
+                    textViewRegistro.setTextSize(0, textViewRegistro.getTextSize() - 12.0f);
+
+                }
 
 
 
@@ -101,20 +121,16 @@ public class IngresoAplicacion extends AppCompatActivity {
         });
 
 
-        editTextUsuario = (EditText) findViewById(R.id.EditText_Usuario);
-        editTextUsuario.setBackgroundResource(R.drawable.border_color);
 
-        editTextContraseña = (EditText) findViewById(R.id.editText_Contrasenia);
-        editTextContraseña.setBackgroundResource(R.drawable.border_color);
 
-        textViewRegistro = (TextView) findViewById(R.id.TextView_Registro);
+
         textViewRegistro.setOnClickListener(new AdapterView.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(SeleccionRol.getActivityInstance().getIdRol()=="1"){
-                Intent intent= new Intent(getApplicationContext(), RegistroBeneficiario.class);
-                startActivity(intent);
-            }else{
+                    Intent intent= new Intent(getApplicationContext(), TerminosCondicionesBeneficiario.class);
+                    startActivity(intent);
+                }else{
                     Intent intent= new Intent(getApplicationContext(), RegistroDonador.class);
                     startActivity(intent);
                 }
@@ -123,61 +139,83 @@ public class IngresoAplicacion extends AppCompatActivity {
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
 
-       if(SeleccionRol.getActivityInstance().getIdRol()=="1"){
 
-           pantalla.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
+        if(SeleccionRol.getActivityInstance().getIdRol()=="1"){
 
-                   Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                   speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-                   speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
-                   speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
-                   mySpeechRecognizerUsuario.startListening(speechIntent);
+              ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
 
-               }
-           });
 
-            ImageButtonActivar.setVisibility(View.VISIBLE);
-            ImageButtonDesactivar.setVisibility(View.GONE);
+                    iniciarTextToSpeech();
+                    iniciarSpeechToTextUsuario();
+                    iniciarSpeechToTextResultadoParcial();
+                    iniciarSpeechToTextContrasenia();
+                    iniciarSpeechToTextResultadoFinal();
 
-            iniciarTextToSpeech();
-            iniciarSpeechToTextUsuario();
-            iniciarSpeechToTextResultadoParcial();
-            iniciarSpeechToTextContrasenia();
-            iniciarSpeechToTextResultadoFinal();
 
-           ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
+                    pantalla.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                   myTTS.stop();
+                            ImageButtonActivar.setVisibility(View.VISIBLE);
+                            ImageButtonDesactivar.setVisibility(View.GONE);
 
-                   iniciarTextToSpeech();
-                   iniciarSpeechToTextUsuario();
-                   iniciarSpeechToTextResultadoParcial();
-                   iniciarSpeechToTextContrasenia();
-                   iniciarSpeechToTextResultadoFinal();
+                            Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
+                            speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
+                            mySpeechRecognizerUsuario.startListening(speechIntent);
 
-               }
-           });
+
+                        }
+                    });
+
+
+                    ImageButtonActivar.setVisibility(View.GONE);
+                    ImageButtonDesactivar.setVisibility(View.VISIBLE);
+                }
+
+
+            });
+
+            ImageButtonDesactivar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    myTTS.stop();
+                    myTTS.shutdown();
+
+                    pantalla.setOnClickListener(null);
+
+                    ImageButtonActivar.setVisibility(View.VISIBLE);
+                    ImageButtonDesactivar.setVisibility(View.GONE);
+                }
+            });
 
         } else{
-            if(Integer.parseInt(SeleccionRol.getActivityInstance().getIdRol())==2){
-                ImageButtonActivar.setVisibility(View.VISIBLE);
-                ImageButtonDesactivar.setVisibility(View.GONE);
-
+            if(SeleccionRol.getActivityInstance().getIdRol()=="2"){
 
                 ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
+
+
                         iniciarTextToSpeech();
+                        iniciarSpeechToTextUsuario();
+                        iniciarSpeechToTextResultadoParcial();
+                        iniciarSpeechToTextContrasenia();
+                        iniciarSpeechToTextResultadoFinal();
+
 
                         pantalla.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+
+                                ImageButtonActivar.setVisibility(View.VISIBLE);
+                                ImageButtonDesactivar.setVisibility(View.GONE);
 
                                 Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                                 speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
@@ -189,11 +227,13 @@ public class IngresoAplicacion extends AppCompatActivity {
                             }
                         });
 
+
                         ImageButtonActivar.setVisibility(View.GONE);
                         ImageButtonDesactivar.setVisibility(View.VISIBLE);
                     }
-                });
 
+
+                });
 
                 ImageButtonDesactivar.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -216,7 +256,8 @@ public class IngresoAplicacion extends AppCompatActivity {
 
 
 
-      }
+
+    }
 
     @Override
     protected void onPause() {
@@ -226,7 +267,7 @@ public class IngresoAplicacion extends AppCompatActivity {
             myTTS.stop();
             myTTS.shutdown();
         }
-      }
+    }
 
     @Override
     protected void onStop() {
@@ -522,8 +563,8 @@ public class IngresoAplicacion extends AppCompatActivity {
         escuchado = escuchado.toLowerCase();
 
         if(escuchado.indexOf("registrar")!=-1){
-                Intent intent = new Intent(getApplicationContext(), RegistroBeneficiario.class);
-                startActivity(intent);
+            Intent intent = new Intent(getApplicationContext(), RegistroBeneficiario.class);
+            startActivity(intent);
         }else {
             if (escuchado.indexOf("lis") != -1) {
                 speak("Ahora deletree su contraseña");
@@ -573,95 +614,95 @@ public class IngresoAplicacion extends AppCompatActivity {
 
         escuchado = escuchado.toLowerCase();
 
-            if (escuchado.indexOf("lis") != -1) {
-                final String id_rol_desde_seleccion_rol=SeleccionRol.getActivityInstance().getIdRol();
+        if (escuchado.indexOf("lis") != -1) {
+            final String id_rol_desde_seleccion_rol=SeleccionRol.getActivityInstance().getIdRol();
 
-                if(TextUtils.isEmpty(editTextUsuario.getText().toString())){
-                    editTextUsuario.setError("Este campo no puede estar vacío. Por favor ingrese su usuario");
-                    return;
-                }
-                if(TextUtils.isEmpty(editTextContraseña.getText().toString())){
-                    editTextContraseña.setError("Este campo no puede estar vacío. Por favor ingrese su contraseña");
-                    return;
-                }else{
-                    RequestQueue queue = Volley.newRequestQueue(this);
-                    String url3 ="http://192.168.0.4:8080/ProyectoIntegrador/loginApp.php";
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url3,new
-                            Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
+            if(TextUtils.isEmpty(editTextUsuario.getText().toString())){
+                editTextUsuario.setError("Este campo no puede estar vacío. Por favor ingrese su usuario");
+                return;
+            }
+            if(TextUtils.isEmpty(editTextContraseña.getText().toString())){
+                editTextContraseña.setError("Este campo no puede estar vacío. Por favor ingrese su contraseña");
+                return;
+            }else{
+                RequestQueue queue = Volley.newRequestQueue(this);
+                String url3 ="http://192.168.0.10:8080/ProyectoIntegrador/loginApp.php";
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url3,new
+                        Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
 
-                                    if(response.trim().length()==2)
-                                    {
-                                        Toast.makeText(getApplicationContext(),"Usuario/Contraseña no válidos",Toast.LENGTH_LONG).show();
-                                    }
-                                    try{
-                                        JSONObject obj = new JSONObject(response);
-                                        JSONArray ids = obj.getJSONArray("ids");
-                                        for(int i=0;i<ids.length();i++){
-                                            JSONObject c= ids.getJSONObject(i);
-                                            id_usuario = c.getString("ID_USUARIO");
-                                            id_rol = c.getString("ID_ROL");
+                                if(response.trim().length()==2)
+                                {
+                                    Toast.makeText(getApplicationContext(),"Usuario/Contraseña no válidos",Toast.LENGTH_LONG).show();
+                                }
+                                try{
+                                    JSONObject obj = new JSONObject(response);
+                                    JSONArray ids = obj.getJSONArray("ids");
+                                    for(int i=0;i<ids.length();i++){
+                                        JSONObject c= ids.getJSONObject(i);
+                                        id_usuario = c.getString("ID_USUARIO");
+                                        id_rol = c.getString("ID_ROL");
 
-                                            if(id_rol.matches("1")){
-                                                Intent intent = new Intent(getApplicationContext(), ListaCategoriaProducto.class);
+                                        if(id_rol.matches("1")){
+                                            Intent intent = new Intent(getApplicationContext(), ListaCategoriaProducto.class);
+                                            startActivity(intent);
+
+                                            Intent intent1 = new Intent("PASO_ID_USUARIO").putExtra("ID_USUARIO", id_usuario);
+
+                                            //Toast.makeText(getApplicationContext(),id_rol+" Usuario Beneficiario",Toast.LENGTH_LONG).show();
+                                        }else {
+                                            if(id_rol.matches("2")){
+                                                Intent intent = new Intent(getApplicationContext(), ListaBeneficiarioDonacion.class);
                                                 startActivity(intent);
-
-                                                Intent intent1 = new Intent("PASO_ID_USUARIO").putExtra("ID_USUARIO", id_usuario);
-
-                                                //Toast.makeText(getApplicationContext(),id_rol+" Usuario Beneficiario",Toast.LENGTH_LONG).show();
-                                            }else {
-                                                if(id_rol.matches("2")){
-                                                    Intent intent = new Intent(getApplicationContext(), ListaBeneficiarioDonacion.class);
-                                                    startActivity(intent);
-                                                    //Toast.makeText(getApplicationContext(),id_rol+" Usuario Donador",Toast.LENGTH_LONG).show();
-                                                }
-
+                                                //Toast.makeText(getApplicationContext(),id_rol+" Usuario Donador",Toast.LENGTH_LONG).show();
                                             }
 
                                         }
-                                    }catch (Throwable t){
 
                                     }
+                                }catch (Throwable t){
+
                                 }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            //nombreTextView.setText("That didn't work!");
-                        }
-                    }){
-                        @Override
-                        protected Map<String,String> getParams(){
-                            Map<String,String> params = new HashMap<String, String>();
-                            params.put("id_rol", id_rol_desde_seleccion_rol);
-                            params.put("usuario", editTextUsuario.getText().toString().replace(" ","").toLowerCase());
-                            params.put("password",editTextContraseña.getText().toString().replace(" ","").toLowerCase());
-                            return params;
-                        }
-                    };
-                    queue.add(stringRequest);
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //nombreTextView.setText("That didn't work!");
+                    }
+                }){
+                    @Override
+                    protected Map<String,String> getParams(){
+                        Map<String,String> params = new HashMap<String, String>();
+                        params.put("id_rol", id_rol_desde_seleccion_rol);
+                        params.put("usuario", editTextUsuario.getText().toString().replace(" ","").toLowerCase());
+                        params.put("password",editTextContraseña.getText().toString().replace(" ","").toLowerCase());
+                        return params;
+                    }
+                };
+                queue.add(stringRequest);
 
 
             }} else {
-                if (escuchado.indexOf("repetir") != -1) {
-                    speak("Deletree su contraseña nuevamente");
+            if (escuchado.indexOf("repetir") != -1) {
+                speak("Deletree su contraseña nuevamente");
 
-                    pantalla.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+                pantalla.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                            Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-                            speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
-                            speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
-                            mySpeechRecognizerContrasenia.startListening(speechIntent);
+                        Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Deletree sus credenciales!");
+                        mySpeechRecognizerContrasenia.startListening(speechIntent);
 
 
-                        }
-                    });
+                    }
+                });
 
-                }
             }
+        }
 
     }
 
@@ -707,7 +748,7 @@ public class IngresoAplicacion extends AppCompatActivity {
             return;
         }else{
             RequestQueue queue = Volley.newRequestQueue(this);
-            String url3 ="http://192.168.0.4:8080/ProyectoIntegrador/loginApp.php";
+            String url3 ="http://192.168.0.10:8080/ProyectoIntegrador/loginApp.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url3,new
                     Response.Listener<String>() {
                         @Override

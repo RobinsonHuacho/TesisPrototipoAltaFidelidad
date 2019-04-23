@@ -1,9 +1,6 @@
 package com.example.usuario.pruebas;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -12,22 +9,10 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -36,6 +21,7 @@ import java.util.Locale;
 import static android.content.Intent.EXTRA_INDEX;
 
 public class ListaCategoriaProducto extends AppCompatActivity {
+
 
     private GridView gridViewCategoriaProducto;
     private ArrayList<String> GridViewItems = new ArrayList<String>();
@@ -50,7 +36,8 @@ public class ListaCategoriaProducto extends AppCompatActivity {
     private ConstraintLayout pantalla;
     private GridView GridView_Categoria_Productos;
     private TextView InformacionPantalla;
-    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar;
+    private TextView TextView_Nombre_Categoria;
+    private ImageButton ImageButtonZoomIn,ImageButtonZoomOut,ImageButtonActivar,ImageButtonDesactivar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,32 +46,50 @@ public class ListaCategoriaProducto extends AppCompatActivity {
 
 
 
-        for (int i=0;i<2;i++){
-            ExecTasks t = new ExecTasks(ListaCategoriaProducto.this);
-            t.execute();
-        }
+        db = new DatabaseHandlerCategorias(getApplicationContext());
+        db.addCategoria(new ElementoCategoriaProducto("1", "LACTEOS", "lacteos.png"));
+        db.addCategoria(new ElementoCategoriaProducto("2", "VIVERES", "viveres.png"));
+        db.addCategoria(new ElementoCategoriaProducto("3", "GRANOS", "granos.jpg"));
+        db.addCategoria(new ElementoCategoriaProducto("4", "BEBIDAS", "bebidas.jpg"));
+        db.addCategoria(new ElementoCategoriaProducto("5", "ASEO PERSONAL", "cuidado_personal.png"));
+
+
+
+        GridViewItems = db.getAllCategorias(1);
+        GridViewImagenes = db.getAllCategorias(2);
+
+        arregloCategorias = GridViewItems.toArray(new String[0]);
+        String[] arregloImagenes = GridViewImagenes.toArray(new String[0]);
+
+        //Toast.makeText(getApplicationContext(),db.getAllCategorias(1).toString(),Toast.LENGTH_SHORT).show();
+        adapter = new ElementosCategoriaProductoAdaptador(ListaCategoriaProducto.this, arregloCategorias, arregloImagenes,14);
+        gridViewCategoriaProducto = (GridView) findViewById(R.id.GridView_Categoria_Productos);
+
+
+
+        gridViewCategoriaProducto.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+
+        gridViewCategoriaProducto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String item = (String) gridViewCategoriaProducto.getItemAtPosition(position);
+                final ElementoCategoriaProducto categoriaProducto = db.getCategoriaNombre(item);
+
+
+                Intent intent = new Intent(getApplicationContext(), ListaProductos.class);
+                intent.putExtra(EXTRA_INDEX, categoriaProducto.getIdCategoriaProducto());
+                //Toast.makeText(getApplicationContext(),categoriaProducto.getIdCategoriaProducto(),Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+            }
+        });
+
 
         InformacionPantalla=(TextView) findViewById(R.id.textView3);
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
         GridView_Categoria_Productos = (GridView) findViewById(R.id.GridView_Categoria_Productos);
-
-       pantalla.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-                speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
-                speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la categoría de producto!");
-                startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
-
-
-            }
-        });
-
-
-        iniciarTextToSpeech();
 
         ImageButtonZoomIn= (ImageButton) findViewById(R.id.zoomIn) ;
         ImageButtonZoomOut= (ImageButton) findViewById(R.id.zoomOut) ;
@@ -92,13 +97,16 @@ public class ListaCategoriaProducto extends AppCompatActivity {
         ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(InformacionPantalla.getTextSize()<90) {
+                    InformacionPantalla.setTextSize(0, InformacionPantalla.getTextSize() + 12.0f);
 
-                pantalla.setScaleX((float) (x + 1));
-                pantalla.setScaleY((float) (y + 1));
+                    arregloCategorias = GridViewItems.toArray(new String[0]);
+                    String[] arregloImagenes = GridViewImagenes.toArray(new String[0]);
 
+                    adapter = new ElementosCategoriaProductoAdaptador(ListaCategoriaProducto.this, arregloCategorias, arregloImagenes,22);
+                    gridViewCategoriaProducto.setAdapter(adapter);
+
+                }
 
 
 
@@ -108,28 +116,61 @@ public class ListaCategoriaProducto extends AppCompatActivity {
         ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(InformacionPantalla.getTextSize()>66) {
+                    InformacionPantalla.setTextSize(0, InformacionPantalla.getTextSize() - 12.0f);
 
-                pantalla.setScaleX((float) (x - 1));
-                pantalla.setScaleY((float) (y - 1));
+                    arregloCategorias = GridViewItems.toArray(new String[0]);
+                    String[] arregloImagenes = GridViewImagenes.toArray(new String[0]);
 
+                    adapter = new ElementosCategoriaProductoAdaptador(ListaCategoriaProducto.this, arregloCategorias, arregloImagenes,18);
+                    gridViewCategoriaProducto.setAdapter(adapter);
+
+
+                }
 
 
             }
         });
 
-
         ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
+        ImageButtonDesactivar= (ImageButton) findViewById(R.id.btnDeshabiltarTTSSTT) ;
         ImageButtonActivar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                iniciarTextToSpeech();
+
+                pantalla.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,10);
+                        speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Pronuncie la categoría de producto!");
+                        startActivityForResult(speechIntent,RECONOCEDOR_VOZ);
+
+
+                    }
+                });
+
+
+                ImageButtonActivar.setVisibility(View.GONE);
+                ImageButtonDesactivar.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        ImageButtonDesactivar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 myTTS.stop();
 
-                iniciarTextToSpeech();
+                pantalla.setOnClickListener(null);
 
+                ImageButtonActivar.setVisibility(View.VISIBLE);
+                ImageButtonDesactivar.setVisibility(View.GONE);
             }
         });
 
@@ -224,7 +265,7 @@ public class ListaCategoriaProducto extends AppCompatActivity {
                 }else{
                     myTTS.setLanguage(Locale.getDefault());
                     speak("En esta pantalla se presentan las diferentes "+InformacionPantalla.getText().toString()+"." +
-                    ". Toque la pantalla y pronuncie la que desee después del tono");
+                            ". Toque la pantalla y pronuncie la que desee ");
 
                 }
             }
@@ -239,110 +280,14 @@ public class ListaCategoriaProducto extends AppCompatActivity {
         }
     }
 
-    public class ExecTasks extends AsyncTask<Void, Void, ArrayAdapter<String>>{
-
-        Context context;
-        ProgressDialog pDialog;
-
-        public ExecTasks(Context context){
-            this.context = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            pDialog = new ProgressDialog(context);
-            pDialog.setMessage("Cargando Lista");
-            pDialog.setCancelable(true);
-            pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            pDialog.show();
-        }
-
-        @Override
-        protected ArrayAdapter<String> doInBackground(Void... params) {
-
-            try{
-                Thread.sleep(2000);
-
-            }catch(Exception ex){
-                ex.printStackTrace();
-            }
-
-            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url2 = "http://192.168.0.4:8080/ProyectoIntegrador/categoriaProducto.php";
-            StringRequest jsObjRequest = new StringRequest
-                    (Request.Method.GET, url2, new
-                            Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-
-                                    try {
-                                        JSONObject jsonObj = new
-                                                JSONObject(response.toString());
-
-                                        JSONArray contacts = jsonObj.getJSONArray("categoriaProducto");
-                                        for (int i = 0; i < contacts.length(); i++) {
-                                            JSONObject c = contacts.getJSONObject(i);
-
-                                            String id = c.getString("ID_CATEGORIA_PRODUCTO");
-                                            String nombre_categoria = c.getString("NOMBRE_CATEGORIA_PRODUCTO");
-                                            String imagen_categoria = c.getString("IMAGEN_CATEGORIA");
-                                            db = new DatabaseHandlerCategorias(getApplicationContext());
-                                            db.addCategoria(new ElementoCategoriaProducto(id, nombre_categoria, imagen_categoria));
-                                            //Log.d("Insert","Contacto insertado correctamente");
-                                        }
-                                    } catch (final JSONException e) {
-                                    }
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            //mTextView.setText("That didn't work!");
-                        }
-                    });
-            queue.add(jsObjRequest);
-
-            GridViewItems = db.getAllCategorias(1);
-            GridViewImagenes = db.getAllCategorias(2);
-
-            arregloCategorias = GridViewItems.toArray(new String[0]);
-            String[] arregloImagenes = GridViewImagenes.toArray(new String[0]);
-
-            //Toast.makeText(getApplicationContext(),db.getAllCategorias(1).toString(),Toast.LENGTH_SHORT).show();
-            adapter = new ElementosCategoriaProductoAdaptador(ListaCategoriaProducto.this, arregloCategorias, "CategoriaProductos", arregloImagenes);
-            gridViewCategoriaProducto = (GridView) findViewById(R.id.GridView_Categoria_Productos);
-
-            return adapter;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayAdapter<String> stringArrayAdapter) {
-            super.onPostExecute(stringArrayAdapter);
-
-            gridViewCategoriaProducto.setAdapter(adapter);
-           // adapter.notifyDataSetChanged();
-            pDialog.dismiss();
-
-            gridViewCategoriaProducto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String item = (String) gridViewCategoriaProducto.getItemAtPosition(position);
-                    final ElementoCategoriaProducto categoriaProducto = db.getCategoriaNombre(item);
-
-                    Intent intent = new Intent(getApplicationContext(), ListaProductos.class);
-                    intent.putExtra(EXTRA_INDEX,categoriaProducto.getIdCategoriaProducto());
-                    //Toast.makeText(getApplicationContext(),categoriaProducto.getIdCategoriaProducto(),Toast.LENGTH_SHORT).show();
-                    startActivity(intent);
-                }
-            });
-        }
 
 
 
 
 
-    }
+
+
+
 
 
 }

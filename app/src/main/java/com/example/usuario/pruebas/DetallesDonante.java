@@ -36,6 +36,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import static android.content.Intent.EXTRA_INDEX;
+import static android.content.Intent.EXTRA_REFERRER;
+import static android.content.Intent.EXTRA_TITLE;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class DetallesDonante extends AppCompatActivity {
@@ -48,7 +50,7 @@ public class DetallesDonante extends AppCompatActivity {
 
     DatabaseHandlerProductosComprados db = new DatabaseHandlerProductosComprados(this);
 
-    private String selectedIdCompra,selectedIdUsuario;
+    private String selectedIdCompra,selectedIdUsuario,primer_nombre_usuario,primer_apellido_usuario;
 
     ListView listViewdetallesBeneficiario;
     ElementosProductosCompradosAdaptador adapter;
@@ -58,7 +60,13 @@ public class DetallesDonante extends AppCompatActivity {
     private ConstraintLayout pantalla;
     private TextView InformacionPantalla;
     private ImageButton ImageButtonActivar,ImageButtonDesactivar,ImageButtonZoomIn,ImageButtonZoomOut;
-    TextView textView_NombresBeneficiario,textView_ApellidosBeneficiario,textView_TotalCompra,textView_SaldoCompra;
+    private TextView textView_NombresBeneficiario,
+            textView_ApellidosBeneficiario,
+            textView_TotalCompra,
+            textView_SaldoCompra,
+            textView_CondicionBeneficiario,
+            Label_TotalCompra,
+            Label_SaldoCompra;
 
 
     @Override
@@ -78,7 +86,7 @@ public class DetallesDonante extends AppCompatActivity {
         }
 
         RequestQueue queue1 = Volley.newRequestQueue(getApplicationContext());
-        String url1 ="http://192.168.0.4:8080/ProyectoIntegrador/detalleBeneficiario_totales_donador.php";
+        String url1 ="http://192.168.0.10:8080/ProyectoIntegrador/detalleBeneficiario_totales_donador.php";
         StringRequest stringRequest1 = new StringRequest(Request.Method.POST, url1, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -121,7 +129,7 @@ public class DetallesDonante extends AppCompatActivity {
         queue1.add(stringRequest1);
 
         RequestQueue queue2 = Volley.newRequestQueue(getApplicationContext());
-        String url2 ="http://192.168.0.4:8080/ProyectoIntegrador/detalleBeneficiario_usuario.php";
+        String url2 ="http://192.168.0.10:8080/ProyectoIntegrador/detalleBeneficiario_usuario.php";
         StringRequest stringRequest2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -132,26 +140,24 @@ public class DetallesDonante extends AppCompatActivity {
                     for (int i = 0; i < contacts2.length(); i++) {
                         JSONObject c2 = contacts2.getJSONObject(i);
 
-                        String primer_nombre_usuario = c2.getString("PRIMER_NOMBRE_USUARIO");
-                        String segundo_nombre_usuario = c2.getString("SEGUNDO_NOMBRE_USUARIO");
-                        String primer_apellido_usuario = c2.getString("PRIMER_APELLIDO_USUARIO");
-                        String segundo_apellido_usuario = c2.getString("SEGUNDO_APELLIDO_USUARIO");
+                        primer_nombre_usuario = c2.getString("PRIMER_NOMBRE_USUARIO");
+                        primer_apellido_usuario = c2.getString("PRIMER_APELLIDO_USUARIO");
                         String condicion_usuario = c2.getString("CONDICION_USUARIO");
                         String imagen_usuario = c2.getString("FOTO_USUARIO");
                         //Toast.makeText(getApplicationContext(),primer_nombre_usuario+" "+primer_apellido_usuario,Toast.LENGTH_LONG).show();
 
                         TextView textView_Nombres = (TextView) findViewById(R.id.TextView_NombreBeneficiario);
-                        textView_Nombres.setText("NOMBRES:\n"+primer_nombre_usuario+" "+segundo_nombre_usuario);
+                        textView_Nombres.setText("NOMBRES:\n"+primer_nombre_usuario);
 
                         TextView textViewxt_Apellidos = (TextView) findViewById(R.id.TextView_ApellidoBeneficiario);
-                        textViewxt_Apellidos.setText("APELLIDOS:\n"+primer_apellido_usuario+" "+segundo_apellido_usuario);
+                        textViewxt_Apellidos.setText("APELLIDOS:\n"+primer_apellido_usuario);
 
                         TextView condicion = (TextView) findViewById(R.id.TextView_CondicionBeneficiario);
                         condicion.setText("CONDICIÓN:\n"+condicion_usuario);
 
                         SmartImageView imageView= (SmartImageView) findViewById(R.id.ImageView_Foto);
                         Rect rect = new Rect(imageView.getLeft(),imageView.getTop(), imageView.getRight(),imageView.getBottom());
-                        imageView.setImageUrl("http://192.168.0.4:8080/ProyectoIntegrador/Images/Beneficiarios/"+imagen_usuario,rect);
+                        imageView.setImageUrl("http://192.168.0.10:8080/ProyectoIntegrador/Images/Beneficiarios/"+imagen_usuario,rect);
                     }
 
                 }
@@ -173,13 +179,15 @@ public class DetallesDonante extends AppCompatActivity {
         };
         queue2.add(stringRequest2);
 
+        InformacionPantalla=(TextView) findViewById(R.id.textView25);
+
         textView_NombresBeneficiario= (TextView) findViewById(R.id.TextView_NombreBeneficiario);
         textView_ApellidosBeneficiario= (TextView) findViewById(R.id.TextView_ApellidoBeneficiario);
+        textView_CondicionBeneficiario= (TextView) findViewById(R.id.TextView_CondicionBeneficiario);
         textView_TotalCompra= (TextView) findViewById(R.id.textView_CostoTotal);
         textView_SaldoCompra= (TextView) findViewById(R.id.textView_SaldoCompra);
-
-
-        InformacionPantalla=(TextView) findViewById(R.id.textView25);
+        Label_TotalCompra= (TextView) findViewById(R.id.textView26);
+        Label_SaldoCompra= (TextView) findViewById(R.id.textView34);
 
         pantalla = (ConstraintLayout) findViewById(R.id.Pantalla);
         ImageButtonActivar= (ImageButton) findViewById(R.id.btnHabiltarTTSSTT) ;
@@ -232,13 +240,25 @@ public class DetallesDonante extends AppCompatActivity {
         ImageButtonZoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(InformacionPantalla.getTextSize()<75) {
+                    InformacionPantalla.setTextSize(0, InformacionPantalla.getTextSize() + 12.0f);
+                    textView_NombresBeneficiario.setTextSize(0, textView_NombresBeneficiario.getTextSize() + 12.0f);
+                    textView_ApellidosBeneficiario.setTextSize(0, textView_ApellidosBeneficiario.getTextSize() + 12.0f);
+                    textView_CondicionBeneficiario.setTextSize(0, textView_CondicionBeneficiario.getTextSize() + 12.0f);
+                    textView_TotalCompra.setTextSize(0, textView_TotalCompra.getTextSize() + 12.0f);
+                    textView_SaldoCompra.setTextSize(0, textView_SaldoCompra.getTextSize() + 12.0f);
+                    Label_TotalCompra.setTextSize(0, Label_TotalCompra.getTextSize() + 12.0f);
+                    Label_SaldoCompra.setTextSize(0, Label_SaldoCompra.getTextSize() + 12.0f);
 
-                pantalla.setScaleX((float) (x + 1));
-                pantalla.setScaleY((float) (y + 1));
+                    String[] arregloNombres = listViewItemsNombre.toArray(new String[0]);
+                    String[] arregloCantidades = listViewItemsCantidad.toArray(new String[0]);
+                    String[] arregloTotales = listViewItemsPrecio.toArray(new String[0]);
+                    String[] arregloImagenes = listViewItemsImagen.toArray(new String[0]);
 
+                    //Toast.makeText(getApplicationContext(),db.getAllCategorias(1).toString(),Toast.LENGTH_SHORT).show();
+                    adapter = new ElementosProductosCompradosAdaptador(DetallesDonante.this, arregloNombres, arregloCantidades, arregloTotales, "Productos", arregloImagenes,22);
+                    listViewdetallesBeneficiario.setAdapter(adapter);
+                }
 
 
 
@@ -248,13 +268,27 @@ public class DetallesDonante extends AppCompatActivity {
         ImageButtonZoomOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float x = pantalla.getScaleX();
-                float y = pantalla.getScaleY();
-                // set increased value of scale x and y to perform zoom in functionality
+                if(InformacionPantalla.getTextSize()>66) {
+                    InformacionPantalla.setTextSize(0, InformacionPantalla.getTextSize() - 12.0f);
+                    textView_NombresBeneficiario.setTextSize(0, textView_NombresBeneficiario.getTextSize() - 12.0f);
+                    textView_ApellidosBeneficiario.setTextSize(0, textView_ApellidosBeneficiario.getTextSize() - 12.0f);
+                    textView_CondicionBeneficiario.setTextSize(0, textView_CondicionBeneficiario.getTextSize() - 12.0f);
+                    textView_TotalCompra.setTextSize(0, textView_TotalCompra.getTextSize() - 12.0f);
+                    textView_SaldoCompra.setTextSize(0, textView_SaldoCompra.getTextSize() - 12.0f);
+                    Label_TotalCompra.setTextSize(0, Label_TotalCompra.getTextSize() - 12.0f);
+                    Label_SaldoCompra.setTextSize(0, Label_SaldoCompra.getTextSize() - 12.0f);
 
-                pantalla.setScaleX((float) (x - 1));
-                pantalla.setScaleY((float) (y - 1));
+                    String[] arregloNombres = listViewItemsNombre.toArray(new String[0]);
+                    String[] arregloCantidades = listViewItemsCantidad.toArray(new String[0]);
+                    String[] arregloTotales = listViewItemsPrecio.toArray(new String[0]);
+                    String[] arregloImagenes = listViewItemsImagen.toArray(new String[0]);
 
+                    //Toast.makeText(getApplicationContext(),db.getAllCategorias(1).toString(),Toast.LENGTH_SHORT).show();
+                    adapter = new ElementosProductosCompradosAdaptador(DetallesDonante.this, arregloNombres, arregloCantidades, arregloTotales, "Productos", arregloImagenes,18);
+                    listViewdetallesBeneficiario.setAdapter(adapter);
+
+
+                }
 
 
             }
@@ -345,7 +379,7 @@ public class DetallesDonante extends AppCompatActivity {
                             " y pronuncie la palabra, donar para proceder a ingresar los datos de la tarjeta de crédito, caso contrario" +
                             ", la palabra regresar para bisualizar la lista de beneficiarios.");
                     //deberá ingresar su usuario y contraseña. " +
-                    //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, después del tono." +
+                    //      "En el caso de no tener, deberá registrarse pronunciando la palabra, registrar, ." +
                     //    "Caso contario, presionar sobre cualquier parte de la pantalla ");
                     //speak(TextViewTitulo.getText().toString());
                     //speak(TextViewContenido.getText().toString());
@@ -395,7 +429,7 @@ public class DetallesDonante extends AppCompatActivity {
                 ex.printStackTrace();
             }
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-            String url ="http://192.168.0.4:8080/ProyectoIntegrador/detalleBeneficiario_donador.php";
+            String url ="http://192.168.0.10:8080/ProyectoIntegrador/detalleBeneficiario_donador.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -416,7 +450,7 @@ public class DetallesDonante extends AppCompatActivity {
                             String imagen_producto = c.getString("IMAGEN_PRODUCTO");
                             String nombre_producto = c.getString("NOMBRE_PRODUCTO");
 
-                            db.addProductosDetalle(new ProductosComprados(id_detalle_compra,id_producto,id_usuario,precio_detalle,cantidad_detalle,total_detalle,estado,imagen_producto,nombre_producto));
+                            db.addProductosDetalle(new ElementoProductosComprados(id_detalle_compra,id_producto,id_usuario,precio_detalle,cantidad_detalle,total_detalle,estado,imagen_producto,nombre_producto));
 
                         }
 
@@ -451,7 +485,7 @@ public class DetallesDonante extends AppCompatActivity {
             String []arregloImagenes=listViewItemsImagen.toArray(new String[0]);
 
             //Toast.makeText(getApplicationContext(),db.getAllCategorias(1).toString(),Toast.LENGTH_SHORT).show();
-            adapter = new ElementosProductosCompradosAdaptador(DetallesDonante.this, arregloNombres,arregloCantidades,arregloTotales, "Productos", arregloImagenes);
+            adapter = new ElementosProductosCompradosAdaptador(DetallesDonante.this, arregloNombres,arregloCantidades,arregloTotales, "Productos", arregloImagenes,18);
             listViewdetallesBeneficiario = (ListView) findViewById(R.id.ListView_ListaProductosBeneficiario);
 
             return adapter;
@@ -478,6 +512,8 @@ public class DetallesDonante extends AppCompatActivity {
 
         intent1.putExtra(Intent.EXTRA_INDEX, messageIdCompra);
         intent1.putExtra(EXTRA_MESSAGE, messageIdUsuario);
+        intent1.putExtra(EXTRA_TITLE, primer_nombre_usuario);
+        intent1.putExtra(EXTRA_REFERRER, primer_apellido_usuario);
 
         //Toast.makeText(getApplicationContext(),messageIdCompra+" "+messageIdUsuario, Toast.LENGTH_LONG).show();
 
